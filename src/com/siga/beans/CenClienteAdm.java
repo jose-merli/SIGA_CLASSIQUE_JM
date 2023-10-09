@@ -9,6 +9,8 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -55,6 +57,7 @@ import com.siga.informes.InformeCertificadosEspeciales;
  */
 public class CenClienteAdm extends MasterBeanAdmVisible
 {
+	private static final Logger log = Logger.getLogger(CenClienteAdm.class);
 	public static final int TIPOCLIENTE_PROD_UNICO = 0;
 	public static final int TIPOCLIENTE_PROD_NOC = 10; // No-colegiado
 	public static final int TIPOCLIENTE_PROD_COL = 20; // Colegiado no residente
@@ -2087,121 +2090,242 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	 * @return java.util.Vector Vector de tablas hash  
 	 */
 
-/*  
- * 
- * NO SE USA 14.11.2008
- * 
- * 	
-	public Paginador getClientes(String idInstitucion, BusquedaClientesForm formulario, String idioma) throws ClsExceptions, SIGAException {
 
-		String sqlClientes = "";
-	  	
-	  	// Acceso a BBDD
-		try { 		
-			// consulta de insituciones 
-			sqlClientes = "SELECT "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+", " + CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOAPARECERREDABOGACIA+"  " +" ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOENVIARREVISTA+" , " +
-				" ( CASE "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_COMUNITARIO+" WHEN '" + ClsConstants.DB_TRUE + "' THEN "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOMUNITARIO+" ELSE "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOLEGIADO+" END) AS "+CenColegiadoBean.C_NCOLEGIADO+"," +
-				" "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+",  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" ,  "+
-				" (SELECT " + CenEstadoColegialBean.T_NOMBRETABLA+"."+CenEstadoColegialBean.C_DESCRIPCION +  
-				" FROM "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+", "+CenEstadoColegialBean.T_NOMBRETABLA+" " + 
-				" WHERE "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDESTADO+" = "+CenEstadoColegialBean.T_NOMBRETABLA+"."+CenEstadoColegialBean.C_IDESTADO+"  " +
-				" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+"  " +
-				" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" " +
-				" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_FECHAESTADO+" = (SELECT MAX("+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_FECHAESTADO+") " + 
-				" FROM "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"  " +
-				" WHERE "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDPERSONA+"= "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" " +
-				" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" AND CEN_DATOSCOLEGIALESESTADO.FECHAESTADO <= SYSDATE)) AS ESTADOCOLEGIAL " +
-
-				
-// RGG cambio porque solo saca colegiados				" FROM  (("+CenPersonaBean.T_NOMBRETABLA+" LEFT JOIN  "+CenClienteBean.T_NOMBRETABLA+" ON "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+") RIGHT JOIN "+CenColegiadoBean.T_NOMBRETABLA+" ON "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" AND "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+") " +
-				" FROM  (("+CenPersonaBean.T_NOMBRETABLA+" LEFT JOIN  "+CenClienteBean.T_NOMBRETABLA+" ON "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+") RIGHT JOIN "+CenColegiadoBean.T_NOMBRETABLA+" ON "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" AND "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+") " +
-//				" where rownum<20 "; // esto es de prueba
-
-				" WHERE "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" = " + idInstitucion;
-
-//	* RGG 17-02-2005 cambio los LEFT JOIN por COMAS para 
-//	 *  el tratamiento de visibilidad de campos (NO APLICADO)
-//	 * 		
-//
-//				" FROM  "+CenPersonaBean.T_NOMBRETABLA+
-//				" (+), "+CenClienteBean.T_NOMBRETABLA+ // LEFT JOIN
-//				" , "+CenColegiadoBean.T_NOMBRETABLA+" (+)" + // RIGTH JOIN
-//				// PRIMERA JOIN
-//				" WHERE "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+
-//				" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+
-//				// SEGUNDA JOIN
-//				" AND "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+
-//				" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+
-//				" AND "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+
-//				" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" " +
-//				
-//				// RESTO DE CONDICIONES 
-//				" AND "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" = " + idInstitucion;
-//				
-				
-//	 2  
-	       if (formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals("")) {
-	   			sqlClientes += " AND ("+
-									 	"("+ComodinBusquedas.tratarNumeroColegiado(formulario.getNumeroColegiado(),CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOLEGIADO) +
-									  " AND "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_COMUNITARIO +"="+ ClsConstants.DB_FALSE+")"+
-									  " OR "+
-									  "("+ComodinBusquedas.tratarNumeroColegiado(formulario.getNumeroColegiado(),CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOMUNITARIO) +
-									  " AND "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_COMUNITARIO +"="+ ClsConstants.DB_TRUE+")"+
-								   " ) ";
-	       }
-	       
-//	 3
-	       if (!formulario.getNombrePersona().trim().equals("")) {
-				  sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompleta(formulario.getNombrePersona().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE)+") ";
-	       }
-				
-//	 4
-	       if (!formulario.getApellido1().trim().equals("")) {
-	       		 sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompleta(formulario.getApellido1().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1)+") ";
-	       }
-//	 5
-	       if (!formulario.getApellido2().trim().equals("")) {
-	       		  sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompleta(formulario.getApellido2().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2)+") ";
-	       }
-	       
-//	 6  //Consulta sobre el campo NIF/CIF, si el usuario mete comodines la búsqueda es como se hacía siempre, en el caso
-		// de no meter comodines se ha creado un nuevo metodo ComodinBusquedas.preparaCadenaNIFSinComodin para que monte 
-		// la consulta adecuada. 
-	       
-	       if (!formulario.getNif().trim().equals("")) {
-	       	if (ComodinBusquedas.hasComodin(formulario.getNif())){
-	       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompleta(formulario.getNif().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF)+") ";
-	       	}else{
-	       		sqlClientes +="AND "+ComodinBusquedas.prepararSentenciaNIF(formulario.getNif(),"UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")");	
-	       		
-	       	}
-	       }
-	       
-	       sqlClientes+= " ORDER BY "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+" ";
-	       
-	       Paginador paginador = new Paginador(sqlClientes);				
-			int totalRegistros = paginador.getNumeroTotalRegistros();
+	
+	
+	private Vector getIdPersonaColegiadosBusqueda(BusquedaClientesForm formulario, boolean isBusquedaExactaSolicitante,
+			Short idInstitucion)throws BusinessException{
+		RowsContainer rc = new RowsContainer();
+		Vector datos = null;
+		Hashtable codigos = new Hashtable();
+		String sql = getQueryColegiados(formulario, codigos, isBusquedaExactaSolicitante, idInstitucion);
+		
+		try {    	   	    	   			
+			datos = this.selectGenericoBind(sql.toString(), codigos);
 			
-			if (totalRegistros==0){					
-				paginador =null;
-			}
-			// RGG cambio para visibilidad
-//			rcClientes = this.find(sqlClientes); 
-//			salida = new Vector();
-//			if (rcClientes!=null) {
-//				for (int i = 0; i < rcClientes.size(); i++)	{
-//					Row filaClientes = (Row) rcClientes.get(i);
-//					salida.add(filaClientes.getRow());
-//				}
-//			}
 			
-			return paginador;
+		} catch (Exception e) {
+			log.error("Error al obtener getIdPersonaColegiadosBusqueda",e);
+			throw new BusinessException("Error al obtener getIdPersonaColegiadosBusqueda");	
 		} 
-		catch (Exception e) { 	
-			throw new ClsExceptions(e,"Error obteniendo clientes "); 
-		}
+		return datos;
+		
 	}
-*/
+	
+	public String getQueryColegiados(BusquedaClientesForm formulario,Hashtable codigos, boolean isBusquedaExactaSolicitante,
+			Short idInstitucion) {
+		StringBuilder consulta = new StringBuilder();
+		int contador =0;
+//		si busqeuda exacta
+//		SELECT PER.IDPERSONA FROM CEN_PERSONA PER
+//		INNER JOIN CEN_CLIENTE CLI ON
+//		PER.IDPERSONA = CLI.IDPERSONA
+//		WHERE IDINSTITUCION = 2014
+//		/*--sI BUSQEUDA EXACTA
+//		AND UPPER(PER.NOMBRE) = UPPER('BECKY')
+//		 --si mete solo apellido 1
+//		AND UPPER(PER.APELLIDOS1) = UPPER('ABBY')
+//		--si mete apellido 1 y 2
+//		AND ( (UPPER(PER.APELLIDOS1) = UPPER('ABBY') AND UPPER(PER.APELLIDOS2) = UPPER('ANGEL'))
+//		OR UPPER(PER.APELLIDOS1) = 'ABBY% %ANGEL' 
+//		)*/
+//		--SI BUSQUEDA NO EXACTA
+//		AND translate(upper(UPPER(PER.NOMBRE)),'ÁÉÍÓÚÀÈÌÒÙÄËÏÖÜ','AEIOUAEIOUAEIOU') LIKE translate(upper('BECKY%'),'ÁÉÍÓÚÀÈÌÒÙÄËÏÖÜ','AEIOUAEIOUAEIOU')
+//		--si mete solo apellido 1
+//		--AND translate(upper(UPPER(PER.APELLIDOS1)),'ÁÉÍÓÚÀÈÌÒÙÄËÏÖÜ','AEIOUAEIOUAEIOU') LIKE translate(upper('ABBY%'),'ÁÉÍÓÚÀÈÌÒÙÄËÏÖÜ','AEIOUAEIOUAEIOU') 
+//		--si mete apellido 1 y 2
+//		AND ((translate(upper(UPPER(PER.APELLIDOS1)),'ÁÉÍÓÚÀÈÌÒÙÄËÏÖÜ','AEIOUAEIOUAEIOU') LIKE translate(upper('ABBY%'),'ÁÉÍÓÚÀÈÌÒÙÄËÏÖÜ','AEIOUAEIOUAEIOU') 
+//			AND translate(upper(UPPER(PER.APELLIDOS2)),'ÁÉÍÓÚÀÈÌÒÙÄËÏÖÜ','AEIOUAEIOUAEIOU') LIKE translate(upper('ANGEL%'),'ÁÉÍÓÚÀÈÌÒÙÄËÏÖÜ','AEIOUAEIOUAEIOU')
+//			)
+//		OR translate(upper(UPPER(PER.APELLIDOS1)),'ÁÉÍÓÚÀÈÌÒÙÄËÏÖÜ','AEIOUAEIOUAEIOU') LIKE translate(upper('%ABBY% %ANGEL%'),'ÁÉÍÓÚÀÈÌÒÙÄËÏÖÜ','AEIOUAEIOUAEIOU')
+//		)
+
+		
+		
+		if (
+				(formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals(""))
+				&&( (formulario.getNombrePersona()==null || formulario.getNombrePersona().trim().equals(""))
+						 && (formulario.getApellido1()==null  || formulario.getApellido1().trim().equals(""))
+						 && (formulario.getApellido2()==null  || formulario.getApellido2().trim().equals(""))
+						 && (formulario.getNif()==null  || formulario.getNif().trim().equals(""))
+						)) {
+				consulta.append("SELECT COL.IDPERSONA FROM CEN_COLEGIADO COL ");
+				consulta.append("WHERE COL.IDINSTITUCION = ");
+				consulta.append(idInstitucion);
+				contador++;
+				codigos.put(new Integer(contador),formulario.getNumeroColegiado().trim());
+				consulta.append(" AND LTRIM(DECODE(COL.COMUNITARIO,'1',COL.NCOMUNITARIO, COL.NCOLEGIADO),'0') = LTRIM(:");
+				consulta.append(contador);
+				consulta.append(",'0') ");
+				
+				
+		} else {
+			if ((formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals(""))
+				&&( (formulario.getNombrePersona()!=null && !formulario.getNombrePersona().trim().equals(""))
+						||(formulario.getApellido1()!=null && !formulario.getApellido1().trim().equals(""))
+						||(formulario.getApellido2()!=null && !formulario.getApellido2().trim().equals(""))
+						||(formulario.getNif()!=null && !formulario.getNif().trim().equals("")))
+												
+						) {
+			
+				consulta.append("SELECT PER.IDPERSONA FROM CEN_PERSONA PER ");
+				consulta.append("INNER JOIN CEN_CLIENTE CLI ON ");
+				consulta.append("PER.IDPERSONA = CLI.IDPERSONA ");
+				consulta.append("INNER JOIN CEN_COLEGIADO COL ON ");
+				consulta.append("COL.IDPERSONA = CLI.IDPERSONA ");
+				consulta.append("AND COL.IDINSTITUCION = CLI.IDINSTITUCION ");
+				consulta.append("WHERE CLI.IDINSTITUCION = ");
+				consulta.append(idInstitucion);
+				contador++;
+				codigos.put(new Integer(contador),formulario.getNumeroColegiado().trim());
+				consulta.append(" AND LTRIM(DECODE(COL.COMUNITARIO,'1',COL.NCOMUNITARIO, COL.NCOLEGIADO),'0') = LTRIM(:");
+				consulta.append(contador);
+				consulta.append(",'0') ");
+				
+				
+				
+			} else{
+				consulta.append("SELECT PER.IDPERSONA FROM CEN_PERSONA PER ");
+				consulta.append("INNER JOIN CEN_CLIENTE CLI ON ");
+				consulta.append("PER.IDPERSONA = CLI.IDPERSONA ");
+				consulta.append("WHERE CLI.IDINSTITUCION = ");
+				consulta.append(idInstitucion);
+				
+				
+			}
+			if (isBusquedaExactaSolicitante) {
+				if (formulario.getNif()!=null && !formulario.getNif().trim().equals("")) {
+					contador++;
+					codigos.put(new Integer(contador), formulario.getNif().trim());
+					consulta.append(" AND UPPER(PER.NIFCIF ) = UPPER(:");
+					consulta.append(contador);
+					consulta.append(")");
+				}
+				
+				if (formulario.getNombrePersona()!=null && !formulario.getNombrePersona().trim().equals("")) {
+					contador++;
+					codigos.put(new Integer(contador), formulario.getNombrePersona().trim());
+					consulta.append(" AND UPPER(PER.NOMBRE) = UPPER(:");
+					consulta.append(contador);
+					consulta.append(")");
+				}
+//				 si mete solo apellido 1
+				if (formulario.getApellido1()!=null && !formulario.getApellido1().trim().equals("") &&
+						(formulario.getApellido2()==null || formulario.getApellido2().trim().equals(""))
+					){
+					contador++;
+					codigos.put(new Integer(contador), formulario.getApellido1().trim());
+					consulta.append(" AND UPPER(PER.APELLIDOS1) = UPPER(:");
+					consulta.append(contador);
+					consulta.append(")");
+//					si mete apellido 1 y apellido 2
+				}else if (formulario.getApellido1()!=null && !formulario.getApellido1().trim().equals("") &&
+						formulario.getApellido2()!=null && !formulario.getApellido2().trim().equals("")
+					){
+					contador++;
+					codigos.put(new Integer(contador), formulario.getApellido1().trim());
+					consulta.append(" AND (( UPPER(PER.APELLIDOS1) = UPPER(:");
+					consulta.append(contador);
+					consulta.append(")");
+					contador++;
+					codigos.put(new Integer(contador), formulario.getApellido2().trim());
+					consulta.append(" AND UPPER(PER.APELLIDOS2) = UPPER(:");
+					consulta.append(contador);
+					consulta.append("))	OR UPPER(PER.APELLIDOS1) LIKE :");
+					contador++;
+					StringBuilder apellidos = new StringBuilder();
+					apellidos.append(formulario.getApellido1().trim());
+					apellidos.append("% %");
+					apellidos.append(formulario.getApellido2().trim());
+					codigos.put(new Integer(contador), apellidos.toString().toUpperCase());
+					consulta.append(contador);
+					
+					
+					consulta.append(")");
+					
+//					si no mete apellido 1 
+				}else {
+					//si mete apellido 2
+					if (formulario.getApellido2()!=null && !formulario.getApellido2().trim().equals("")) {
+						contador++;
+						codigos.put(new Integer(contador),formulario.getApellido2().trim());
+						consulta.append(" AND UPPER(PER.APELLIDOS2) = UPPER(:");
+						consulta.append(contador);
+						consulta.append(")");
+					}	
+				} 
+			}else {
+				if (formulario.getNif()!=null && !formulario.getNif().trim().equals("")) {
+					
+					if (ComodinBusquedas.hasComodin(formulario.getNif())){
+						contador++;
+						consulta.append(" AND ");
+						consulta.append(ComodinBusquedas.prepararSentenciaCompletaTranslateUpperBind(formulario.getNif().trim(), "UPPER(PER.NIFCIF)", contador, codigos));
+			       	}else{
+			       		
+			       		contador++;
+						consulta.append(" AND ");
+						consulta.append(ComodinBusquedas.prepararSentenciaNIFBind(formulario.getNif().trim(), "UPPER(PER.NIFCIF)", contador, codigos));
+			       	}
+				}
+				
+				if (formulario.getNombrePersona()!=null && !formulario.getNombrePersona().trim().equals("")) {
+					contador++;
+					consulta.append(" AND ");
+					consulta.append(ComodinBusquedas.prepararSentenciaCompletaTranslateUpperBind(formulario.getNombrePersona().trim(), "UPPER(PER.NOMBRE)", contador, codigos));
+				}
+//				 si mete solo apellido 1
+				if (formulario.getApellido1()!=null && !formulario.getApellido1().trim().equals("") &&
+						(formulario.getApellido2()==null || formulario.getApellido2().trim().equals(""))
+					){
+					contador++;
+					consulta.append(" AND ");
+					consulta.append(ComodinBusquedas.prepararSentenciaCompletaTranslateUpperBind(
+							formulario.getApellido1().trim(), "UPPER(PER.APELLIDOS1)", contador, codigos));
+//					si mete apellido 1 y apellido 2
+				}else if (formulario.getApellido1()!=null && !formulario.getApellido1().trim().equals("") &&
+						formulario.getApellido2()!=null && !formulario.getApellido2().trim().equals("")
+					){
+					contador++;
+					consulta.append(" AND ( (");
+					consulta.append(ComodinBusquedas.prepararSentenciaCompletaTranslateUpperBind(
+							formulario.getApellido1().trim(), "UPPER(PER.APELLIDOS1)", contador, codigos));
+					
+					contador++;
+					consulta.append(" AND ");
+					consulta.append(ComodinBusquedas.prepararSentenciaCompletaTranslateUpperBind(
+							formulario.getApellido2().trim(), "UPPER(PER.APELLIDOS2)", contador, codigos));
+					consulta.append(")	OR ");
+					StringBuilder apellidos = new StringBuilder();
+					apellidos.append(formulario.getApellido1().trim());
+					apellidos.append("% %");
+					apellidos.append(formulario.getApellido2().trim());
+					contador++;
+					consulta.append(ComodinBusquedas.prepararSentenciaCompletaTranslateUpperBind(
+							apellidos.toString().toUpperCase(), "UPPER(PER.APELLIDOS1)", contador, codigos));
+					consulta.append(")");
+					
+//					si no mete apellido 1 
+				}else {
+					//si mete apellido 2
+					if (formulario.getApellido2()!=null && !formulario.getApellido2().trim().equals("")) {
+						contador++;
+						consulta.append(" AND ");
+						consulta.append(ComodinBusquedas.prepararSentenciaCompletaTranslateUpperBind(
+								formulario.getApellido2().trim(), "UPPER(PER.APELLIDOS2)", contador, codigos));
+					}	
+					
+				} 
+				
+				
+			}
+			
+		}
+				
+		return consulta.toString();
+	}
+	
+	
 	/**
 	 * Obtiene los clientes (colegiados o no) para una institución y
 	 * un formulario de datos (BusquedaClientesModalForm)
@@ -2212,309 +2336,89 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	 */
 	public PaginadorBind getColegiados(String idInstitucion, BusquedaClientesForm formulario, String idioma) throws ClsExceptions, SIGAException {
 
-		String sqlClientes = "";
 		int contador = 0;             
 
         Hashtable codigos = new Hashtable();
 	  	// Acceso a BBDD
 		try { 
-			// consulta de todos los colegiados de una institucion y si estamos en CGAE o en Consejos tambien nos devuelven los que son letrados. 
-			sqlClientes = "(SELECT "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+", " + CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+"  AS  IDINSTITUCION , "+
-				" ( CASE "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_COMUNITARIO+" WHEN '" + ClsConstants.DB_TRUE + "' THEN "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOMUNITARIO+" ELSE "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOLEGIADO+" END) AS "+CenColegiadoBean.C_NCOLEGIADO+"," +
-				" "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+", "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+",  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" ,  "+
-
-
-				" DECODE("+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_LETRADO+",'1','Letrado',NVL((SELECT " + CenEstadoColegialBean.T_NOMBRETABLA+"."+CenEstadoColegialBean.C_DESCRIPCION +
-				" FROM "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+", "+CenEstadoColegialBean.T_NOMBRETABLA+" " + 
-				" WHERE "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDESTADO+" = "+CenEstadoColegialBean.T_NOMBRETABLA+"."+CenEstadoColegialBean.C_IDESTADO+"  " +
-				" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+"  " +
-				" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" " +
-				" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_FECHAESTADO+" = (SELECT MAX("+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_FECHAESTADO+") " + 
-				" FROM "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"  " +
-				" WHERE "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDPERSONA+"= "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" " +
-				" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+"  AND CEN_DATOSCOLEGIALESESTADO.FECHAESTADO <= SYSDATE)),'No Colegiado')) AS ESTADOCOLEGIAL, " +
-//			     Se añade un nuevo campo de salida para que en la solicitud de compra aparezcan ordenados por letrados, colegiados, no colegiados				
-				" DECODE("+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_LETRADO+",'1','1', NVL(( SELECT '2' "+
-				                                          " FROM "+CenColegiadoBean.T_NOMBRETABLA+
-														  " WHERE "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+
-														  " AND "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+"), "+
-                            "					decode((select '3' "+
-                            "         			from dual "+
-                            "                   where "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+">1000),'3',3,4) )) AS COLEGIACION "+
-                            " ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOAPARECERREDABOGACIA+"  " +
-// RGG cambio porque solo saca colegiados				" FROM  (("+CenPersonaBean.T_NOMBRETABLA+" LEFT JOIN  "+CenClienteBean.T_NOMBRETABLA+" ON "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+") RIGHT JOIN "+CenColegiadoBean.T_NOMBRETABLA+" ON "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" AND "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+") " +
-				" FROM  (("+CenPersonaBean.T_NOMBRETABLA+" INNER JOIN  "+CenClienteBean.T_NOMBRETABLA+" ON "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+") RIGHT JOIN "+CenColegiadoBean.T_NOMBRETABLA+" ON "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" AND "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+") " ;
+			// consulta de todos los colegiados de una institucion y si estamos en CGAE o en Consejos tambien nos devuelven los que son letrados.
+			StringBuilder sqlColegiados = new StringBuilder();
+			sqlColegiados.append(" ");
+			sqlColegiados.append(" SELECT			CLI.IDINSTITUCION,PER.IDPERSONA, ");
+			sqlColegiados.append(" PER.NIFCIF, PER.NOMBRE,	PER.APELLIDOS1,	PER.APELLIDOS2, ");
+			sqlColegiados.append(" F_SIGA_CALCULONCOLEGIADO(CLI.IDINSTITUCION,CLI.IDPERSONA)  AS NCOLEGIADO, ");
+			sqlColegiados.append(" (SELECT CEN_ESTADOCOLEGIAL.DESCRIPCION FROM CEN_DATOSCOLEGIALESESTADO, CEN_ESTADOCOLEGIAL WHERE CEN_DATOSCOLEGIALESESTADO.IDESTADO = CEN_ESTADOCOLEGIAL.IDESTADO AND CEN_DATOSCOLEGIALESESTADO.IDPERSONA = CLI.IDPERSONA AND CEN_DATOSCOLEGIALESESTADO.IDINSTITUCION = CLI.IDINSTITUCION AND CEN_DATOSCOLEGIALESESTADO.FECHAESTADO = (SELECT MAX(CEN_DATOSCOLEGIALESESTADO.FECHAESTADO) FROM CEN_DATOSCOLEGIALESESTADO WHERE CEN_DATOSCOLEGIALESESTADO.IDPERSONA = CLI.IDPERSONA AND CEN_DATOSCOLEGIALESESTADO.IDINSTITUCION = CLI.IDINSTITUCION AND CEN_DATOSCOLEGIALESESTADO.FECHAESTADO <= SYSDATE)) AS ESTADOCOLEGIAL, ");
+			sqlColegiados.append(" CLI.NOAPARECERREDABOGACIA ");
+			sqlColegiados.append(" FROM CEN_PERSONA PER ");
+			sqlColegiados.append(" INNER JOIN CEN_CLIENTE CLI ON ");
+			sqlColegiados.append(" PER.IDPERSONA = CLI.IDPERSONA ");
+			sqlColegiados.append(" WHERE 1= 1 ");
 
 				
 			boolean esComision = usrbean.isComision();
 			boolean esComisionMultiple = usrbean.getInstitucionesComision()!=null &&usrbean.getInstitucionesComision().length>1;
 		
 			if(esComision && esComisionMultiple){
-				sqlClientes += " WHERE "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" in ( ";
+				sqlColegiados.append( " AND CLI.IDINSTITUCION IN ( ");
 				for (int i = 0; i < usrbean.getInstitucionesComision().length; i++) {
-					sqlClientes += usrbean.getInstitucionesComision()[i];
+					sqlColegiados.append( usrbean.getInstitucionesComision()[i]);
 					if(i!=usrbean.getInstitucionesComision().length-1)
-						sqlClientes += ", ";
+						sqlColegiados.append(", ");
 					
 				}
-				sqlClientes += " )";
+				sqlColegiados.append( " ) ");
 				
 			}else{
-				sqlClientes += " WHERE "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" = " + idInstitucion;
+				sqlColegiados.append( " AND CLI.IDINSTITUCION =  ");
+				sqlColegiados.append(idInstitucion);
 				
 			}
+			boolean isBusquedaExactaSolicitante  = UtilidadesString.stringToBoolean(formulario.getChkBusqueda());
 			
+			//Filtamos solamente por los expedientes que tienen esos justiciables 
+			boolean existeFiltroColegiado = false;
+			if (
+					(formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals(""))
+					||(formulario.getNombrePersona()!=null && !formulario.getNombrePersona().trim().equals(""))
+					||(formulario.getApellido1()!=null && !formulario.getApellido1().trim().equals(""))
+					||(formulario.getApellido2()!=null && !formulario.getApellido2().trim().equals(""))
+					||(formulario.getNif()!=null && !formulario.getNif().trim().equals(""))
+					) {
+				existeFiltroColegiado = true;
+			}
+			if(existeFiltroColegiado) {
 				
-			boolean bBusqueda  = UtilidadesString.stringToBoolean(formulario.getChkBusqueda());	
-//	 2     
-			
+				Vector idPersonasVector = getIdPersonaColegiadosBusqueda(formulario, isBusquedaExactaSolicitante, Short.parseShort(idInstitucion));
 				
-	          if (formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals("")) {
-	          	//if (bBusqueda) {
-	          	contador++;
-	          	codigos.put(new Integer(contador),formulario.getNumeroColegiado().trim());
-	          		
-	   			sqlClientes += " AND LTRIM(DECODE(CEN_COLEGIADO.COMUNITARIO,'1',CEN_COLEGIADO.NCOMUNITARIO, CEN_COLEGIADO.NCOLEGIADO),'0') = LTRIM(:"+contador+",'0') " ;
-	          	/*}else{
-					sqlClientes += " AND ("+
-				 	"("+ComodinBusquedas.tratarNumeroColegiadoAproximado(formulario.getNumeroColegiado().trim(),CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOLEGIADO) +
-				  " AND "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_COMUNITARIO +"="+ ClsConstants.DB_FALSE+")"+
-				  " OR "+
-				  "("+ComodinBusquedas.tratarNumeroColegiadoAproximado(formulario.getNumeroColegiado().trim(),CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_NCOMUNITARIO) +
-				  " AND "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_COMUNITARIO +"="+ ClsConstants.DB_TRUE+")"+
-			      " ) ";
-				}*/
-	          } 
-
-//	  	 3
-	  	       if (!formulario.getNombrePersona().trim().equals("")) {
-	  		       	if (bBusqueda) {
-	  		       		contador++;
-	  		       	sqlClientes += " AND (UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+") "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getNombrePersona().trim(),contador,codigos)+") ";
-	  					  
-	  		       	}else{
-	  		       	contador++;
-	  		       	sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getNombrePersona().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE,contador,codigos )+") ";
-	  		       	}
-	  	       }
-	  	       
-//	  	     4 y 5 Criterio de busqueda especial para los campos Apellido1 y Apellido2
-	  	       if (!formulario.getApellido1().trim().equals("")&&(!formulario.getApellido2().trim().equals(""))) {// Los dos campos rellenos
-	  	       	if (bBusqueda)  {
-	  	       		contador++;
-	  	       		sqlClientes += " AND ((("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+" "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido1().trim(),contador,codigos )+")";
-	  	       	    contador++;
-  	       		    sqlClientes += " AND ("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+" "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido2().trim(),contador,codigos )+"))";
-  	       		    contador++;
-	       		    sqlClientes += " OR ("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+" "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido1().trim()+" "+formulario.getApellido2().trim(),contador,codigos )+"))";
-	  	       	}else{
-	  	       	contador++;
-	  	       		sqlClientes += " AND ((("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1,contador,codigos )+")";
-	  	       		
-	  	       	contador++;
-  	       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido2().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2,contador,codigos)+"))";
-  	       	    contador++;
-	       		sqlClientes += " OR ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim()+"% %"+formulario.getApellido2().trim() ,CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1,contador,codigos )+"))";
-	  	       		
-	  	       	}
-	  	       }else if (!formulario.getApellido1().trim().equals("")&&(formulario.getApellido2().trim().equals(""))) {//Apellido1 relleno
-	  	       	if (bBusqueda  ) {
-	  	       	contador++;
-	  	       		sqlClientes += " AND (("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+" "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido1(),contador,codigos)+") OR ("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+" LIKE '"+UtilidadesBDAdm.validateChars(formulario.getApellido1().trim())+" %'))";
-	  	       	}else{
-	  	       	contador++;	
-	  	       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1,contador,codigos )+" OR ("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+"||' '||"+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+" LIKE '%"+UtilidadesBDAdm.validateChars(formulario.getApellido1().trim())+"%')) ";
-	  	       		
-	  	       	}
-	  	       }else if (formulario.getApellido1().trim().equals("")&&(!formulario.getApellido2().trim().equals(""))) {//Apellido2 relleno
-	  	       	if (bBusqueda ) {
-	  	       		contador++;
-	  	       		sqlClientes += " AND (("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+" "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido2().trim(),contador,codigos )+")"+
-	  				               " OR ("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+" LIKE '% "+UtilidadesBDAdm.validateChars(formulario.getApellido2().trim()) +"' )) ";
-	  	       		 
-	  	       	}else{
-	  	       	contador++;
-	  	       		sqlClientes += " AND (("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido2().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2,contador,codigos)+") ";
-	  	       	contador++;	
-	  	       	    sqlClientes += " OR ("+ComodinBusquedas.prepararSentenciaCompletaBind(" "+formulario.getApellido2().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1,contador,codigos)+ ")  )";
-	  	       	}
-	  	       	
-	  	       }       	  	       
-
-	  	    /*   if (!formulario.getApellido1().trim().equals("")) {
-	  		       	if (bBusqueda) {
-	  		       	sqlClientes += " AND (UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+") "+ComodinBusquedas.prepararSentenciaExacta(formulario.getApellido1().trim() )+") ";
-	  		       	    
-	  		       	}
-	  		       	else {
-	  		       	sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompleta(formulario.getApellido1().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1)+") ";
-	  		       	}
-	  	       }
-
-	  	       if (!formulario.getApellido2().trim().equals("")) {
-	  		       	if (bBusqueda) {
-	  		       	sqlClientes += " AND (UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+") "+ComodinBusquedas.prepararSentenciaExacta(formulario.getApellido2().trim() )+") ";
-	  		       		  
-	  		       	}
-	  		       	else {
-	  		       	sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompleta(formulario.getApellido2().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2)+") ";
-	  		       	}
-	  	       }*/
-	       
-//	 6  //Consulta sobre el campo NIF/CIF, si el usuario mete comodines la búsqueda es como se hacía siempre, en el caso
-		// de no meter comodines se ha creado un nuevo metodo ComodinBusquedas.preparaCadenaNIFSinComodin para que monte 
-		// la consulta adecuada. 
-	       
-	       if (!formulario.getNif().trim().equals("")) {
-	    	   if ((bBusqueda ) ) {
-	    		   contador++;
-	    		   codigos.put(new Integer(contador), formulario.getNif().trim().toUpperCase());
-	    		   sqlClientes +=" AND UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")= :"+contador;
-	       		   //sqlClientes +="AND "+ComodinBusquedas.prepararSentenciaNIFExacta(formulario.getNif(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF); 
-	       		}else{
-	     
-	       	if (ComodinBusquedas.hasComodin(formulario.getNif())){
-	       		contador++;
-	       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getNif().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF,contador,codigos)+") ";
-	       	}else{
-	       		
-	       			contador++;
-	       		   sqlClientes +="AND "+ComodinBusquedas.prepararSentenciaNIFBind(formulario.getNif(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF,contador,codigos);
-	       		}
-	       	}
-	       	
-	       }
-	       sqlClientes+=" UNION "+
-			" SELECT "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+","+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+"  AS  IDINSTITUCION , "+
-                    "'' AS NCOLEGIADO ,"+
-                    CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE+","+
-                    CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+","+
-                    CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+","+
-                    CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+","+
-                   "'Letrado' AS ESTADOCOLEGIAL, "+
-				   "'1' AS COLEGIACION"+
-				   " ,  "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_NOAPARECERREDABOGACIA+"  " +
-		   " FROM  (("+CenPersonaBean.T_NOMBRETABLA+" INNER JOIN  "+CenClienteBean.T_NOMBRETABLA+" ON "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+" = "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+"))";
-	       
-	       contador++;
-	       codigos.put(new Integer(contador),idInstitucion);
-	       sqlClientes+=" WHERE "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" = :"+contador+
-		                  " AND "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_LETRADO+"= 1";
-	       
-	       
-	       if (formulario.getObtenerColegiados().trim().equals("true".trim())) {
-	    	   sqlClientes+= " AND EXISTS " ;
-	       } else {
-	    	   sqlClientes+= " AND NOT EXISTS " ;	    	   
-	       }	
-	       sqlClientes+= " (SELECT * " +
-	    		   	" FROM " + CenColegiadoBean.T_NOMBRETABLA +
-	    		   	" WHERE "+ CenColegiadoBean.T_NOMBRETABLA + "."+ CenColegiadoBean.C_IDPERSONA + " = " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDPERSONA +
-	    		   	" AND " + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_IDINSTITUCION + " = " + CenClienteBean.T_NOMBRETABLA + "." + CenClienteBean.C_IDINSTITUCION;
-//	  	 2  
-	       if (formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals("")) {
-	       	contador++;
-          	codigos.put(new Integer(contador),formulario.getNumeroColegiado().trim());
-	   			sqlClientes += " AND LTRIM(DECODE(" + CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_COMUNITARIO + ",'1', " +
-	   							 CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_NCOMUNITARIO + ", " +  CenColegiadoBean.T_NOMBRETABLA + "." + CenColegiadoBean.C_NCOLEGIADO+ "),'0') = LTRIM(:"+contador+",'0') ";
-	       }
-
-	        sqlClientes+=" ) ";	       
-	       
-//	 3
-	       if (!formulario.getNombrePersona().trim().equals("")) {
-	       	contador++;
-				  sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getNombrePersona().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NOMBRE,contador,codigos)+") ";
-	       }
-			
-	       
-//	  	4 y 5 Criterio de busqueda especial para los campos Apellido1 y Apellido2
-  	       if (!formulario.getApellido1().trim().equals("")&&(!formulario.getApellido2().trim().equals(""))) {// Los dos campos rellenos
-  	       	if (bBusqueda)  {
-  	       		contador++;
-  	       		sqlClientes += " AND ((("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+" "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido1().trim(),contador,codigos)+")";
-  	       	    contador++;
-	       		sqlClientes += " AND ("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+" "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido2().trim(),contador,codigos )+"))";
-	       		contador++;
-	       		sqlClientes += " OR ("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+" "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido1().trim()+" "+formulario.getApellido2().trim(),contador,codigos )+"))";
-  	       	}else{
-  	       	    contador++;
-  	       		sqlClientes += " AND ((("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1,contador,codigos )+")";
-  	       	    contador++;
-	       		sqlClientes +=" AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido2().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2,contador,codigos)+"))";
-	       		contador++;
-	       		sqlClientes +=" OR ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim()+"% %"+formulario.getApellido2().trim() ,CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1,contador,codigos )+"))";
-  	       		
-  	       	}
-  	       }else if (!formulario.getApellido1().trim().equals("")&&(formulario.getApellido2().trim().equals(""))) {//Apellido1 relleno
-  	       	if (bBusqueda  ) {
-  	       	    contador++;
-  	       		sqlClientes += " AND (("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+" "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido1(),contador,codigos)+") OR ("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+" LIKE '"+UtilidadesBDAdm.validateChars(formulario.getApellido1().trim())+" %'))";
-  	       	}else{
-  	       	    contador++;
-  	       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1,contador,codigos )+" OR ("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+"||' '||"+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+" LIKE '%"+UtilidadesBDAdm.validateChars(formulario.getApellido1().trim())+"%')) ";
-  	       		
-  	       	}
-  	       }else if (formulario.getApellido1().trim().equals("")&&(!formulario.getApellido2().trim().equals(""))) {//Apellido2 relleno
-  	       	if (bBusqueda ) {
-  	       		contador++;
-  	       		sqlClientes += " AND (("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2+" "+ComodinBusquedas.prepararSentenciaExactaBind(formulario.getApellido2().trim(),contador,codigos )+")"+
-  				               " OR ("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1+" LIKE '% "+UtilidadesBDAdm.validateChars(formulario.getApellido2().trim()) +"' )) ";
-  	       		 
-  	       	}else{
-  	       	contador++;
-  	       		sqlClientes += " AND (("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido2().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS2,contador,codigos)+") ";
-  	       	contador++;
-	       		sqlClientes += " OR ("+ComodinBusquedas.prepararSentenciaCompletaBind(" "+formulario.getApellido2().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_APELLIDOS1,contador,codigos)+ ")  )";
-  	       	}
-  	       	
-  	       }   
-	       
-//	 6  //Consulta sobre el campo NIF/CIF, si el usuario mete comodines la búsqueda es como se hacía siempre, en el caso
-		// de no meter comodines se ha creado un nuevo metodo ComodinBusquedas.preparaCadenaNIFSinComodin para que monte 
-		// la consulta adecuada. 
-	       
-  	       if (!formulario.getNif().trim().equals("")) {
-  	    	   if (bBusqueda)  {	
-  	    		 contador++;
-	    		   codigos.put(new Integer(contador), formulario.getNif().trim().toUpperCase());
-	    		   sqlClientes +=" AND UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")= :"+contador;
-  	    		   //sqlClientes +="AND "+ComodinBusquedas.prepararSentenciaNIFExacta(formulario.getNif(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF); 
-  	    	   }else{
-  	    		   if (ComodinBusquedas.hasComodin(formulario.getNif())){
-  	    			   contador++;
-  	    			   sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getNif().trim(),CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF,contador,codigos)+") ";
-  	    		   }else{
-
-  	    			   contador++;
-  	    			   sqlClientes +="AND "+ComodinBusquedas.prepararSentenciaNIFBind(formulario.getNif(),"UPPER("+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_NIFCIF+")",contador,codigos);	
-  	    		   }
-  	    	   }
-  	       }
-	    	       
-	       sqlClientes +=")";
-            
-	       sqlClientes+= " ORDER BY COLEGIACION, "+CenPersonaBean.C_APELLIDOS1+", "+CenPersonaBean.C_APELLIDOS2+", "+CenPersonaBean.C_NOMBRE;
-	      
-	       PaginadorBind paginador = new PaginadorBind(sqlClientes,codigos);				
+				if(idPersonasVector!=null && idPersonasVector.size()>0 ) {
+					
+//					String filtroJusticiable = getQueryColegiados(formulario, codigos, isBusquedaExactaSolicitante, Short.parseShort(idInstitucion));
+					sqlColegiados.append(" AND PER.IDPERSONA IN (");
+					for (int i = 0; i < idPersonasVector.size(); i++) {
+						Hashtable persona = (Hashtable) idPersonasVector.get(i);
+						sqlColegiados.append(persona.get("IDPERSONA"));						
+					}
+					sqlColegiados.append(")");
+					
+				}else {
+					//como no hay datos que devolver no seguimos
+					return null;
+					
+				}
+			}
+			sqlColegiados.append(" ORDER BY "+CenPersonaBean.C_APELLIDOS1+", "+CenPersonaBean.C_APELLIDOS2+", "+CenPersonaBean.C_NOMBRE);
+	       PaginadorBind paginador = new PaginadorBind(sqlColegiados.toString(),codigos);				
 			int totalRegistros = paginador.getNumeroTotalRegistros();
 			
 			if (totalRegistros==0){					
 				paginador =null;
 			}
-			// RGG cambio para visibilidad
-		/*	rcClientes = this.find(sqlClientes); 
-			salida = new Vector();
-			if (rcClientes!=null) {
-				for (int i = 0; i < rcClientes.size(); i++)	{
-					Row filaClientes = (Row) rcClientes.get(i);
-					salida.add(filaClientes.getRow());
-				}
-			}*/
+		
 			
 			return paginador;
 		} 
-		catch (Exception e) { 	
+		catch (Exception e) {
+			log.error("Error en getColegiados",e);
 			throw new ClsExceptions(e,"Error obteniendo clientes "); 
 		}
 	}
