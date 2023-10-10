@@ -757,7 +757,7 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 			datosLibresExpediente2.setCircustanciasExcepcionales(DE_DL_LM_CIRCUSTANCIASEXCEPCIONALES);
 			
 			short DE_DL_LM_VM = Short.parseShort((String)htEJGs.get("DE_DL_LM_VM"));
-			datosLibresExpediente2.setRetornoCorregido(DE_DL_LM_VM);
+			datosLibresExpediente2.setVM(DE_DL_LM_VM);
 
 		}
 		
