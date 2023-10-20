@@ -2142,7 +2142,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 
 		
 		
-		if (
+		/*if (
 				(formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals(""))
 				&&( (formulario.getNombrePersona()==null || formulario.getNombrePersona().trim().equals(""))
 						 && (formulario.getApellido1()==null  || formulario.getApellido1().trim().equals(""))
@@ -2160,22 +2160,19 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 				
 				
 		} else {
-			if ((formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals(""))
-				&&( (formulario.getNombrePersona()!=null && !formulario.getNombrePersona().trim().equals(""))
-						||(formulario.getApellido1()!=null && !formulario.getApellido1().trim().equals(""))
-						||(formulario.getApellido2()!=null && !formulario.getApellido2().trim().equals(""))
-						||(formulario.getNif()!=null && !formulario.getNif().trim().equals("")))
-												
-						) {
+		*/
 			
-				consulta.append("SELECT PER.IDPERSONA FROM CEN_PERSONA PER ");
-				consulta.append("INNER JOIN CEN_CLIENTE CLI ON ");
-				consulta.append("PER.IDPERSONA = CLI.IDPERSONA ");
-				consulta.append("INNER JOIN CEN_COLEGIADO COL ON ");
-				consulta.append("COL.IDPERSONA = CLI.IDPERSONA ");
-				consulta.append("AND COL.IDINSTITUCION = CLI.IDINSTITUCION ");
-				consulta.append("WHERE CLI.IDINSTITUCION = ");
-				consulta.append(idInstitucion);
+		consulta.append("SELECT PER.IDPERSONA FROM CEN_PERSONA PER ");
+		consulta.append("INNER JOIN CEN_CLIENTE CLI ON ");
+		consulta.append("PER.IDPERSONA = CLI.IDPERSONA ");
+		consulta.append("INNER JOIN CEN_COLEGIADO COL ON ");
+		consulta.append("COL.IDPERSONA = CLI.IDPERSONA ");
+		consulta.append("AND COL.IDINSTITUCION = CLI.IDINSTITUCION ");
+		consulta.append("WHERE CLI.IDINSTITUCION = ");
+		consulta.append(idInstitucion);
+		if ((formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals(""))) {
+			
+				
 				contador++;
 				codigos.put(new Integer(contador),formulario.getNumeroColegiado().trim());
 				consulta.append(" AND LTRIM(DECODE(COL.COMUNITARIO,'1',COL.NCOMUNITARIO, COL.NCOLEGIADO),'0') = LTRIM(:");
@@ -2184,7 +2181,8 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 				
 				
 				
-			} else{
+			}
+			/* else{
 				consulta.append("SELECT PER.IDPERSONA FROM CEN_PERSONA PER ");
 				consulta.append("INNER JOIN CEN_CLIENTE CLI ON ");
 				consulta.append("PER.IDPERSONA = CLI.IDPERSONA ");
@@ -2192,7 +2190,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 				consulta.append(idInstitucion);
 				
 				
-			}
+			}*/
 			if (isBusquedaExactaSolicitante) {
 				if (formulario.getNif()!=null && !formulario.getNif().trim().equals("")) {
 					contador++;
@@ -2320,7 +2318,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 				
 			}
 			
-		}
+		//}
 				
 		return consulta.toString();
 	}
@@ -2375,7 +2373,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			}
 			boolean isBusquedaExactaSolicitante  = UtilidadesString.stringToBoolean(formulario.getChkBusqueda());
 			
-			//Filtamos solamente por los expedientes que tienen esos justiciables 
+			//Filtamos solamente por los colegiados que con esso filtros 
 			boolean existeFiltroColegiado = false;
 			if (
 					(formulario.getNumeroColegiado()!=null && !formulario.getNumeroColegiado().trim().equals(""))
@@ -2397,7 +2395,10 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 					for (int i = 0; i < idPersonasVector.size(); i++) {
 						Hashtable persona = (Hashtable) idPersonasVector.get(i);
 						sqlColegiados.append(persona.get("IDPERSONA"));						
+						sqlColegiados.append(",");
 					}
+					sqlColegiados.delete(sqlColegiados.length()-1,sqlColegiados.length());
+					
 					sqlColegiados.append(")");
 					
 				}else {
