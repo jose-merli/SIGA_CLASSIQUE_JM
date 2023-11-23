@@ -1,4 +1,4 @@
-CREATE OR REPLACE TRIGGER SCS_EJG_AUR
+CREATE OR REPLACE TRIGGER USCGAE.SCS_EJG_AUR
 AFTER UPDATE
 ON SCS_EJG 
 REFERENCING NEW AS NEW OLD AS OLD
@@ -14,7 +14,7 @@ Declare
   Resolucion_Devuelto Constant Int := 6; -- Resolucion Devuelto al colegio
 
   Valor_Automatico Constant Varchar2(1) := '1';
-  v_Fechanula        Date := '01/01/9000';
+  v_Fechanula        Date := to_date('01/01/9000', 'dd/mm/yyyy');
   v_Idnulo           Number(2) := -1;
   v_Idinstitucioncms Cen_Institucion.Idinstitucion%Type;
 
