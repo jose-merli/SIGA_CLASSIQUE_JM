@@ -727,6 +727,30 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 			datosLibresExpediente2.setVIDO(DE_DL_LM_VIDO);
 			
 			short DE_DL_LM_MENOR = Short.parseShort((String)htEJGs.get("DE_DL_LM_MENOR"));
+			//si no es menor miramos si viene menor en las marcas
+			if(DE_DL_LM_MENOR==0) {
+				String key = getKey(new Object[]{getIdInstitucion(), anyo, numero, idTipoEJG});
+				List list = (List) htMarcasExpediente.get(key);
+				
+				if (list != null && list.size() > 0) {
+					MarcasExpediente marcasExpediente = null;
+					for (int i = 0; i < list.size(); i++) {
+						Hashtable ht = (Hashtable) list.get(i);
+						String st = getString((String)ht.get(DE_ME_ME_VALORMARCAEXPEDIENTE));
+						if (st != null) {
+							String codigo = getCodigoElementoTipificado((String)ht.get(DE_ME_ME_MARCAEXPEDIENTE_CDA));
+							if(codigo!=null && codigo.equalsIgnoreCase("002")) {
+								DE_DL_LM_MENOR = 1;
+								
+							}		
+							
+						}
+					}
+				}
+			}
+			
+			
+			
 			datosLibresExpediente2.setMenor(DE_DL_LM_MENOR);
 			
 			short DE_DL_LM_INCAPACIDAD = Short.parseShort((String)htEJGs.get("DE_DL_LM_INCAPACIDAD"));
