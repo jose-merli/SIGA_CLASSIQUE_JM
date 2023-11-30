@@ -1274,7 +1274,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 
 		Integer posicionLetradoGuardia = cabeceraAdm.getMaximaPosicionCabecera(letrado.getIdInstitucion(), letrado
 				.getIdTurno(), letrado.getIdGuardia(), idCalendarioGuardias, fechaInicioCalendario);
-		letrado.setPosicion((posicionLetradoGuardia == null) ? 0 : posicionLetradoGuardia + 1);
+		letrado.setPosicion((posicionLetradoGuardia == null) ? 1 : posicionLetradoGuardia + 1);
 
 		// Validaciones: PENDIENTE DE DEFINIR
 		Hashtable miHash = new Hashtable();
