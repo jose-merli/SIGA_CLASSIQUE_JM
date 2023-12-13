@@ -277,7 +277,7 @@
 		
 		function accionVolver(){
 			//sub();	
-			
+			fin();
 			var miForm = document.forms[0];
 			miForm.modo.value="abrir";
 			miForm.volver.value="SI";
