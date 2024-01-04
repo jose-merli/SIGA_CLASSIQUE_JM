@@ -72,6 +72,9 @@ public class Plantilla {
 	public Plantilla(UsrBean us){
 		this.userbean=us;
 	}
+	public Plantilla(){
+	
+	}
 
 	
 	/** 
@@ -2410,21 +2413,22 @@ public class Plantilla {
 		return correcto;
 	}
 
-	public static synchronized  void doZip(String rutaServidorDescargasZip, String nombreFicheroPDF, ArrayList ficherosPDF) throws ClsExceptions	{
+	public void doZip(String rutaServidorDescargasZip, String nombreFicheroPDF, ArrayList ficherosPDF) throws ClsExceptions	{
 	    doZip(rutaServidorDescargasZip,nombreFicheroPDF,ficherosPDF,true);
 	}
 	
-	public static synchronized  void doZip(String rutaServidorDescargasZip, String nombreFicheroPDF, ArrayList ficherosPDF, boolean borrarFicheros) throws ClsExceptions	{
+	public void doZip(String rutaServidorDescargasZip, String nombreFicheroZip, ArrayList ficherosPDF, boolean borrarFicheros) throws ClsExceptions	{
 		// Generar Zip
 		File ficZip=null;
 		byte[] buffer = new byte[8192];
 		int leidos;
 		
 		ZipOutputStream outTemp = null;
+		FileInputStream fis = null;
 		try {
 			if ((ficherosPDF!=null) && (ficherosPDF.size()>0)) {
 				
-				ficZip = new File(rutaServidorDescargasZip +  nombreFicheroPDF + ".zip");
+				ficZip = new File(rutaServidorDescargasZip +  nombreFicheroZip + ".zip");
 				outTemp = new ZipOutputStream(new FileOutputStream(ficZip));
 				
 				for (int i=0; i<ficherosPDF.size(); i++)
@@ -2433,7 +2437,7 @@ public class Plantilla {
 					if (auxFile.exists()) {
 						ZipEntry ze = new ZipEntry(auxFile.getName());
 						outTemp.putNextEntry(ze);
-						FileInputStream fis=new FileInputStream(auxFile);
+						fis=new FileInputStream(auxFile);
 						
 						buffer = new byte[8192];
 						
@@ -2441,9 +2445,10 @@ public class Plantilla {
 						{
 							outTemp.write(buffer, 0, leidos);
 						}
-						
-						fis.close();
-						outTemp.closeEntry();
+						if(fis!=null)
+							fis.close();
+						if(outTemp!=null)
+							outTemp.closeEntry();
 					}
 				}
 				
@@ -2468,6 +2473,8 @@ public class Plantilla {
 			try {
 				if(outTemp!=null)
 					outTemp.close();
+				if(fis!=null)
+					fis.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

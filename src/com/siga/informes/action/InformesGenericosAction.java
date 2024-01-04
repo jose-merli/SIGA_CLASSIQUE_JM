@@ -182,7 +182,8 @@ public class InformesGenericosAction extends MasterAction {
 					String rutaServidorDescargasZip = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 					rutaServidorDescargasZip += ClsConstants.FILE_SEP+miform.getIdInstitucion()+ClsConstants.FILE_SEP+"temp"+ File.separator;
 					FileHelper.mkdirs(rutaServidorDescargasZip);
-					Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF);
+					Plantilla plantilla = new Plantilla();
+					plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF);
 					ficheroSalida = new File(rutaServidorDescargasZip + nombreFicheroZIP + ".zip");
 				}
 				request.setAttribute("nombreFichero", ficheroSalida.getName());
@@ -474,7 +475,8 @@ public class InformesGenericosAction extends MasterAction {
 					String rutaServidorDescargasZip = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 					rutaServidorDescargasZip += ClsConstants.FILE_SEP+miform.getIdInstitucion()+ClsConstants.FILE_SEP+"temp"+ File.separator;
 					FileHelper.mkdirs(rutaServidorDescargasZip);
-					Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF);
+					Plantilla plantilla = new Plantilla();
+					plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF);
 					ficheroSalida = new File(rutaServidorDescargasZip + nombreFicheroZIP + ".zip");
 				}
 				request.setAttribute("nombreFichero", ficheroSalida.getName());
@@ -660,7 +662,8 @@ public class InformesGenericosAction extends MasterAction {
 					String rutaServidorDescargasZip = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 					rutaServidorDescargasZip += ClsConstants.FILE_SEP+miform.getIdInstitucion()+ClsConstants.FILE_SEP+"temp"+ File.separator;
 					FileHelper.mkdirs(rutaServidorDescargasZip);
-					Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF);
+					Plantilla plantilla = new Plantilla();
+					plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF);
 					ficheroSalida = new File(rutaServidorDescargasZip + nombreFicheroZIP + ".zip");
 				}
 				request.setAttribute("nombreFichero", ficheroSalida.getName());
@@ -953,7 +956,8 @@ public class InformesGenericosAction extends MasterAction {
 					}
 					
 					FileHelper.mkdirs(rutaServidorDescargasZip);
-					Plantilla.doZip (rutaServidorDescargasZip, nombreFicheroZIP, ficherosPDF);
+					Plantilla plantilla = new Plantilla();
+					plantilla.doZip (rutaServidorDescargasZip, nombreFicheroZIP, ficherosPDF);
 					ficheroSalida = new File (rutaServidorDescargasZip + nombreFicheroZIP + ".zip");
 				}
 
@@ -1314,7 +1318,8 @@ public class InformesGenericosAction extends MasterAction {
 					String rutaServidorDescargasZip = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 					rutaServidorDescargasZip += ClsConstants.FILE_SEP+miform.getIdInstitucion()+ClsConstants.FILE_SEP+"temp"+ File.separator;
 					FileHelper.mkdirs(rutaServidorDescargasZip);
-					Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF);
+					Plantilla plantilla = new Plantilla();
+					plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF);
 					ficheroSalida = new File(rutaServidorDescargasZip + nombreFicheroZIP + ".zip");
 				}
 				request.setAttribute("nombreFichero", ficheroSalida.getName());

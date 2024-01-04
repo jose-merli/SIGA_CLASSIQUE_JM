@@ -3604,7 +3604,8 @@ public class EnvioInformesGenericos extends MasterReport {
 				String rutaServidorDescargasZip = rp.returnProperty("informes.directorioFisicoSalidaInformesJava") + rp.returnProperty("informes.directorioPlantillaInformesJava") 
 						+ ClsConstants.FILE_SEP + usr.getLocation() + ClsConstants.FILE_SEP + "temp" + ClsConstants.FILE_SEP + idsesion.replaceAll("!", "") + File.separatorChar;
 				FileHelper.mkdirs(rutaServidorDescargasZip);
-				Plantilla.doZip(rutaServidorDescargasZip, nombreFicheroZIP, ficherosPDF);
+				Plantilla plantilla = new Plantilla();
+				plantilla.doZip(rutaServidorDescargasZip, nombreFicheroZIP, ficherosPDF);
 				ficheroSalida = new File(rutaServidorDescargasZip + nombreFicheroZIP + ".zip");
 			}
 		}

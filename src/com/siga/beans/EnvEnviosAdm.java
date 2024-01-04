@@ -3064,8 +3064,9 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					for (int i=0;i<listaParaZip.size();i++){								
 						File f = (File) listaParaZip.get(i);							 
 					    ficherosPDF.add(f);							
-					}					
-					Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF, false);				
+					}
+					Plantilla plantilla = new Plantilla(); 
+					plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF, false);				
 					ficheroSalida = new File(rutaServidorDescargasZip + nombreFicheroZIP + ".zip");
 				 }
 				 Date hoy = new Date();

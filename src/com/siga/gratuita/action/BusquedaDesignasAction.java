@@ -1779,8 +1779,8 @@ public class BusquedaDesignasAction extends MasterAction {
 					// Ubicacion de la carpeta donde se crean los ficheros PDF:
 					String nombreFicheroZIP="cartasOficio_" +UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","").replaceAll(":","").replaceAll(" ","");
 					String rutaServidorDescargasZip=rutaServidor + File.separator;
-
-					Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF);
+					Plantilla plantilla = new Plantilla();
+					plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF);
 					request.setAttribute("nombreFichero", nombreFicheroZIP + ".zip");
 					request.setAttribute("rutaFichero", rutaServidorDescargasZip+nombreFicheroZIP + ".zip");			
 					request.setAttribute("borrarFichero", "true");			

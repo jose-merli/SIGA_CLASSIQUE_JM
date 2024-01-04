@@ -733,7 +733,8 @@ public class InformePersonalizable extends MasterReport
 			+ idInstitucion + "_" + userBean.getUserName() + "_"
 			+ UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "");
 			FileHelper.mkdirs(rutaServidorDescargasZip);
-			Plantilla.doZip(rutaServidorDescargasZip, nombreFicheroZIP, listaFicheros);
+			Plantilla plantilla = new Plantilla();
+			plantilla.doZip(rutaServidorDescargasZip, nombreFicheroZIP, listaFicheros);
 			ficheroSalida= new File(rutaServidorDescargasZip+ClsConstants.FILE_SEP+nombreFicheroZIP+".zip");
 		}
 		return ficheroSalida;

@@ -171,7 +171,8 @@ public class InformeCertificadoIRPF extends MasterReport
 					+ miform.getIdInstitucion() + ClsConstants.FILE_SEP
 					+ "temp" + File.separator;
 					FileHelper.mkdirs(rutaServidorDescargasZip);
-					Plantilla.doZip(rutaServidorDescargasZip, nombreFicheroZIP,
+					Plantilla plantilla = new Plantilla();
+					plantilla.doZip(rutaServidorDescargasZip, nombreFicheroZIP,
 							ficherosPDF);
 					ficheroSalida = new File(rutaServidorDescargasZip
 							+ nombreFicheroZIP + ".zip");
