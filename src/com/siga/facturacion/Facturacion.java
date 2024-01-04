@@ -717,6 +717,7 @@ public class Facturacion {
 				facFicherosDescargaBean = new FacFicherosDescargaBean();
 				File fichero = new File(sRutaJava+File.separator+ficheros[x]);
 				String[] nombreFicherosarrays = fichero.getName().split("-");
+				if (nombreFicherosarrays.length < 2) throw new SIGAException("El nombre del fichero no contiene '-' y eso da error: " + fichero.getName());
 				String[] separacionExtensionDelFichero = nombreFicherosarrays[1].split(Pattern.quote("."));
 				
 				//Obtenemos las facturas del fichero para obtener el tipo de formato de salida del pdf 
