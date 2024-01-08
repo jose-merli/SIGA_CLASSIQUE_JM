@@ -384,6 +384,7 @@
 		           type: "POST",
 		           url: "/SIGA/GEN_Juzgados.do?modo=getAjaxTiposAsistencia",
 		           data: "idGuardia="+idGuardia+"&idTurno="+idTurno,
+		           dataType: "json",
 		           success:  function(json) {
 		        	    optionTipoAsistenciaColegio.length = 0;
 						jQuery("#idTipoAsistenciaColegio").append("<option  value=''>"+txtSelect+"</option>");
