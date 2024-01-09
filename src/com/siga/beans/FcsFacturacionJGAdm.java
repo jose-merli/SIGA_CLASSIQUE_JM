@@ -1395,7 +1395,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 					linea += rellenoPosiciones("0",283,321); //283-321: importe de las percepciones en especie derivadas de incapacidad laboral
 					
 					linea += "0"; //322: COMPLEMENTO AYUDA PARA LA INFANCIA
-					linea += rellenoPosiciones(" ",323,500); //323-500: blancos 
+					linea += rellenoPosiciones("0",323,387); //323-387: RETENCIONES E INGRESOS A CUENTA INGRESADOS EN EL ESTADO, EN LAS	DIPUTACIONES FORALES DEL PAIS VASCO Y EN LA COMUNIDAD FORAL DE NAVARRA 
+					linea += rellenoPosiciones(" ",388,500); //323-500: blancos 
 					
 					// cambio a formato DOS
 					linea += "\r\n";
