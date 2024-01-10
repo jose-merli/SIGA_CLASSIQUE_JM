@@ -158,7 +158,7 @@ public class AccessControl implements SIGAConstants, Serializable {
 	
 	private void rellenaProcesosHidden() {
 	
-		String queryAccess = "select idproceso, transaccion, descripcion, idparent from gen_procesos"; 
+		String queryAccess = "select idproceso, transaccion, descripcion, idparent from gen_procesos and transaccion is not null"; 
 
 		Connection con = null;
 		Statement stmtAccess = null;
@@ -180,8 +180,10 @@ public class AccessControl implements SIGAConstants, Serializable {
 					  accesos.put(processNumber,accesos.get(pater));
 				}
 			}
-			rsAccess.close();
-			rsAccess = null;
+			if(rsAccess!=null) {
+				rsAccess.close();
+				rsAccess = null;
+			}
 		} catch (Exception e) {
 			//ORA-00942: tabla o vista no encontrada
 			//ORA-00923: palabra clave FROM no encontrada donde se esperaba
@@ -198,8 +200,7 @@ public class AccessControl implements SIGAConstants, Serializable {
 					stmtAccess.close();
 				ClsMngBBDD.closeConnection(con);
 			} catch (Exception ex) {
-				ClsLogging.writeFileLogError("ERROR cerrando la conexion: "
-						+ ex.toString(), ex, 1);
+				ClsLogging.writeFileLogError("ERROR cerrando la conexion: "	+ ex.toString(), ex, 1);
 			}
 		}
 	}
