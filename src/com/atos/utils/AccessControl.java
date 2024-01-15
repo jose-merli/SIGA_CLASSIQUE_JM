@@ -158,7 +158,7 @@ public class AccessControl implements SIGAConstants, Serializable {
 	
 	private void rellenaProcesosHidden() {
 	
-		String queryAccess = "select idproceso, transaccion, descripcion, idparent from gen_procesos and transaccion is not null"; 
+		String queryAccess = "select idproceso, transaccion, descripcion, idparent from gen_procesos where transaccion is not null"; 
 
 		Connection con = null;
 		Statement stmtAccess = null;
