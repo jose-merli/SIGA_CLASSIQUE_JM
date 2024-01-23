@@ -1139,7 +1139,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 						" AND E.IDTIPOEJG = EJG.IDTIPOEJG";
 				StringBuilder observaciones = new StringBuilder(numRemesa);
 				if(mapping.getPath()!=null && mapping.getPath().equals("/JGR_E-Comunicaciones_InfEconomico"))
-					observaciones.append(" Información económica.");
+					observaciones.append(" Envío información económica y documentación.");
 				String sqlInsertEstadoEJG = new String("insert into scs_estadoejg (idinstitucion, idtipoejg, anio, numero, idestadoejg" +
 						", fechainicio, fechamodificacion, usumodificacion, observaciones, idestadoporejg, automatico)" +
 						" SELECT EJG.IDINSTITUCION, EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO, '" + ESTADOS_EJG.GENERADO_EN_REMESA.getCodigo() + "'" +
