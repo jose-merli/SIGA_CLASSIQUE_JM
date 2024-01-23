@@ -73,6 +73,8 @@
 		<html:hidden styleId="numero" property = "numero"  />
 		<html:hidden styleId="numEjg" property = "numEjg" />
 		<html:hidden styleId="idDocumentacion" property = "idDocumentacion" />
+		<html:hidden styleId="documentacion" property = "documentacion" />
+		
 		<html:hidden styleId="jsonVolver" property = "jsonVolver"  />
 		
 	</html:form>	
@@ -125,6 +127,7 @@
 					<td>
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=documentacionEjgVo.getIdDocumentacion()%>">
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=documentacionEjgVo.getIdInstitucion()%>">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=documentacionEjgVo.getDocumentacion()%>">
 						<%=documentacionEjgVo.getFechaLimite()==null||documentacionEjgVo.getFechaLimite().equals("")?"&nbsp;":documentacionEjgVo.getFechaLimite()%>
 					</td>
 					<td>
@@ -249,6 +252,9 @@
 			var idDocumentacion = document.getElementById(idOculto1).value;
 			var idOculto2= 'oculto'+fila+'_2';
 			var idInstitucion = document.getElementById(idOculto2).value;
+			var idOculto3= 'oculto'+fila+'_3';
+			var documentacion = document.getElementById(idOculto3).value;
+			document.forms[0].documentacion.value = documentacion;
 			document.forms[0].idDocumentacion.value = idDocumentacion;
 			document.forms[0].idInstitucion.value = idInstitucion;
 			document.forms[0].target = "submitArea";
