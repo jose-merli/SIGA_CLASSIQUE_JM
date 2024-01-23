@@ -18,6 +18,7 @@ import org.redabogacia.sigaservices.app.helper.DocuShareHelper;
 import org.redabogacia.sigaservices.app.services.scs.EjgService;
 import org.redabogacia.sigaservices.app.vo.DocuShareObjectVO;
 import org.redabogacia.sigaservices.app.vo.DocuShareObjectVO.DocuShareTipo;
+import org.redabogacia.sigaservices.app.vo.scs.EjgVo;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -216,7 +217,11 @@ public abstract class DocumentacionRegTelAction extends MasterAction {
 			String anio = miForm.getAnio();
 			String numero = miForm.getNumero();
 			
-			
+			EjgVo ejgvo = new EjgVo();
+			ejgvo.setAnio(new Short( anio));
+			ejgvo.setIdtipoejg(new Short(idTipoEJG));
+			ejgvo.setNumero(new Long(numero));
+			ejgvo.setIdinstitucion(new Short(idInstitucion));
 			List<HashMap<String, String>> listCola = new ArrayList<HashMap<String, String>>();
 			HashMap map = new HashMap<String, String>();
 			map.put(AppConstants.PARAM_ECOMCOLA_IDINSTITUCION,	idInstitucion);
@@ -231,11 +236,11 @@ public abstract class DocumentacionRegTelAction extends MasterAction {
 			
 			
 			if(idInstitucion.equalsIgnoreCase("2055")) {
-				ejgService.encolaEnvioDocumentacion(listCola, new Short(idInstitucion), AppConstants.OPERACION.ASIGNA_ENVIO_DOCUMENTO);
+				ejgService.encolaEnvioDocumentacion(listCola,ejgvo, new Short(idInstitucion), AppConstants.OPERACION.ASIGNA_ENVIO_DOCUMENTO);
 			}else if(idInstitucion.equalsIgnoreCase("2032")) {
-				ejgService.encolaEnvioDocumentacion(listCola, new Short(idInstitucion), AppConstants.OPERACION.GV_ENVIO_DOCUMENTO);
+				ejgService.encolaEnvioDocumentacion(listCola, ejgvo,new Short(idInstitucion), AppConstants.OPERACION.GV_ENVIO_DOCUMENTO);
 			}else
-				ejgService.encolaEnvioDocumentacion(listCola, new Short(idInstitucion), AppConstants.OPERACION.PERICLES_ENVIA_COMUNICACION);
+				ejgService.encolaEnvioDocumentacion(listCola,ejgvo, new Short(idInstitucion), AppConstants.OPERACION.PERICLES_ENVIA_COMUNICACION);
 		} catch (Exception e) {
 			throwExcp("messages.general.error",e,null);
 		}
