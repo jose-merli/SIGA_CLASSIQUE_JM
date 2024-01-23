@@ -1466,10 +1466,19 @@ public class DefinirEJGAction extends MasterAction
 		try {
 			EjgService ejgService = (EjgService) BusinessManager.getInstance().getService(EjgService.class);
 			
-			if(!definirEJGForm.getIdInstitucion().equals(AppConstants.IDINSTITUCION_2032)) {
-				intercambiosAltaEJG = ejgService.getListadoIntercambiosAltaEJG(definirEJGForm.getIdInstitucion(),definirEJGForm.getAnio(),definirEJGForm.getIdTipoEJG(),definirEJGForm.getNumero());
-			}else {
+			if(definirEJGForm.getIdInstitucion().equals(AppConstants.IDINSTITUCION_2032) 
+					) {
 				intercambiosAltaEJG = ejgService.getListadoIntercambiosAltaEJGRemesa(definirEJGForm.getIdInstitucion(),definirEJGForm.getAnio(),definirEJGForm.getIdTipoEJG(),definirEJGForm.getNumero());
+			}else if(definirEJGForm.getIdInstitucion().equals("2044")
+					|| definirEJGForm.getIdInstitucion().equals("2064")|| definirEJGForm.getIdInstitucion().equals("2025")){
+				
+				intercambiosAltaEJG = ejgService.getListadoIntercambiosAltaEJG(definirEJGForm.getIdInstitucion(),definirEJGForm.getAnio(),definirEJGForm.getIdTipoEJG(),definirEJGForm.getNumero());
+//				List<IntercambioJG> intercambiosAltaEJG2  = ejgService.getListadoIntercambiosAltaEJGRemesa(definirEJGForm.getIdInstitucion(),definirEJGForm.getAnio(),definirEJGForm.getIdTipoEJG(),definirEJGForm.getNumero());
+//				intercambiosAltaEJG.addAll(intercambiosAltaEJG2);
+				
+			}else {
+				intercambiosAltaEJG = ejgService.getListadoIntercambiosAltaEJG(definirEJGForm.getIdInstitucion(),definirEJGForm.getAnio(),definirEJGForm.getIdTipoEJG(),definirEJGForm.getNumero());
+				
 			}
 			
 			
