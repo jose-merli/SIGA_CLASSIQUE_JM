@@ -199,12 +199,14 @@ public class DefinirGuardiasLetradoAction extends MasterAction {
 					
 				consulta += " AND ( ";
 					
+				// por defecto no se muestran las guardias de baja
+				consulta += " AND nvl(SCS_GUARDIASTURNO.FECHABAJA, '31/12/2999') < " + fecha.trim();
+				
 				// ALTA PENDIENTE 
 				consulta += " (SCS_INSCRIPCIONGUARDIA.FECHADENEGACION IS NULL " +
 					" AND SCS_INSCRIPCIONGUARDIA.FECHAVALIDACION IS NULL " +
 					" AND SCS_INSCRIPCIONGUARDIA.FECHABAJA IS NULL) ";
-								
-				// FECHAS DE ALTA DENTRO DEL PERIODO DE VIDA DE LA GUARDIA
+				// O FECHAS DE ALTA DENTRO DEL PERIODO DE VIDA DE LA GUARDIA
 				consulta += " OR (SCS_INSCRIPCIONGUARDIA.FECHAVALIDACION IS NOT NULL " +
 					" AND TRUNC(SCS_INSCRIPCIONGUARDIA.FECHAVALIDACION) <= " + fecha.trim() + 
 					" AND (SCS_INSCRIPCIONGUARDIA.FECHABAJA IS NULL " + 
