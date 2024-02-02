@@ -198,7 +198,7 @@ public class DefinirGuardiasLetradoAction extends MasterAction {
 					fecha = "'"+fecha+"'";
 					
 				// por defecto no se muestran las guardias de baja
-				consulta += " AND nvl(SCS_GUARDIASTURNO.FECHABAJA, '31/12/2999') < " + fecha.trim();
+				consulta += " AND nvl(SCS_GUARDIASTURNO.FECHABAJA, '31/12/2999') > " + fecha.trim();
 				
 				consulta += " AND ( ";
 					
