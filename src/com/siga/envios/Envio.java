@@ -59,9 +59,7 @@ import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsProcuradorAdm;
 import com.siga.beans.ScsProcuradorBean;
 import com.siga.beans.ScsTelefonosPersonaJGBean;
-import com.siga.envios.service.EntradaEnviosService;
-import com.siga.envios.service.ca_sigp.DesignaProvisionalService;
-import com.siga.envios.service.ca_sigp.SolSusProcedimientoService;
+
 import com.siga.general.SIGAException;
 
 import es.satec.businessManager.BusinessManager;
@@ -833,75 +831,6 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 		}    
         insertarComunicaciones(this.usrBean,designasList,ejgsList);
                 
-    }
-    public void generarIntercambioTelematico(EnvEnviosBean enviosBean,Hashtable htPersonas, List<Object> listObjetosTelematicos, ArrayList<ScsDesigna> designasList, ArrayList<ScsEjg> ejgsList) throws SIGAException,ClsExceptions
-	{
-        EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
-      //aalg: INC_06541_SIGA. incluir el usuario de modificación al generar el envío
-        enviosBean.setUsuMod(Integer.valueOf(this.usrBean.getUserName()));
-        envAdm.insert(enviosBean);
-
-        // Copiamos los datos la plantilla, incluidos los remitentes
-        envAdm.copiarCamposPlantilla(enviosBean.getIdInstitucion(), 
-				enviosBean.getIdEnvio(), 
-				enviosBean.getIdTipoEnvios(),
-				enviosBean.getIdPlantillaEnvios(),null);
-        Vector <EnvDestinatariosBean> destinatariosBeans =  new Vector<EnvDestinatariosBean>(); 
-        Iterator itePersona = htPersonas.keySet().iterator();
-        while (itePersona.hasNext()) {
-			String idPersona = (String) itePersona.next();
-			
-			EnvDestinatariosBean destinatariosBean = addDestinatario(idPersona, (String) htPersonas.get(idPersona));
-			
-			if(destinatariosBean!=null)
-				destinatariosBeans.add(destinatariosBean);
-			
-			
-		}
-        
-        for (Object object : listObjetosTelematicos) {
-        	if(object instanceof EcomDesignaprovisionalWithBLOBs){
-        		
-        		EcomDesignaprovisionalWithBLOBs designaProvisionalBean = (EcomDesignaprovisionalWithBLOBs)object;
-        		//Si hubiese relacion con bandeja de entrada, se actualiza el idenviorel
-				BusinessManager businessManager =  BusinessManager.getInstance();
-				EntradaEnviosService entradaEnviosService = (EntradaEnviosService) businessManager.getService(EntradaEnviosService.class);
-				EnvEntradaEnviosExample entradaEnviosExample = new EnvEntradaEnviosExample();
-				
-				//Se van añadiendo los criterios para relaizar la query de busqueda
-				Criteria criteria =  entradaEnviosExample.createCriteria(); 
-								
-				criteria.andIdenviorelprogramadoEqualTo(enviosBean.getIdEnvioProgramado());							
-				EnvEntradaEnviosWithBLOBs entradaEnviosWithBLOBs = entradaEnviosService.getEntradaEnvios(entradaEnviosExample);
-				if(entradaEnviosWithBLOBs!=null){
-					entradaEnviosWithBLOBs.setIdenviorel(Long.valueOf(enviosBean.getIdEnvio()));
-					entradaEnviosService.actualizarEntradaEnvios(entradaEnviosExample, entradaEnviosWithBLOBs);
-					
-					//Insertamos idIntercambioEnvioRelacionad si viniese de una respuesta a una solcitud
-					if(entradaEnviosWithBLOBs.getIdentintercambio() != null){
-						designaProvisionalBean.setIdintercambiorel(entradaEnviosWithBLOBs.getIdentintercambio());
-					}
-				}
-				
-        		
-				designaProvisionalBean.setIdenvio(new Long(enviosBean.getIdEnvio()));
-				DesignaProvisionalService designaProvisionalService = (DesignaProvisionalService) businessManager.getService(DesignaProvisionalService.class);
-				designaProvisionalService.insertaIntercambioTelematico(designaProvisionalBean,(int)this.usrBean.getIdPersona());
-        		
-        		
-        	}else  if(object instanceof EcomSolsusprocedimientoWithBLOBs){
-        		EcomSolsusprocedimientoWithBLOBs ecomSolSusProcedimientoBean = (EcomSolsusprocedimientoWithBLOBs)object;
-        		ecomSolSusProcedimientoBean.setIdenvio(new Long(enviosBean.getIdEnvio()));
-        		BusinessManager businessManager =  BusinessManager.getInstance();
-				SolSusProcedimientoService solSusProcedimientoService = (SolSusProcedimientoService) businessManager.getService(SolSusProcedimientoService.class);
-				solSusProcedimientoService.insertaIntercambioTelematico(ecomSolSusProcedimientoBean,(int)usrBean.getIdPersona());
-        		
-        	}
-        	enviosBean.setIdEstado(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESANDO);
-            envAdm.updateDirect(enviosBean);
-		}
-        insertarComunicaciones(this.usrBean,designasList,ejgsList);
-        envAdm.generarLogEnvioHT(destinatariosBeans,null,"", new Hashtable(), enviosBean);
     }
     
     
