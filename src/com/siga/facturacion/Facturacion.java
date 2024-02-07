@@ -2111,6 +2111,7 @@ public class Facturacion {
 			CenDireccionesAdm direccionAdm = new CenDireccionesAdm(userbean);
 			Hashtable<?,?> direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,idInstitucion,preferencia);
 			
+			// TODO ¡¡Obtiene una direccion y no la utiliza luego!! Deberiamos arreglarlo?
 			if (direccion==null || direccion.size()==0) {
 				 direccion=direccionAdm.getEntradaDireccionEspecifica(idPersona,idInstitucion,"3");// si no hay direccion preferente mail, buscamos la de correo
 				 if (direccion==null || direccion.size()==0) {
