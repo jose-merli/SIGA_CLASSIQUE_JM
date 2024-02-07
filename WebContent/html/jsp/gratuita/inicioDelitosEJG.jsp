@@ -29,6 +29,8 @@
 <%@ page import="com.siga.Utilidades.*"%>
 <%@page import="org.redabogacia.sigaservices.app.AppConstants.PARAMETRO"%>
 <%@page import="org.redabogacia.sigaservices.app.AppConstants"%>
+<%@page import="com.siga.ws.CajgConfiguracion"%>
+
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
@@ -36,14 +38,7 @@
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
 	String profile[]=usr.getProfile();
 	
-	/* Quito la forma de trabajar de Pilar para usar la nueva de PersonaJG
-	Integer PCAJG_ACTIVADO =(Integer) (request.getAttribute("PCAJG_ACTIVO"));
-	String pintarAsterisco="";
-	if (PCAJG_ACTIVADO!=null && PCAJG_ACTIVADO.intValue()>1){
-		pintarAsterisco="&nbsp;(*)";
-		
-	}*/
-	
+
 	
 	String modopestanha = request.getSession().getAttribute("accion")==null?"":(String)request.getSession().getAttribute("accion");
 	//aalg: INC_10624
