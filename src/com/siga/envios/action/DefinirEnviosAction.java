@@ -970,12 +970,7 @@ public class DefinirEnviosAction extends MasterAction {
 					
 					}else{
 						ClsLogging.writeFileLog("DefinirEnviosAction:fin insertarEnvioGenerico.Exito. IdInstitucion:" + userBean.getLocation(), 10);
-						if(form.getMostrarPanel()==null)
-							return exitoModal("messages.inserted.success",request);
-						else {
-							return exitoRefresco("messages.inserted.success",request);
-							
-						}
+						return exitoModal("messages.inserted.success",request);
 					}
 				
 				}else{
@@ -987,12 +982,7 @@ public class DefinirEnviosAction extends MasterAction {
 						if (!accessEnvio.equals(SIGAConstants.ACCESS_READ) && !accessEnvio.equals(SIGAConstants.ACCESS_FULL)) {
 							testAccess(request.getContextPath()+mapping.getPath()+".do",null,request);
 							ClsLogging.writeFileLog("Acceso denegado al modulo de envios, cerramos la seleccion de plantillas",request,3);
-							if(form.getMostrarPanel()==null)
-								return exitoModal("messages.inserted.success",request);
-							else {
-								return exitoRefresco("messages.inserted.success",request);
-								
-							}
+							return exitoModal("messages.envio.errorNoDireccion",request);
 						}else{
 							testAccess(request.getContextPath()+mapping.getPath()+".do",null,request);
 							Hashtable htEnvio = new Hashtable();
@@ -1010,12 +1000,8 @@ public class DefinirEnviosAction extends MasterAction {
 						
 					}else{
 						ClsLogging.writeFileLog("DefinirEnviosAction:fin insertarEnvioGenerico.errorNoDireccion. IdInstitucion:" + userBean.getLocation(), 10);
-						if(form.getMostrarPanel()==null)
-							return exitoModal("messages.envio.errorNoDireccion",request);
-						else {
-							return exitoRefresco("messages.inserted.success",request);
+						return exitoRefresco("messages.inserted.success",request);
 							
-						}
 						
 					}
 				}
