@@ -44,8 +44,7 @@
 	boolean tipoEJGColegioObligatorio = PCAJG_ACTIVADO != null
 			&& (PCAJG_ACTIVADO.intValue() == 2
 					|| PCAJG_ACTIVADO.intValue() == 3
-					|| PCAJG_ACTIVADO.intValue() == 4 || PCAJG_ACTIVADO
-					.intValue() == 5);
+					|| PCAJG_ACTIVADO.intValue() == 4 || PCAJG_ACTIVADO.intValue() == 11|| PCAJG_ACTIVADO.intValue() == 5);
 	String nombreDesignacion = "";
 
 	// Validamos si es una consulta o no.
@@ -330,7 +329,7 @@
 	//datos2 es para idPresentacion
 	String[] datos2 = { idInstitucion, "-1", "-1", "-1" };
 
-	if (ejisActivo > 0 || PCAJG_ACTIVADO.intValue() == 4) {
+	if (ejisActivo > 0 || PCAJG_ACTIVADO.intValue() == 4 || PCAJG_ACTIVADO.intValue() == 11) {
 
 		if (!juzgadoAsi.equals(""))
 			datos2[0] = juzgadoAsi;
@@ -347,7 +346,7 @@
 	}
 
 	boolean obligatorioFechaPresentacion = false;
-	if (PCAJG_ACTIVADO != null && PCAJG_ACTIVADO == 4) {
+	if (PCAJG_ACTIVADO != null && (PCAJG_ACTIVADO == 4 || PCAJG_ACTIVADO == 11) {
 		obligatorioFechaPresentacion = true;
 	}
 
@@ -796,7 +795,7 @@
 									</td>
 						
 									<%
-																if (ejisActivo > 0 || PCAJG_ACTIVADO.intValue() == 4) {
+																if (ejisActivo > 0 || PCAJG_ACTIVADO.intValue() == 4 || PCAJG_ACTIVADO.intValue() == 11) {
 															%>							 
 										<td  colspan="3">	
 											<siga:ComboBD nombre="vistaJuzgado" tipo="comboJuzgadosEJG" ancho="480" clase="boxComboConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datosJuz%>" elementoSel="<%=juzgadoSel%>" hijo="t" readonly="true" accion="Hijo:pretensiones2"/>          	   
@@ -845,7 +844,7 @@
 									</td>
 									
 									<%
-																			if (ejisActivo > 0 || PCAJG_ACTIVADO.intValue() == 4) {
+																			if (ejisActivo > 0 || PCAJG_ACTIVADO.intValue() == 4 || PCAJG_ACTIVADO.intValue() == 11) {
 																		%>					
 										<td colspan="3">
 											<siga:ComboBD nombre="pretensiones2" tipo="comboPretensionesEjis" ancho="500" clase="boxComboConsulta" filasMostrar="1" pestana="t" seleccionMultiple="false" obligatorio="false"  parametro="<%=datos2%>" elementoSel="<%=pretensionesSel%>" hijo="t" readonly="true"/>           	   

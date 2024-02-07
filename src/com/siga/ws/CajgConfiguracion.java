@@ -20,7 +20,8 @@ public class CajgConfiguracion  {
 	public static final int TIPO_CAJG_ZONACOMUN = 1;
 	public static final int TIPO_CAJG_CATALANES = 2;
 	public static final int TIPO_CAJG_PCAJG_GENERAL = 3;
-	public static final int TIPO_CAJG_WEBSERVICE_PAMPLONA = 4;
+	public static final int TIPO_CAJG_WEBSERVICE_CANTABRIA = 4;
+	public static final int TIPO_CAJG_WEBSERVICE_PAMPLONA = 11;
 	public static final int TIPO_CAJG_TXT_ALCALA = 5;
 	public static final int TIPO_CAJG_XML_SANTIAGO = 6;
 	public static final int TIPO_CAJG_WEBSERVICE_PAISVASCO = 7;

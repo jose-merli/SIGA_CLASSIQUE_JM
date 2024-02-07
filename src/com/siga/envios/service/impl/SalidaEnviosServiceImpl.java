@@ -34,8 +34,6 @@ import org.redabogacia.sigaservices.app.services.scs.ComunicacionesService;
 import org.redabogacia.sigaservices.app.vo.env.ComunicacionesVo;
 
 import com.siga.beans.EnvEstadoEnvioAdm;
-import com.siga.envios.service.IntercambiosService;
-import com.siga.envios.service.IntercambiosServiceDispatcher;
 import com.siga.envios.service.SalidaEnviosService;
 
 import es.satec.businessManager.BusinessException;
@@ -215,14 +213,11 @@ public  class SalidaEnviosServiceImpl extends MyBatisBusinessServiceTemplate imp
     	EnvEnvios envEnvios = envEnviosMapper.selectByPrimaryKey(envEnviosKey);
     	File fichero = null;
 			
-		if(envEnvios.getIdtipoenvios().equals(AppConstants.TiposEnvioEnum.TELEMATICO.getCodigo()) && envEnvios.getIdestado().equals(AppConstants.EstadosSalidaEnviosEnum.ESTADO_PROCESADOCONERRORES.getCodigo() )){
-			IntercambiosService intercambiosService = (IntercambiosService) IntercambiosServiceDispatcher.getService(getBusinessManager(),envEnvios.getIdtipointercambiotelematico());
-			fichero = intercambiosService.getFicheroLog(idEnvio.toString(), idInstitucion.toString());
-		}else{
+		
 			String pathLogComunicacion =  getPathEnvio(envEnvios) + File.separator + "informeEnvio" + ".log.xls";
 			fichero = new File(pathLogComunicacion);
 			
-		}
+		
 		return fichero;
 	}
 	

@@ -63,7 +63,7 @@
 	
 	
 	
-	if (pcajgActivo == CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA) {
+	if (pcajgActivo == CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA ||pcajgActivo == CajgConfiguracion.TIPO_CAJG_WEBSERVICE_CANTABRIA) {
 		if (idTipoRemesa != null) {
 			if (idTipoRemesa.equals("1")) {
 				botones = "OR,B,L,CON";

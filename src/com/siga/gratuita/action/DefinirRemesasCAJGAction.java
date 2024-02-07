@@ -2084,7 +2084,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 	//			}
 				
 	//			mensaje = getMensajeRespuesta(respuesta, request, simular);
-			} else if (CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA == tipoCAJG && versionAsignaVereda != null && ASIGNA_VERSION.VERSION_2.equals(versionAsignaVereda)) {
+			} else if (CajgConfiguracion.TIPO_CAJG_WEBSERVICE_CANTABRIA == tipoCAJG ) {
 				PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
 				RESPUESTA_ENVIO_REMESA respuesta = null;
 				if (simular) {

@@ -53,7 +53,7 @@
 		pcajgActivo = Integer.parseInt(request.getAttribute("pcajgActivo").toString());		
 	}
 	
-	if (pcajgActivo == 4) {		
+	if (pcajgActivo == 4 || pcajgActivo==11 ) {		
 		obligatorioCodigoExterno = true;
 	}
 

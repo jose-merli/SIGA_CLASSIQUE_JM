@@ -69,20 +69,7 @@
 		
 	</html:form>
 
-	<html:form action="/ENV_EntradaEnvios.do?noReset=true" method="POST" target="mainWorkArea" style="display:none">		
-	    <html:hidden styleId = "modo" 			property = "modo"/>
-	    <html:hidden styleId = "idEnvio" 		property = "idEnvio"/>
-	    <html:hidden styleId = "idInstitucion" 	property = "idInstitucion"/>
-	    <html:hidden styleId = "anioEJGSel" 	property = "anioEJGSel" value="${ComunicacionesForm.ejgAnio}" />
-	    <html:hidden styleId = "idTipoEJGSel" 	property = "idTipoEJGSel" value="${ComunicacionesForm.ejgIdTipo}"/>
-	    <html:hidden styleId = "numeroEJGSel" 	property = "numeroEJGSel" value="${ComunicacionesForm.ejgNumero}"/>
-	    
-	    <html:hidden styleId = "anioDesignaSel" property = "anioDesignaSel" value="${ComunicacionesForm.designaAnio}"/>
-	    <html:hidden styleId = "idTurnoDesignaSel"	property = "idTurnoDesignaSel" value="${ComunicacionesForm.designaIdTurno}"/>
-	    <html:hidden styleId = "numeroDesignaSel" property = "numeroDesignaSel" value="${ComunicacionesForm.designaNumero}"/>
-	    
-	    <html:hidden styleId = "origen" property="origen" value ="${path}"/>	    
-	</html:form>
+	
 
 	<html:form  action="/JGR_EJG"  method="POST" target="mainWorkArea" style="display:none">
 		<html:hidden styleId = "modo" property="modo" value="editar"/>
@@ -190,88 +177,7 @@
 	</siga:Table>	    
 	
 
-	<table class="tablaTitulo" cellspacing="0">
-		<tr>
-			<td id="titulo" class="titulitosDatos">
-				<siga:Idioma key="envios.bandejaentrada.titulo"/>
-			</td>
-		</tr>
-	</table> 
 	
-	<siga:Table 
-		name="comunicacionesEntrada"
-		border="1"
-		columnNames='general.etiqueta.fecha,
-					comunicaciones.etiqueta.remitente,
-					comunicaciones.etiqueta.asunto,
-					comunicaciones.etiqueta.respuesta,
-					comunicaciones.etiqueta.estado,'
-		columnSizes="10,20,35,10,13,12">
-	   		  
-	    <!-- INICIO: ZONA DE REGISTROS -->
-	    <c:choose>
-			<c:when test="${empty comunicacionesEntrada}">
-				<tr class="notFound">
-			   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-				</tr>
-			</c:when>
-			
-			<c:otherwise>
-	  			<c:forEach items="${comunicacionesEntrada}"	var="comunicacionEntrada" varStatus="status">
-	  				<siga:FilaConIconosExtExt fila='${status.count}'
-  						botones="${comunicacionEntrada.botonesFila}"
-  						elementos="${comunicacionEntrada.elementosFila}" 
-  						pintarEspacio="no"
-  						visibleEdicion = "no"
-  						visibleBorrado = "no"
-  						nombreTablaPadre="comunicacionesEntrada"
-  						clase="listaNonEdit">
-
-						<td align="center">
-		  					<input type="hidden" id ="idEntradaEnvio_${status.count}" value ="${comunicacionEntrada.idEnvio}"/>	
-		  					<input type="hidden" id ="idEntradaEstado_${status.count}" value ="${comunicacionEntrada.idEstado}"/>
-		  					<input type="hidden" id ="anio_${status.count}" value ="${comunicacionEntrada.anioDesignaSel}"/>
-		  					<input type="hidden" id ="numero_${status.count}" value ="${comunicacionEntrada.numeroDesignaSel}"/>
-		  					<input type="hidden" id ="idTurno_${status.count}" value ="${comunicacionEntrada.idTurnoDesignaSel}"/>
-							<c:out value="${comunicacionEntrada.fechaPeticion}"/>
-						</td>
-						
-						<td align="center">
-							<c:choose>
-								<c:when test="${comunicacionEntrada.descripcionRemitente != null && comunicacionEntrada.descripcionRemitente != ''}">
-									<c:out value="${comunicacionEntrada.descripcionRemitente}"/>
-								</c:when>
-								<c:otherwise>
-									<bean:message key="comunicaciones.aviso.remitente.pendiente" />
-								</c:otherwise>
-							</c:choose>	
-						</td>
-						
-						<td align="center">
-							<c:out value="${comunicacionEntrada.asunto}"/>
-						</td>
-							
-						<td align="center">
-							<c:choose>
-								<c:when test="${comunicacionEntrada.fechaRespuesta != null && comunicacionEntrada.fechaRespuesta != ''}">
-									<c:out value="${comunicacionEntrada.fechaRespuesta}" />
-								</c:when>
-								
-								<c:otherwise>
-									&nbsp;
-								</c:otherwise>
-							</c:choose>	
-						</td>
-						
-						<td align="center">
-							<c:out value="${comunicacionEntrada.descripcionEstado}"/>
-						</td>
-					</siga:FilaConIconosExtExt>
-				</c:forEach>
-			</c:otherwise>
-		</c:choose>
-	<!-- FIN: ZONA DE REGISTROS -->
-	</siga:Table>
 
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	<siga:ConjBotonesAccion botones="V" modo="${ComunicacionesForm.modo}" clase="botonesDetalle" />
@@ -325,14 +231,7 @@
 	   		document.forms['FormDefinirEnvio'].submit();
 		   
 	   } else if(id=='comunicacionesEntrada') {
-		   if(document.forms['ComunicacionesForm'].ejgIdInstitucion.value!='')
-				document.forms['EntradaEnviosForm'].idInstitucion.value = document.forms['ComunicacionesForm'].ejgIdInstitucion.value;
-			else
-				document.forms['EntradaEnviosForm'].idInstitucion.value = document.forms['ComunicacionesForm'].designaIdInstitucion.value;
 		   
-			document.forms['EntradaEnviosForm'].idEnvio.value = document.getElementById("idEntradaEnvio_"+fila).value;
-			document.forms['EntradaEnviosForm'].modo.value = 'consultarComunicacion';
-			document.forms['EntradaEnviosForm'].submit();
 	   	}
 	 }
 	

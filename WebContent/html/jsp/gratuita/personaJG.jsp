@@ -171,7 +171,7 @@
 	       // Si se marca el check sin domicilio no es obligatorio ningún campo.
 	       // Si se desmarca el check son obligatorios todos los campos de dirección.
 
-	} else if ((pcajgActivo == 4) && (conceptoE.equals(PersonaJGAction.EJG) || conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) ||
+	} else if ((pcajgActivo == 4 ||pcajgActivo == 11) && (conceptoE.equals(PersonaJGAction.EJG) || conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) ||
 				conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)  || conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || 
 				conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS) || conceptoE.equals(PersonaJGAction.ASISTENCIA_CONTRARIOS) )) {
 			
@@ -332,7 +332,7 @@
 				}
 			}
  	
-	 		if(pcajgActivo == 4){
+	 		if(pcajgActivo == 4 || pcajgActivo == 11){
 	 			
 	 			if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || 
 	 				conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS) || 
@@ -643,7 +643,7 @@
 
 				//existeDomicilio
 				document.forms[0].existeDomicilio.value = resultado[25];
-				<%if(pcajgActivo == 4){ 
+				<%if(pcajgActivo == 4 || pcajgActivo == 11){ 
 					if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS) 
 							|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)){
 					%> 
@@ -1669,7 +1669,7 @@
 											<html:hidden name="PersonaJGForm" property = "existeDomicilio" value="S" />
 				
 				<%
-					     					if(pcajgActivo == 4) {
+					     					if(pcajgActivo == 4 || pcajgActivo == 11) {
 					 							if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS) 
 														|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
 					 								if (!accion.equalsIgnoreCase("ver")) {
@@ -3029,7 +3029,7 @@ function validaNombreApellidos() {
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';						
 						if (<%=obligatorioIngreso%> && document.forms[0].importeIngresosAnuales.value =="")
 								error += "<siga:Idioma key='errors.required' arg0='gratuita.operarInteresado.literal.ingresos'/>"+ '\n';
-						if(<%=pcajgActivo == 4%>){
+						if(<%=pcajgActivo == 4 || pcajgActivo == 11%>){
 							if (<%=obligatorioSexo%> && document.forms[0].sexo.value=="0")
 								error += "<siga:Idioma key='errors.required' arg0='Sexo'/>"+ '\n';
 							if (<%=obligatorioEstadoCivil%> && document.forms[0].estadoCivil.value=="")
@@ -3711,7 +3711,7 @@ function validaNombreApellidos() {
 					
 				} else {
 					if (validatePersonaJGForm(document.forms[0]) ){
-						if(<%=pcajgActivo == 4%>){
+						if(<%=pcajgActivo == 4 || pcajgActivo == 11%>){
 							if (<%=obligatorioNacionalidad%> && document.forms[0].nacionalidad.value =="")
 								error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';	
 						}
@@ -4056,7 +4056,7 @@ function accionGuardarCerrar()	{
 		error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.estadoCivil'/>"+ '\n';
 	if (<%=obligatorioRegimenConyuge%> && document.forms[0].regimenConyugal.value=="")
 	    error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.regimenConyugal'/>"+ '\n';
-	if(<%=pcajgActivo == 4%>){
+	if(<%=pcajgActivo == 4 || pcajgActivo == 11%>){
 		if (<%=obligatorioSexo%> && document.forms[0].sexo.value=="0")
 			error += "<siga:Idioma key='errors.required' arg0='Sexo'/>"+ '\n';								
 	}

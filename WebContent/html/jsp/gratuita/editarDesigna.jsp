@@ -295,7 +295,7 @@
 		obligatorioProcedimiento = true;
 	}else if(pcajgActivo==3){
 		obligatorioProcedimiento = true;
-	}else if (pcajgActivo==4){
+	}else if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_CANTABRIA||pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA){
 		validarProcedimiento = true;
 	    obligatorioProcedimiento = true;
 		obligatorioModulo=true;
@@ -371,7 +371,7 @@
 		
 		
 		
-		if (ejisActivo>0 || pcajgActivo == 4){
+		if (ejisActivo>0 || pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_CANTABRIA||pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA){
 			comboPretensiones = comboPretensionesEjis;
 			String sIdJuzgado = "-1";
 			if (beanDesigna.getIdJuzgado() != null){
@@ -386,7 +386,7 @@
 	}
 //accion juzgado. 0 carga procedimientos, 1 carga pretension 2 carga pretensiones y luego modulos
 String accionJuzgado = "0";
-if (ejisActivo>0 || pcajgActivo == 4){		 														
+if (ejisActivo>0 || pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_CANTABRIA||pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA){		 														
 	accionJuzgado = "1";
 } else if(filtroJuzgadoModuloEspecial!=null && filtroJuzgadoModuloEspecial.equals("1")){														
 	accionJuzgado = "2";									
@@ -1044,7 +1044,7 @@ if (ejisActivo>0 || pcajgActivo == 4){
 										<td colspan="6"><!-- Busqueda automatica de juzgados--> 						
 											<siga:ConjCampos leyenda="gratuita.mantenimientoTablasMaestra.literal.juzgado">
 												<table>							
-													<%if (ejisActivo>0 || pcajgActivo == 4){%>		 														
+													<%if (ejisActivo>0 || pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_CANTABRIA||pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA){%>		 														
 															<tr>
 																<% if (!modo.equalsIgnoreCase("ver")) { %>
 																	<td class="labelText">

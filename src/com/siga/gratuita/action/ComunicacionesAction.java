@@ -11,18 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.redabogacia.sigaservices.app.AppConstants.TipoIntercambioEnum;
-import org.redabogacia.sigaservices.app.autogen.model.CenColegiado;
-import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnvios;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEnvios;
-import org.redabogacia.sigaservices.app.services.cen.CenColegiadoService;
-import org.redabogacia.sigaservices.app.services.cen.CenPersonaService;
-import org.redabogacia.sigaservices.app.services.cen.ws.ColegiadoService;
-import org.redabogacia.sigaservices.app.services.scs.ScsSolicitudesAcpetadasService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import org.redabogacia.sigaservices.app.vo.env.ComunicacionesVo;
-import org.redabogacia.sigaservices.app.vo.scs.SolicitudAceptadaCentralitaVo;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.UsrBean;
@@ -38,15 +30,12 @@ import com.siga.beans.GenParametrosAdm;
 import com.siga.comun.VoUiService;
 import com.siga.envios.form.DefinirEnviosForm;
 import com.siga.envios.form.EntradaEnviosForm;
-import com.siga.envios.service.EntradaEnviosService;
 import com.siga.envios.service.SalidaEnviosService;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.ComunicacionesForm;
-import com.siga.gratuita.form.SolicitudAceptadaCentralitaForm;
 import com.siga.gratuita.form.service.ComunicacionesVoService;
-import com.siga.gratuita.form.service.SolicitudAceptadaCentralitaVoService;
 
 import es.satec.businessManager.BusinessManager;
 
@@ -270,24 +259,10 @@ public class ComunicacionesAction extends MasterAction {
 		try {
 			BusinessManager businessManager =  BusinessManager.getInstance();
 			
-			EntradaEnviosService entradaEnviosService = (EntradaEnviosService) businessManager.getService(EntradaEnviosService.class);
 			UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 			comunicacionesForm.setComisionAJG(userBean.isComision()?"1":"0");
-			List<EnvEntradaEnvios> entradaEnvios = entradaEnviosService.getComunicacionesEJG(Integer.parseInt(comunicacionesForm.getEjgIdInstitucion()),
-					Short.parseShort(comunicacionesForm.getEjgAnio()),Short.parseShort(comunicacionesForm.getEjgIdTipo()),Integer.parseInt(comunicacionesForm.getEjgNumero())
-					,Short.parseShort(comunicacionesForm.getComisionAJG()));
 			
-			for(EnvEntradaEnvios entrada: entradaEnvios){
-				EntradaEnviosForm entradaEnvioFormulario = TransformBeanToForm.getEntradaEnviosForm(entrada);
-				if(entradaEnvioFormulario.getIdTipoIntercambioTelematico()!=null && entradaEnvioFormulario.getIdTipoIntercambioTelematico().equals(TipoIntercambioEnum.SGP_ICA_ENV_SOL_ABG_PRO.getCodigo())){
-					entradaEnviosService.updateFormularioDatosSolDesignaProvisional(entradaEnvioFormulario);
-				} else if(entradaEnvioFormulario.getIdTipoIntercambioTelematico()!=null && entradaEnvioFormulario.getIdTipoIntercambioTelematico().equals(TipoIntercambioEnum.SGP_ICA_RESP_SOL_SUSP_PROC.getCodigo())){
-					entradaEnviosService.updateFormularioDatosRespuestaSuspensionProcedimiento(entradaEnvioFormulario);
-				}
-				entradaEnvioFormulario.setModo(comunicacionesForm.getModo());
-				
-				comunicacionesEntrada.add(entradaEnvioFormulario);
-			}
+			
 			
 			SalidaEnviosService salidaEnviosService = (SalidaEnviosService) businessManager.getService(SalidaEnviosService.class);
 			List<EnvEnvios> salidaEnvios = salidaEnviosService.getComunicacionesEJG(Integer.parseInt(comunicacionesForm.getEjgIdInstitucion()),
@@ -358,24 +333,11 @@ public class ComunicacionesAction extends MasterAction {
 		try {
 			BusinessManager businessManager =  BusinessManager.getInstance();
 			
-			EntradaEnviosService entradaEnviosService = (EntradaEnviosService) businessManager.getService(EntradaEnviosService.class);
+			
 			UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 			comunicacionesForm.setComisionAJG(userBean.isComision()?"1":"0");
-			List<EnvEntradaEnvios> entradaEnvios = entradaEnviosService.getComunicacionesDesigna(Integer.parseInt(comunicacionesForm.getDesignaIdInstitucion()),
-					Short.parseShort(comunicacionesForm.getDesignaAnio()),Short.parseShort(comunicacionesForm.getDesignaIdTurno()),Integer.parseInt(comunicacionesForm.getDesignaNumero())
-					,Short.parseShort(comunicacionesForm.getComisionAJG()));
 			
-			for(EnvEntradaEnvios entrada: entradaEnvios){
-				EntradaEnviosForm entradaEnvioFormulario = TransformBeanToForm.getEntradaEnviosForm(entrada);
-				if(entradaEnvioFormulario.getIdTipoIntercambioTelematico()!=null && entradaEnvioFormulario.getIdTipoIntercambioTelematico().equals(TipoIntercambioEnum.SGP_ICA_ENV_SOL_ABG_PRO.getCodigo())){
-					entradaEnviosService.updateFormularioDatosSolDesignaProvisional(entradaEnvioFormulario);
-				} else if(entradaEnvioFormulario.getIdTipoIntercambioTelematico()!=null && entradaEnvioFormulario.getIdTipoIntercambioTelematico().equals(TipoIntercambioEnum.SGP_ICA_RESP_SOL_SUSP_PROC.getCodigo())){
-					entradaEnviosService.updateFormularioDatosRespuestaSuspensionProcedimiento(entradaEnvioFormulario);
-				}
-				entradaEnvioFormulario.setModo(comunicacionesForm.getModo());
-				
-				comunicacionesEntrada.add(entradaEnvioFormulario);
-			}
+			
 			
 			SalidaEnviosService salidaEnviosService = (SalidaEnviosService) businessManager.getService(SalidaEnviosService.class);
 			List<EnvEnvios> salidaEnvios = salidaEnviosService.getComunicacionesDesigna(Integer.parseInt(comunicacionesForm.getDesignaIdInstitucion()),

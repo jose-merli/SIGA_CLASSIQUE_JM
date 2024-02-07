@@ -95,10 +95,7 @@ import com.siga.envios.Documento;
 import com.siga.envios.Envio;
 import com.siga.envios.EnvioInformesGenericos;
 import com.siga.envios.form.DefinirEnviosForm;
-import com.siga.envios.service.IntercambiosService;
-import com.siga.envios.service.IntercambiosServiceDispatcher;
 import com.siga.envios.service.SalidaEnviosService;
-import com.siga.envios.service.ca_sigp.IntercambiosInService;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -973,7 +970,12 @@ public class DefinirEnviosAction extends MasterAction {
 					
 					}else{
 						ClsLogging.writeFileLog("DefinirEnviosAction:fin insertarEnvioGenerico.Exito. IdInstitucion:" + userBean.getLocation(), 10);
-						return exitoModal("messages.inserted.success",request);
+						if(form.getMostrarPanel()==null)
+							return exitoModal("messages.inserted.success",request);
+						else {
+							return exitoRefresco("messages.inserted.success",request);
+							
+						}
 					}
 				
 				}else{
@@ -985,7 +987,12 @@ public class DefinirEnviosAction extends MasterAction {
 						if (!accessEnvio.equals(SIGAConstants.ACCESS_READ) && !accessEnvio.equals(SIGAConstants.ACCESS_FULL)) {
 							testAccess(request.getContextPath()+mapping.getPath()+".do",null,request);
 							ClsLogging.writeFileLog("Acceso denegado al modulo de envios, cerramos la seleccion de plantillas",request,3);
-							return exitoModal("messages.inserted.success",request);
+							if(form.getMostrarPanel()==null)
+								return exitoModal("messages.inserted.success",request);
+							else {
+								return exitoRefresco("messages.inserted.success",request);
+								
+							}
 						}else{
 							testAccess(request.getContextPath()+mapping.getPath()+".do",null,request);
 							Hashtable htEnvio = new Hashtable();
@@ -1003,7 +1010,13 @@ public class DefinirEnviosAction extends MasterAction {
 						
 					}else{
 						ClsLogging.writeFileLog("DefinirEnviosAction:fin insertarEnvioGenerico.errorNoDireccion. IdInstitucion:" + userBean.getLocation(), 10);
-						return exitoModal("messages.envio.errorNoDireccion",request);
+						if(form.getMostrarPanel()==null)
+							return exitoModal("messages.envio.errorNoDireccion",request);
+						else {
+							return exitoRefresco("messages.inserted.success",request);
+							
+						}
+						
 					}
 				}
 		}
@@ -1768,15 +1781,7 @@ public class DefinirEnviosAction extends MasterAction {
 			if(envBean.getIdEstado().compareTo(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESANDO)==0)
 				throw new SIGAException("messages.envios.procesandoEnvio");
 			
-			if(Integer.parseInt(idTipoEnvio)==EnvTipoEnviosAdm.K_ENVIOTELEMATICO ){
-				if(idEstadoEnvio.equals(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES )){
-					IntercambiosInService intercambiosService = (IntercambiosInService) IntercambiosServiceDispatcher.getService(getBusinessManager(),envBean.getIdTipoIntercambioTelematico().toString());
-					intercambiosService.reprocesarIntercambio(idEnvio, idInstitucion,Integer.parseInt(userBean.getUserName()));
-					idEstadoEnvioFinal = EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESANDO;
-				}else if(idEstadoEnvio.equals(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADO )){
-					throw new SIGAException("El envio ya esta procesado, edite el envio para ver el resultado de la comunicación");
-				}
-			}else{
+	
 				
 				
 				if(envBean.getIdEstado().compareTo(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESANDO)==0){
@@ -1793,7 +1798,7 @@ public class DefinirEnviosAction extends MasterAction {
 				// lo proceso
 				envio.procesarEnvio();
 				idEstadoEnvioFinal = envBean.getIdEstado();
-			}
+			
 
 		}catch (Exception e){
 			this.throwExcp("messages.general.error",new String[] {"modulo.envios"},e,tx);
@@ -1880,25 +1885,14 @@ public class DefinirEnviosAction extends MasterAction {
 
 			EnvEnviosAdm envioAdm = new EnvEnviosAdm(this.getUserBean(request));
 			File fichero = null;
-			if(Integer.parseInt(idTipoEnvio)==EnvTipoEnviosAdm.K_ENVIOTELEMATICO && idEstadoEnvio.equals(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES )){
-				Hashtable htPk = new Hashtable();
-				htPk.put(EnvEnviosBean.C_IDINSTITUCION,sIdInstitucion);
-				htPk.put(EnvEnviosBean.C_IDENVIO,sIdEnvio);
-				//obtengo el envio
-				EnvEnviosBean envBean = (EnvEnviosBean)envioAdm.selectByPKForUpdate(htPk).elementAt(0);
-				
-				IntercambiosService intercambiosService = (IntercambiosService) IntercambiosServiceDispatcher.getService(getBusinessManager(),envBean.getIdTipoIntercambioTelematico().toString());
-				fichero = intercambiosService.getFicheroLog(sIdEnvio, sIdInstitucion);
-				request.setAttribute("borrarFichero", "true");
-				
-			}else{
-				sFicheroLog = envioAdm.getPathEnvio(sIdInstitucion,sIdEnvio) + File.separator + "informeEnvio" + ".log.xls";
-				fichero = new File(sFicheroLog);
-				if(fichero==null || !fichero.exists()){
-					throw new SIGAException("messages.general.error.ficheroNoExiste"); 
-				}
-				
+		
+			sFicheroLog = envioAdm.getPathEnvio(sIdInstitucion,sIdEnvio) + File.separator + "informeEnvio" + ".log.xls";
+			fichero = new File(sFicheroLog);
+			if(fichero==null || !fichero.exists()){
+				throw new SIGAException("messages.general.error.ficheroNoExiste"); 
 			}
+			
+			
 			
 			
 			

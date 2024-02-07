@@ -47,7 +47,7 @@
 		System.out.println("pcajgActivo: "+pcajgActivo);
 	}
 	
-	if (pcajgActivo == 4){		
+	if (pcajgActivo == 4 || pcajgActivo==11){		
 		obligatorioCodigoExterno = true;
 	}
 

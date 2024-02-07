@@ -129,7 +129,7 @@
 						} else {
 							buttons+=",val,gxml";//generar XML	
 						}
-					} else if (cajgConfig == 4) {//PAMPLONA
+					} else if (cajgConfig==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_CANTABRIA||cajgConfig==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA) {//PAMPLONA
 						buttons+=",val,ws";//envio WebService
 					} else if (cajgConfig == 6) {
 						if(versionAsignaVereda!=null && 

@@ -199,7 +199,7 @@
 	}else if (pcajgActivo==3){
 		obligatorioPreceptivo = true;
 		obligatorioPretension = true;
-	}else if (pcajgActivo==4){
+	}else if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_CANTABRIA||pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA){
 		validarProcedimiento = true;
 		obligatorioPreceptivo = true;
 		
@@ -660,7 +660,7 @@
 						</td>
 							 
 <%
-						if (ejisActivo>0 || pcajgActivo == 4) {
+						if (ejisActivo>0 || pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_CANTABRIA||pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA) {
 %>																		
 							<td colspan="3">	
 <%
@@ -782,7 +782,7 @@
 %>	
 						</td>	
 <%
-						if (ejisActivo>0 || pcajgActivo == 4) {
+						if (ejisActivo>0 || pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_CANTABRIA||pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA) {
 %>							
 							<td colspan="2">
 <%

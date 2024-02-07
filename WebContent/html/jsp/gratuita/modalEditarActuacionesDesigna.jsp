@@ -208,7 +208,7 @@
 			idProcedimiento = (String) hashDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO);
 		}
 		idPretension = (String) hashDesigna.get(ScsDesignaBean.C_IDPRETENSION);
-		if (idPretension != null) {
+		if (idPretension != null && !idPretension.equals("")) {
 			pretensionSel.add(0, idPretension);
 		}
 		String aux = (String) request.getAttribute("fechaJustificacion");
@@ -217,7 +217,7 @@
 		nactuacion = (String) hashDesigna.get("NUMEROASUNTO");
 		idPersona = (String) hashDesigna.get("IDPERSONA");
 		nombreJuzgado = (String) hashDesigna.get("NOMBREJUZGADO");
-		if (hashDesigna.get("NOMBREPROCEDIMIENTO") != null) {
+		if (hashDesigna.get("NOMBREPROCEDIMIENTO") != null && !((String)hashDesigna.get("NOMBREPROCEDIMIENTO")).equals("")) {
 			nombreProcedimiento = (String) hashDesigna.get("NOMBREPROCEDIMIENTO");
 		}
 		numeroProcedimiento = (String) hashDesigna.get("NUMPROCEDIMIENTO");
@@ -248,7 +248,7 @@
 		comboJuzgadosJustificacion = "comboProcedimientosJustificacion";
 
 		//Actualizo el combo de juzgados:
-		if (idJuzgado != null && idInstitucionJuzgado != null)
+		if (idJuzgado != null && !idJuzgado.equals("") && idInstitucionJuzgado != null && !idInstitucionJuzgado.equals(""))
 			juzgadoSel.add(0, idJuzgado + "," + idInstitucionJuzgado);
 
 		if (idJuzgado != null && !idJuzgado.equals(""))

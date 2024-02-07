@@ -463,8 +463,8 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 				if (v3 != null && v3.size() > 0) {
 					ScsEJGBean b = (ScsEJGBean) v3.get(0);
 					definirDocumentacionEJGForm.setNumEjg(b.getNumEJG());
-					if(documentacionEjgVo.getIdInstitucion().shortValue()==2055 ) {
-						if( b.getNumeroCAJG()!=null)
+					if(documentacionEjgVo.getIdInstitucion().shortValue()==2055 || documentacionEjgVo.getIdInstitucion().shortValue()==2003) {
+						if( b.getNumeroCAJG()!=null && !b.getNumeroCAJG().equalsIgnoreCase(""))
 							request.setAttribute("idExpedienteExt", b.getNumeroCAJG());
 					}else if(b.getIdExpedienteExt()!=null)
 						request.setAttribute("idExpedienteExt", b.getIdExpedienteExt());
@@ -678,14 +678,18 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			documentacionEjgVo.setAnio( Short.valueOf(miForm.getAnio ()));
 			documentacionEjgVo.setNumero( Long.valueOf(miForm.getNumero ()));
 			documentacionEjgVo.setIdinstitucion( Short.valueOf( miForm.getIdInstitucion()));
-			documentacionEjgVo.setDocumentacion(miForm.getDocumentacion());
+			if(miForm.getDocumentacion()!=null && !miForm.getDocumentacion().equalsIgnoreCase("null"))
+				documentacionEjgVo.setDocumentacion(miForm.getDocumentacion());
 			
 			documentacionEjgVo.setIddocumentacion(Integer.valueOf(miForm.getIdDocumentacion()));
 			if(miForm.getIdInstitucion().equalsIgnoreCase("2055")) {
 				ejgService.envioDocumento(documentacionEjgVo, AppConstants.OPERACION.ASIGNA_ENVIO_DOCUMENTO, usr.getLanguageInstitucion());
 			}else if(miForm.getIdInstitucion().equalsIgnoreCase("2032")) {
 				ejgService.envioDocumento(documentacionEjgVo, AppConstants.OPERACION.GV_ENVIO_DOCUMENTO, usr.getLanguageInstitucion());
-			}else
+			}else if(miForm.getIdInstitucion().equalsIgnoreCase("2003")) {
+				ejgService.envioDocumento(documentacionEjgVo, AppConstants.OPERACION.ALCALA_ENVIO_DOCUMENTO, usr.getLanguageInstitucion());
+			}
+			else
 				ejgService.envioDocumento(documentacionEjgVo, AppConstants.OPERACION.PERICLES_ENVIA_COMUNICACION, usr.getLanguageInstitucion());
 		} catch (BusinessException e) {
 			throwExcp ("messages.general.error", e, null);
