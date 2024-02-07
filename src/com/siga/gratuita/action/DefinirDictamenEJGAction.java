@@ -293,7 +293,10 @@ public class DefinirDictamenEJGAction extends MasterAction {
 				//Introducimos los parametros necesarios para la query
 				params.put("idioma", user.getLanguage());
 				params.put("idinstitucion", user.getLocation());
-				List<KeyValue> listTipodictamenejgs = service.getTiposDictamenEjg(params);
+				
+				params.put("idtipodictamenejg", ejgBean.getIdTipoDictamenEJG()!=null?""+ejgBean.getIdTipoDictamenEJG():"-1");
+				
+				List<KeyValue> listTipodictamenejgs = service.getTiposDictamenEjgActivos(params);
 				request.setAttribute("dictamenEjgList", listTipodictamenejgs);
 				
 				GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
