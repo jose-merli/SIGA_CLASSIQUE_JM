@@ -1843,9 +1843,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			String idPeticionMinimoConDatos = rp.returnProperty("cajg.idPeticion_SCS_EEJG_PETICIONES_DondeEmpezoAFuncionarDatosCompletos");
 		// QUITAMOS LOS QUE YA ESTAN INCLUIDOS EN UNA REMESA
 			consulta += " and F_SIGA_GET_IDULTIMOESTADOEJG(EJG.IDINSTITUCION, EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO)<>"+ESTADOS_EJG.GENERADO_EN_REMESA.getCodigo()+" ";
-			
-			consulta += " AND EXISTS (SELECT 1 FROM SCS_EEJG_PETICIONES P, SCS_EEJG_XML X "; 
-//			consulta += " AND EXISTS (SELECT 1 FROM SCS_EEJG_PETICIONES P ";
+			//y que tengan informe economico
+			consulta += " AND ( EXISTS (SELECT 1 FROM SCS_EEJG_PETICIONES P, SCS_EEJG_XML X "; 
 			consulta += " WHERE  P.IDINSTITUCION = EJG.IDINSTITUCION ";
 			consulta += " AND P.IDTIPOEJG = EJG.IDTIPOEJG ";
 			consulta += " AND P.ANIO = EJG.ANIO ";
@@ -1855,10 +1854,18 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta += " AND P.ESTADO = 30 ";
 			consulta += " AND P.CSV IS NOT NULL ";
 			consulta += " AND P.IDPETICION >= " + idPeticionMinimoConDatos;//eSTO LO PONEMOS YA QUE EN ESE REGISTRO ES DONDE HA EMPEZADO A FUNCIONAR LOS DATOS COMPLETOS
-			consulta += " AND X.XML IS NOT NULL )";
+			consulta += " AND X.XML IS NOT NULL  )";
+//			O QUE TENGA ALGUN FICHERO QUE ENVIAR
+			consulta += " OR EXISTS "; 
+			consulta += " (SELECT 1 FROM SCS_DOCUMENTACIONEJG DE  , SCS_DOCUMENTOEJG DOC";
+			consulta += " WHERE DE.IDINSTITUCION = DOC.IDINSTITUCION	AND DE.IDDOCUMENTO = DOC.IDDOCUMENTOEJG"; 
+			consulta += " AND DE.IDTIPODOCUMENTO  = DOC.IDTIPODOCUMENTOEJG AND DOC.CODIGOEXT  IS NOT NULL	AND DE.IDINSTITUCION  = EJG.IDINSTITUCION ";
+			consulta += " AND DE.ANIO = EJG.ANIO AND DE.IDTIPOEJG =EJG.IDTIPOEJG	AND DE.NUMERO  = EJG.NUMERO	AND DE.IDFICHERO IS NOT NULL";
+			consulta += " AND EJG.NUMERO_CAJG IS NOT NULL AND EJG.ANIOCAJG IS NOT NULL)	) ";
+			
 			
 			//Sacamos los  ejgs que hyan sido remitidos a comision perro que no tienen un estado posterior devuelto al colegio
-			
+			/*
 			consulta += " AND ((SELECT COUNT(1) ";
 			consulta += " FROM SCS_ESTADOEJG EREM ";
 			consulta += " WHERE EREM.IDINSTITUCION = EJG.IDINSTITUCION ";
@@ -1916,7 +1923,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta += " WHERE RER.IDEJGREMESA = EJ.IDEJGREMESA) "; 
 			consulta += " ) ";
 			
-			
+			*/
 		}
 		
 		// Se filtra por numero cajg
