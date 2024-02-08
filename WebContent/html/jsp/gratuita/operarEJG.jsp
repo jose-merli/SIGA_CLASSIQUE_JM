@@ -346,7 +346,7 @@
 	}
 
 	boolean obligatorioFechaPresentacion = false;
-	if (PCAJG_ACTIVADO != null && (PCAJG_ACTIVADO == 4 || PCAJG_ACTIVADO == 11) {
+	if (PCAJG_ACTIVADO != null && (PCAJG_ACTIVADO == 4 || PCAJG_ACTIVADO == 11)) {
 		obligatorioFechaPresentacion = true;
 	}
 
