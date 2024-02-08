@@ -1362,7 +1362,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 			linea.append(StringHelper.rellena(expHashtableNew.get("DOM12_DESCRIPCION_VIA_EXTRANJ"), ' ', 10, StringHelper.DERECHA));
 			linea.append(StringHelper.rellena(expHashtableNew.get("DOM13_DESCRIPCION_VIA"), ' ', 125, StringHelper.DERECHA));
 			linea.append(StringHelper.rellena(expHashtableNew.get("DOM14_DESCRIPCION_VIA_COMPLETA"), ' ', 100, StringHelper.DERECHA));
-			linea.append(StringHelper.rellena(expHashtableNew.get("DOM15_CODIGO_POSTAL"), '0', ' ', 10, StringHelper.IZQUIERDA));
+			linea.append(StringHelper.rellena(expHashtableNew.get("DOM15_CODIGO_POSTAL"), ' ', ' ', 10, StringHelper.IZQUIERDA));
 
 			// DOM1_TIPO_DOMICILIO VARCHAR2(1),
 			// DOM2_PAIS_DOMICILIO VARCHAR2(3),
