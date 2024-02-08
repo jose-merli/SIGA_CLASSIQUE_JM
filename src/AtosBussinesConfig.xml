@@ -47,10 +47,10 @@
 		<service interface="org.redabogacia.sigaservices.app.services.ecom.EcomCenSituacionEjercienteService" 	implementation="org.redabogacia.sigaservices.app.services.ecom.impl.EcomCenSituacionEjercienteServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.cen.ws.CensoSinonimosPoblacionService" 	implementation="org.redabogacia.sigaservices.app.services.cen.ws.impl.CensoSinonimosPoblacionServiceImpl"/>
 		
-		<service interface="com.siga.envios.service.EntradaEnviosService" 							implementation="com.siga.envios.service.impl.EntradaEnviosServiceImpl"/>
-		<service interface="com.siga.envios.service.sigp_ca.RespuestaSolSusProcedimientoService" 	implementation="com.siga.envios.service.sigp_ca.impl.RespuestaSolSusProcedimientoServiceImpl"/>
-   		<service interface="com.siga.envios.service.sigp_ca.SolicitudDesignaProvisionalService" 	implementation="com.siga.envios.service.sigp_ca.impl.SolicitudDesignaProvisionalServiceImpl"/>
-   		<service interface="com.siga.envios.service.ca_sigp.DesignaProvisionalService" 				implementation="com.siga.envios.service.ca_sigp.impl.DesignaProvisionalServiceImpl"/>
+		
+		
+   		
+   		
    		
    		<service interface="com.siga.envios.service.SalidaEnviosService" 							implementation="com.siga.envios.service.impl.SalidaEnviosServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.ecom.EcomColaService" 	 											implementation="org.redabogacia.sigaservices.app.services.ecom.impl.EcomColaServiceImpl"/>
