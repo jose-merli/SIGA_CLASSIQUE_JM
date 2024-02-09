@@ -1334,3 +1334,507 @@ ei.EJG_ANIO  = (SELECT max(cp.valor) FROM ecom_cola_parametros cp WHERE cp.ideco
 ei.EJG_NUMERO  = (SELECT max(cp.valor) FROM ecom_cola_parametros cp WHERE cp.idecomcola = ei.idecomcola AND cp.clave = 'NUMERO');
 
 
+
+------- optimizacion de consultas
+--Modificar esta consulta: 
+SELECT
+  FJG.NOMBRE || ' ' || TO_CHAR(FJG.FECHADESDE, 'dd/mm/yyyy') || '-' || 
+    TO_CHAR(FJG.FECHAHASTA, 'dd/mm/yyyy') NOMBREFACTURACION,
+  CABECERAGUARDIAS.IDINSTITUCION,
+  CABECERAGUARDIAS.IDTURNO,
+  CABECERAGUARDIAS.IDGUARDIA,
+  CABECERAGUARDIAS.IDPERSONA,
+  CABECERAGUARDIAS.IDCALENDARIOGUARDIAS,
+  CABECERAGUARDIAS.FECHAINICIO,
+  CABECERAGUARDIAS.FECHA_FIN,
+  TURNO.NOMBRE AS TURNO,
+  GUARDIA.NOMBRE AS GUARDIA,
+  GUARDIA.SELECCIONLABORABLES AS SELECCIONLABORABLES,
+  GUARDIA.SELECCIONFESTIVOS AS SELECCIONFESTIVOS,
+  F_SIGA_NUMEROPERMUTAGUARDIAS (CABECERAGUARDIAS.IDINSTITUCION,
+  CABECERAGUARDIAS.IDTURNO,
+  CABECERAGUARDIAS.IDGUARDIA,
+  CABECERAGUARDIAS.IDPERSONA,
+  CABECERAGUARDIAS.FECHAINICIO ) AS ESTADO ,
+  PKG_SIGA_ACCIONES_GUARDIAS.FUNC_ACCIONES_GUARDIAS( CABECERAGUARDIAS.IDINSTITUCION,
+  CABECERAGUARDIAS.IDTURNO,
+  CABECERAGUARDIAS.IDGUARDIA,
+  CABECERAGUARDIAS.IDPERSONA,
+  CABECERAGUARDIAS.FECHAINICIO) AS FUNCIONPERMUTAS ,
+  CABECERAGUARDIAS.FACTURADO ,
+  CABECERAGUARDIAS.VALIDADO,
+  F_SIGA_TIENE_ACTS_VALIDADAS(CABECERAGUARDIAS.IDINSTITUCION,
+  CABECERAGUARDIAS.IDTURNO,
+  CABECERAGUARDIAS.IDGUARDIA,
+  CABECERAGUARDIAS.IDCALENDARIOGUARDIAS,
+  CABECERAGUARDIAS.IDPERSONA,
+  CABECERAGUARDIAS.FECHAINICIO) AS ACT_VALIDADAS
+FROM
+  SCS_CABECERAGUARDIAS CABECERAGUARDIAS,
+  SCS_GUARDIASTURNO GUARDIA,
+  SCS_TURNO TURNO,
+  FCS_FACTURACIONJG FJG
+WHERE
+  GUARDIA.IDINSTITUCION = CABECERAGUARDIAS.IDINSTITUCION
+  AND GUARDIA.IDTURNO = CABECERAGUARDIAS.IDTURNO
+  AND GUARDIA.IDGUARDIA = CABECERAGUARDIAS.IDGUARDIA
+  AND GUARDIA.IDINSTITUCION = TURNO.IDINSTITUCION
+  AND GUARDIA.IDTURNO = TURNO.IDTURNO
+  AND CABECERAGUARDIAS.IDINSTITUCION = FJG.IDINSTITUCION(+)
+  AND CABECERAGUARDIAS.IDFACTURACION = FJG.IDFACTURACION(+)
+  AND CABECERAGUARDIAS.IDINSTITUCION = 2011
+  AND CABECERAGUARDIAS.IDPERSONA = 2011005711
+ORDER BY
+  CABECERAGUARDIAS.FECHAINICIO DESC,
+  TURNO,
+  GUARDIA;
+--....por esta:
+SELECT
+  (select FJG.NOMBRE || ' ' || TO_CHAR(FJG.FECHADESDE, 'dd/mm/yyyy') || '-' || 
+    TO_CHAR(FJG.FECHAHASTA, 'dd/mm/yyyy')
+  from FCS_FACTURACIONJG FJG
+  where CABECERAGUARDIAS.IDINSTITUCION = FJG.IDINSTITUCION  AND CABECERAGUARDIAS.IDFACTURACION = FJG.IDFACTURACION) NOMBREFACTURACION,
+  CABECERAGUARDIAS.IDINSTITUCION,
+  CABECERAGUARDIAS.IDTURNO,
+  CABECERAGUARDIAS.IDGUARDIA,
+  CABECERAGUARDIAS.IDPERSONA,
+  CABECERAGUARDIAS.IDCALENDARIOGUARDIAS,
+  CABECERAGUARDIAS.FECHAINICIO,
+  CABECERAGUARDIAS.FECHA_FIN,
+  TURNO.NOMBRE AS TURNO,
+  GUARDIA.NOMBRE AS GUARDIA,
+  GUARDIA.SELECCIONLABORABLES AS SELECCIONLABORABLES,
+  GUARDIA.SELECCIONFESTIVOS AS SELECCIONFESTIVOS,
+  F_SIGA_NUMEROPERMUTAGUARDIAS (CABECERAGUARDIAS.IDINSTITUCION,
+  CABECERAGUARDIAS.IDTURNO,
+  CABECERAGUARDIAS.IDGUARDIA,
+  CABECERAGUARDIAS.IDPERSONA,
+  CABECERAGUARDIAS.FECHAINICIO ) AS ESTADO ,
+  PKG_SIGA_ACCIONES_GUARDIAS.FUNC_ACCIONES_GUARDIAS( CABECERAGUARDIAS.IDINSTITUCION,
+  CABECERAGUARDIAS.IDTURNO,
+  CABECERAGUARDIAS.IDGUARDIA,
+  CABECERAGUARDIAS.IDPERSONA,
+  CABECERAGUARDIAS.FECHAINICIO) AS FUNCIONPERMUTAS ,
+  CABECERAGUARDIAS.FACTURADO ,
+  CABECERAGUARDIAS.VALIDADO,
+  F_SIGA_TIENE_ACTS_VALIDADAS(CABECERAGUARDIAS.IDINSTITUCION,
+  CABECERAGUARDIAS.IDTURNO,
+  CABECERAGUARDIAS.IDGUARDIA,
+  CABECERAGUARDIAS.IDCALENDARIOGUARDIAS,
+  CABECERAGUARDIAS.IDPERSONA,
+  CABECERAGUARDIAS.FECHAINICIO) AS ACT_VALIDADAS
+FROM
+  SCS_CABECERAGUARDIAS CABECERAGUARDIAS,
+  SCS_GUARDIASTURNO GUARDIA,
+  SCS_TURNO TURNO
+WHERE
+  GUARDIA.IDINSTITUCION = CABECERAGUARDIAS.IDINSTITUCION
+  AND GUARDIA.IDTURNO = CABECERAGUARDIAS.IDTURNO
+  AND GUARDIA.IDGUARDIA = CABECERAGUARDIAS.IDGUARDIA
+  AND CABECERAGUARDIAS.IDINSTITUCION = TURNO.IDINSTITUCION
+  AND CABECERAGUARDIAS.IDTURNO = TURNO.IDTURNO
+  AND CABECERAGUARDIAS.IDINSTITUCION = 2011
+  AND CABECERAGUARDIAS.IDPERSONA = 2011005711
+ORDER BY
+  CABECERAGUARDIAS.FECHAINICIO DESC,
+  TURNO,
+  GUARDIA
+
+CREATE INDEX SCS_ASISTENCIA_FECHAHORA_IDPERSONA_IDGUARDIA_IDX ON USCGAE.SCS_ASISTENCIA (IDINSTITUCION,IDTURNO,IDGUARDIA,IDPERSONACOLEGIADO,FECHAHORA);
+BEGIN
+  DBMS_STATS.GATHER_TABLE_STATS(
+    ownname=>'USCGAE' ,
+    tabname=>'SCS_ASISTENCIA' ,
+    cascade=>TRUE) ;
+END;
+
+DROP   INDEX SI_PERMUTAGUARDIA_CONFIRMADOR;
+CREATE INDEX SI_SCS_PERMUTAGUARDIAS_CONFIRMADOR ON SCS_PERMUTAGUARDIAS
+(IDINSTITUCION, IDTURNO_CONFIRMADOR, IDGUARDIA_CONFIRMADOR, IDPERSONA_CONFIRMADOR, 
+FECHAINICIO_CONFIRMADOR)
+NOLOGGING
+TABLESPACE TS_SIGA_SCS_IDX
+NOPARALLEL
+;
+
+DROP INDEX SI_SCS_PERMUTAGUARDIAS_SOLICIT;
+CREATE INDEX SI_SCS_PERMUTAGUARDIAS_SOLICITANTE ON SCS_PERMUTAGUARDIAS
+(IDINSTITUCION, IDTURNO_SOLICITANTE, IDGUARDIA_SOLICITANTE, IDPERSONA_SOLICITANTE, 
+FECHAINICIO_SOLICITANTE)
+NOLOGGING
+TABLESPACE TS_SIGA_SCS_IDX
+NOPARALLEL
+;
+
+BEGIN
+  DBMS_STATS.GATHER_TABLE_STATS(
+    ownname=>'USCGAE' ,
+    tabname=>'SCS_PERMUTAGUARDIAS' ,
+    cascade=>TRUE) ;
+END
+;
+
+CREATE OR REPLACE PACKAGE BODY USCGAE.PKG_SIGA_ACCIONES_GUARDIAS IS
+
+    /****************************************************************************************************
+    Nombre: PROC_ACCIONES_GUARDIAS
+    Descripcion: Procedimiento que comprueba las acciones que puede hacer en una guardia (Sustituir, Anular, Borrar, Permutar)
+    1. Si NO esta facturado, entonces se podra sustituir y anular
+    2. Si NO esta facturado, el dia de guardia es posterior al actual, existe la guardia y no tiene asistencias, entonces se podra borrar
+    3. Si NO esta facturado, el dia de guardia es posterior al actual, existe la guardia y no tiene una permuta pendiente, entonces se podra permutar
+
+    Parametros (IN/OUT - Descripcion -Tipo de Datos - Valores)
+    - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER
+    - P_IDTURNO - IN - Identificador del turno - NUMBER
+    - P_IDGUARDIA - IN - Identificador de la guardia - NUMBER
+    - P_IDPERSONA - IN - Identificador de la persona - NUMBER
+    - P_FECHA - IN - Fecha de la guardia - DATE
+    - P_SUSTITUIR - OUT - Indica si es sustituible la guardia - VARCHAR2 - 'N': no sustituible; 'S': sustituible
+    - P_ANULAR - OUT - Indica si es anulable la guardia - VARCHAR2 - 'N': no anulable; 'S': anulable
+    - P_BORRAR - OUT - Indica si es borrable la guardia - VARCHAR2 - 'N': no borrable; 'S': borrable
+    - P_PERMUTAR - OUT - Indica si es permutable la guardia - VARCHAR2 - 'N': no permutable (Pendiente Solicitante); 'P': no permutable (Pendiente Confirmador); 'S': permutable
+    - P_ASISTENCIA - OUT - Indica si tiene asistencia asociada - VARCHAR2 - 'N': sin Asistencia; 'S': con asistencia
+    - P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)
+        En caso de error devuelve el codigo de error Oracle correspondiente.
+    - P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400)
+        En caso de error devuelve el mensaje de error Oracle correspondiente.
+
+    Versiones (Fecha - Autor - Datos):
+    - 1.0 - 01/03/2017 - Jorge Paez Trivino - Version inicial
+  ****************************************************************************************************/    
+    PROCEDURE PROC_ACCIONES_GUARDIAS(
+        P_IDINSTITUCION IN NUMBER,
+        P_IDTURNO IN NUMBER,
+        P_IDGUARDIA IN NUMBER,
+        P_IDPERSONA IN NUMBER,
+        P_FECHA IN DATE,
+        P_SUSTITUIR OUT VARCHAR2, -- 'N': no sustituible; 'S': sustituible
+        P_ANULAR OUT VARCHAR2, -- 'N': no anulable; 'S': anulable
+        P_BORRAR OUT VARCHAR2, -- 'N': no borrable; 'S': borrable
+        P_PERMUTAR OUT VARCHAR2, -- 'N': no permutable (Pendiente Solicitante); 'P': no permutable (Pendiente Confirmador); 'S': permutable
+        P_ASISTENCIA OUT VARCHAR2, -- 'N': sin Asistencia; 'S': con asistencia
+        P_CODRETORNO OUT VARCHAR2,
+        P_DATOSERROR OUT VARCHAR2) IS      
+        
+        V_FACTURADO NUMBER; -- 0:NoFacturado; 1:Facturado
+        V_EXISTE_GUARDIA NUMBER; -- 0:NoExisteGuardia; 1:ExisteGuardia
+        V_PERMUTACION NUMBER; -- 0:PermutaPendienteSolicitante; 1:Permutada; 2:PermutaPendienteConfirmador 
+        V_FECHAFIN SCS_CABECERAGUARDIAS.FECHA_FIN%TYPE;
+        
+        E_NOEXISTE_O_FACTURADA EXCEPTION;
+          
+    BEGIN
+        P_SUSTITUIR := 'N'; -- No sustituible
+        P_ANULAR := 'N'; -- No anulable
+        P_BORRAR := 'N'; -- No borrable
+        P_PERMUTAR := 'N'; -- No permutable
+        P_ASISTENCIA := 'N'; -- Sin Asistencia
+        
+        -- Paso 1. Busca si esta facturado
+        V_EXISTE_GUARDIA := 1;
+        BEGIN             
+            SELECT nvl(FACTURADO, 0), FECHA_FIN INTO V_FACTURADO, V_FECHAFIN
+            FROM SCS_CABECERAGUARDIAS
+            WHERE IDINSTITUCION = P_IDINSTITUCION
+                AND IDTURNO       = P_IDTURNO
+                AND IDGUARDIA     = P_IDGUARDIA
+                AND IDPERSONA     = P_IDPERSONA
+                AND FECHAINICIO   = P_FECHA;
+        
+            EXCEPTION WHEN NO_DATA_FOUND THEN
+                V_EXISTE_GUARDIA := 0; -- No esta facturado
+        END;
+                
+        IF (V_EXISTE_GUARDIA = 0 or V_FACTURADO = 1) THEN -- 0:NoExisteGuardia; 1:ExisteGuardia
+            -- Compruebo que existe la guardia y que no esta facturada
+            raise E_NOEXISTE_O_FACTURADA;
+        END IF;
+        
+        -- Si NO esta facturado, entonces se podra sustituir y anular
+        P_SUSTITUIR := 'S';
+        P_ANULAR := 'S';
+        
+        -- Paso 2. Busco si tiene asistencias asociadas
+        BEGIN
+            SELECT 'S' INTO P_ASISTENCIA
+            FROM SCS_ASISTENCIA
+            WHERE IDINSTITUCION = P_IDINSTITUCION
+                AND IDTURNO = P_IDTURNO
+                AND IDGUARDIA = P_IDGUARDIA
+                AND IDPERSONACOLEGIADO = P_IDPERSONA
+                AND TRUNC(FECHAHORA) BETWEEN P_FECHA AND V_FECHAFIN
+                AND ROWNUM = 1; -- Con una ya tiene asistencias
+                
+            EXCEPTION WHEN NO_DATA_FOUND THEN
+                P_ASISTENCIA := 'N'; -- No tiene asistencias asociadas
+        END;
+
+        -- Paso 3. Compruebo que el dia de la guardia es posterior al dia actual 
+        IF TRUNC(SYSDATE) < TRUNC(P_FECHA) THEN
+        
+            /* Se puede borrar si se cumple lo siguiente:
+                - NO esta facturado
+                - El dia de guardia es posterior al actual
+                - Sin asistencias asociadas*/
+            IF (P_ASISTENCIA = 'N') THEN -- 'N': sin Asistencia; 'S': con asistencia
+                P_BORRAR := 'S';
+            END IF;
+            
+            -- Paso 5. Compruebo si es permutable 
+            BEGIN
+                SELECT PERMUTACION INTO V_PERMUTACION -- 0:PermutaPendienteSolicitante; 1:Permutada; 2:PermutaPendienteConfirmador 
+                FROM (             
+                    SELECT FECHAMODIFICACION, NVL2(FECHACONFIRMACION, 1, DECODE(IDPERSONA_CONFIRMADOR, P_IDPERSONA, 2, 0)) AS PERMUTACION
+                    FROM SCS_PERMUTAGUARDIAS
+                    WHERE IDINSTITUCION = P_IDINSTITUCION
+                        AND IDTURNO_CONFIRMADOR = P_IDTURNO 
+                        AND IDGUARDIA_CONFIRMADOR = P_IDGUARDIA
+                        AND IDPERSONA_CONFIRMADOR = P_IDPERSONA
+                        AND FECHAINICIO_CONFIRMADOR = P_FECHA
+                    UNION ALL
+                    SELECT FECHAMODIFICACION, NVL2(FECHACONFIRMACION, 1, DECODE(IDPERSONA_CONFIRMADOR, P_IDPERSONA, 2, 0)) AS PERMUTACION
+                    FROM SCS_PERMUTAGUARDIAS
+                    WHERE IDINSTITUCION = P_IDINSTITUCION
+                        AND IDTURNO_SOLICITANTE = P_IDTURNO 
+                        AND IDGUARDIA_SOLICITANTE = P_IDGUARDIA
+                        
+                        AND IDPERSONA_SOLICITANTE = P_IDPERSONA
+                        AND FECHAINICIO_SOLICITANTE = P_FECHA
+                    ORDER BY FECHAMODIFICACION DESC                        
+                ) TABLA_PERMUTAGUARDIAS
+                WHERE ROWNUM = 1;                        
+          
+                EXCEPTION WHEN NO_DATA_FOUND THEN
+                    V_PERMUTACION := 1; -- No tiene permutas
+            END;
+            
+            -- Compruebo que NO tiene permutas pendientes
+            IF (V_PERMUTACION = 1) THEN
+            
+                /* Se puede permutar si se cumple lo siguiente:
+                    - NO esta facturado
+                    - El dia de guardia es posterior al actual
+                    - Permutada o sin permutar*/
+                P_PERMUTAR := 'S';
+                   
+            ELSIF (V_PERMUTACION = 2) THEN -- Pendiente del confirmador
+                P_PERMUTAR := 'P';
+            END IF; -- Sin permutas Pendientes
+        END IF; -- Fecha posterior a la actual
+
+        P_DATOSERROR := 'PROC_ACCIONES_GUARDIAS: Finalizado correctamente';
+        P_CODRETORNO := '0';
+
+    EXCEPTION
+        WHEN E_NOEXISTE_O_FACTURADA THEN
+            P_DATOSERROR := 'PROC_ACCIONES_GUARDIAS: Finalizado correctamente';
+            P_CODRETORNO := '0';
+        WHEN OTHERS THEN
+            P_CODRETORNO := TO_CHAR(SQLCODE);
+            P_DATOSERROR := P_DATOSERROR || ' ' || SQLERRM;        
+    END PROC_ACCIONES_GUARDIAS;
+    
+    /****************************************************************************************************
+    Nombre: FUNC_ACCIONES_GUARDIAS
+    Descripcion: Funcion que comprueba las acciones que puede hacer en una guardia (Sustituir, Anular, Borrar, Permutar)
+    1. Si NO esta facturado, entonces se podra sustituir y anular
+    2. Si NO esta facturado, el dia de guardia es posterior al actual, existe la guardia y no tiene asistencias, entonces se podra borrar
+    3. Si NO esta facturado, el dia de guardia es posterior al actual, existe la guardia y no tiene una permuta pendiente, entonces se podra permutar
+
+    Parametros (IN/OUT - Descripcion -Tipo de Datos)
+    - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER
+    - P_IDTURNO - IN - Identificador del turno - NUMBER
+    - P_IDGUARDIA - IN - Identificador de la guardia - NUMBER
+    - P_IDPERSONA - IN - Identificador de la persona - NUMBER
+    - P_FECHA - IN - Fecha de la guardia - DATE
+    - RETORNA SUSTITUIR(1) || ANULAR(1) || BORRAR(1) || PERMUTAR(1) || ASISTENCIA(1)
+    -- SUSTITUIR VARCHAR2(1); -- 'N': no sustituible; 'S': sustituible
+    -- ANULAR VARCHAR2(1); -- 'N': no anulable; 'S': anulable
+    -- BORRAR VARCHAR2(1); -- 'N': no borrable; 'S': borrable
+    -- PERMUTAR VARCHAR2(1); -- N': no permutable (Pendiente Solicitante); 'P': no permutable (Pendiente Confirmador); 'S': permutable
+    -- ASISTENCIA VARCHAR2(1); -- 'N': sin Asistencia; 'S': con asistencia        
+
+    Versiones (Fecha - Autor - Datos):
+    - 1.0 - 01/03/2017 - Jorge Paez Trivino - Version inicial
+  ****************************************************************************************************/        
+    FUNCTION FUNC_ACCIONES_GUARDIAS(
+        P_IDINSTITUCION IN NUMBER,
+        P_IDTURNO IN NUMBER,
+        P_IDGUARDIA IN NUMBER,
+        P_IDPERSONA IN NUMBER,
+        P_FECHA IN DATE) RETURN VARCHAR2 IS
+        
+        V_SUSTITUIR VARCHAR2(1); -- 'N': no sustituible; 'S': sustituible
+        V_ANULAR VARCHAR2(1); -- 'N': no anulable; 'S': anulable
+        V_BORRAR VARCHAR2(1); -- 'N': no borrable; 'S': borrable
+        V_PERMUTAR VARCHAR2(1); -- N': no permutable (Pendiente Solicitante); 'P': no permutable (Pendiente Confirmador); 'S': permutable
+        V_ASISTENCIA VARCHAR2(1); -- 'N': sin Asistencia; 'S': con asistencia
+        V_CODRETORNO VARCHAR2(10);
+        V_DATOSERROR VARCHAR2(400);
+        
+    BEGIN   
+    
+        PROC_ACCIONES_GUARDIAS(
+            P_IDINSTITUCION,
+            P_IDTURNO,
+            P_IDGUARDIA,
+            P_IDPERSONA,
+            P_FECHA,
+            V_SUSTITUIR, -- 'N': no sustituible; 'S': sustituible
+            V_ANULAR, -- 'N': no anulable; 'S': anulable
+            V_BORRAR, -- 'N': no borrable; 'S': borrable
+            V_PERMUTAR, -- N': no permutable (Pendiente Solicitante); 'P': no permutable (Pendiente Confirmador); 'S': permutable
+            V_ASISTENCIA, -- 'N': sin Asistencia; 'S': con asistencia
+            V_CODRETORNO,
+            V_DATOSERROR);
+            
+            -- Si hay error indico que no puedo hacer nada
+            IF (V_CODRETORNO <> '0') THEN
+                V_SUSTITUIR := 'N';
+                V_ANULAR := 'N';
+                V_BORRAR := 'N';
+                V_PERMUTAR := 'N';
+                V_ASISTENCIA := 'N';                
+            END IF;      
+            
+        RETURN V_SUSTITUIR || V_ANULAR || V_BORRAR || V_PERMUTAR || V_ASISTENCIA;
+    END FUNC_ACCIONES_GUARDIAS;
+
+END PKG_SIGA_ACCIONES_GUARDIAS;
+
+CREATE OR REPLACE FUNCTION USCGAE.F_SIGA_NUMEROPERMUTAGUARDIAS(
+       P_IDINSTITUCION 		IN SCS_PERMUTAGUARDIAS.IDINSTITUCION%TYPE,
+       P_IDTURNO          IN SCS_PERMUTAGUARDIAS.IDTURNO_SOLICITANTE%TYPE,
+       P_IDGUARDIA 	      IN SCS_PERMUTAGUARDIAS.IDGUARDIA_SOLICITANTE%TYPE,
+       P_IDPERSONA        IN SCS_PERMUTAGUARDIAS.IDPERSONA_SOLICITANTE%TYPE,
+       P_FECHAINICIO      IN SCS_PERMUTAGUARDIAS.FECHAINICIO_SOLICITANTE%TYPE)
+RETURN NUMBER IS
+
+/****************************************************************************************************************/
+/* Nombre:        F_SIGA_NUMEROPERMUTAGUARDIAS                                                                 */
+/* Descripcion:   Funcion que obtiene el numero de permutas guardias 				                                    */
+/*  				                                                                         		                        */
+/* Parametros            IN/OUT   Descripcion                                                    Tipo de Datos  */
+/* -------------------   ------   ------------------------------------------------------------   -------------  */
+/* P_IDINSTITUCION       IN  	    Identificador de la Institucion                                NUMBER         */
+/* P_IDTURNO	           IN	      Identificador del Turno		                                     NUMBER         */
+/* P_IDGUARDIA           IN 	    Identificador de la Guardia	                                   NUMBER         */
+/* P_IDPERSONA           IN 	    Identificador de la Persona	                                   NUMBER         */
+/* P_FECHAINICIO         IN 	    Fecha de Inicio	                                               DATE           */
+/*          												                                                                            */
+/* Version:        1.1												                                                                  */
+/* Fecha Creacion: 14/02/2005                                                                                   */
+/* Autor:		       Yolanda Garcia Espino                                                                        */
+/* Fecha Modificacion   Autor Modificacion                  Descripcion Modificacion                            */
+/* ------------------   ---------------------------------   --------------------------------------------------- */
+/****************************************************************************************************************/
+
+  /* Declaracion de variables */
+  V_NUMERO NUMBER;
+  V_FECHACONFIRMACION SCS_PERMUTAGUARDIAS.FECHACONFIRMACION%TYPE;
+  V_FACTURADO   SCS_GUARDIASCOLEGIADO.FACTURADO%TYPE;
+  
+BEGIN
+    IF P_FECHAINICIO < SYSDATE THEN
+        /* Guardia realizada. Hay que comprobar si esta facturada o no */
+        BEGIN
+            SELECT FACTURADO INTO V_FACTURADO
+            FROM SCS_CABECERAGUARDIAS
+            WHERE IDINSTITUCION = P_IDINSTITUCION
+                AND IDTURNO       = P_IDTURNO
+                AND IDGUARDIA     = P_IDGUARDIA
+                AND IDPERSONA     = P_IDPERSONA
+                AND FECHAINICIO   = P_FECHAINICIO
+                AND ROWNUM = 1;             
+            
+        EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                V_NUMERO := 5; /* Pendiente de realizar */
+        END;
+     
+        IF V_FACTURADO = 1 THEN
+            V_NUMERO := 6;  /* Guardia realizada y FACTURADA */
+        ELSE
+            V_NUMERO := 1; /* Guardia realizada y NO facturada */
+        END IF;
+     
+    ELSE
+        BEGIN
+            SELECT NUMERO INTO V_NUMERO
+            FROM (             
+                SELECT FECHAMODIFICACION, NVL2(FECHACONFIRMACION, 3, 4) AS NUMERO
+                FROM SCS_PERMUTAGUARDIAS
+                WHERE IDINSTITUCION = P_IDINSTITUCION
+                    AND IDTURNO_CONFIRMADOR = P_IDTURNO 
+                    AND IDGUARDIA_CONFIRMADOR = P_IDGUARDIA
+                    AND IDPERSONA_CONFIRMADOR = P_IDPERSONA
+                    AND FECHAINICIO_CONFIRMADOR = P_FECHAINICIO
+                UNION ALL
+                    SELECT FECHAMODIFICACION, NVL2(FECHACONFIRMACION, 3, 2) AS NUMERO
+                    FROM SCS_PERMUTAGUARDIAS
+                    WHERE IDINSTITUCION = P_IDINSTITUCION
+                        AND IDTURNO_SOLICITANTE = P_IDTURNO 
+                        AND IDGUARDIA_SOLICITANTE = P_IDGUARDIA
+                        AND IDPERSONA_SOLICITANTE = P_IDPERSONA
+                        AND FECHAINICIO_SOLICITANTE = P_FECHAINICIO
+                ORDER BY FECHAMODIFICACION DESC                        
+            ) TABLA_PERMUTAGUARDIAS
+            WHERE ROWNUM = 1;                        
+      
+        EXCEPTION WHEN NO_DATA_FOUND THEN
+                V_NUMERO := 5; /* Pendiente de realizar */
+        END;
+    END IF;
+
+  RETURN V_NUMERO;
+end F_SIGA_NUMEROPERMUTAGUARDIAS;
+ 
+CREATE OR REPLACE function USCGAE.F_SIGA_TIENE_ACTS_VALIDADAS(P_IDINSTITUCION SCS_CABECERAGUARDIAS.IDINSTITUCION%TYPE,
+                                                       P_IDTURNO  SCS_CABECERAGUARDIAS.IDTURNO%TYPE, 
+                                                       P_IDGUARDIA  SCS_CABECERAGUARDIAS.IDGUARDIA%TYPE, 
+                                                       P_IDCALENDARIOGUARDIAS  SCS_CABECERAGUARDIAS.IDCALENDARIOGUARDIAS%TYPE, 
+                                                       P_IDPERSONA  SCS_CABECERAGUARDIAS.IDPERSONA%TYPE, 
+                                                       P_FECHAINICIO  SCS_CABECERAGUARDIAS.FECHAINICIO%TYPE
+                                                       ) return NUMBER is
+
+  -- VARIABLES
+  V_NUMERO    NUMBER;
+  V_FECHAFIN  SCS_CABECERAGUARDIAS.FECHA_FIN%TYPE;
+
+BEGIN
+  SELECT
+    FECHA_FIN INTO V_FECHAFIN
+  FROM
+    SCS_CABECERAGUARDIAS CG
+  WHERE
+    CG.IDINSTITUCION = P_IDINSTITUCION
+    AND CG.IDTURNO = P_IDTURNO
+    AND CG.IDGUARDIA = P_IDGUARDIA
+    AND CG.IDPERSONA = P_IDPERSONA
+    AND CG.FECHAINICIO = P_FECHAINICIO;
+  
+  SELECT
+    COUNT (1) INTO V_NUMERO
+  FROM
+    SCS_ASISTENCIA ASI,
+    SCS_ACTUACIONASISTENCIA ACT
+  WHERE 1 = 1
+    AND ASI.IDINSTITUCION = P_IDINSTITUCION
+    AND ASI.IDTURNO = P_IDTURNO
+    AND ASI.IDGUARDIA = P_IDGUARDIA
+    AND ASI.IDPERSONACOLEGIADO = P_IDPERSONA
+    AND TRUNC(ASI.FECHAHORA) BETWEEN P_FECHAINICIO AND V_FECHAFIN
+    AND ASI.IDINSTITUCION = ACT.IDINSTITUCION
+    AND ASI.ANIO = ACT.ANIO
+    AND ASI.NUMERO = ACT.NUMERO
+    -- filtro
+    AND ACT.VALIDADA='1';
+ 
+   RETURN V_NUMERO;
+EXCEPTION
+  WHEN OTHERS THEN
+    V_NUMERO := 1;
+    RETURN V_NUMERO;
+
+end F_SIGA_TIENE_ACTS_VALIDADAS;
+ 
