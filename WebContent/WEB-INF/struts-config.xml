@@ -186,7 +186,6 @@
 		<form-bean name="ProgramacionForm" type="com.siga.envios.form.ProgramacionForm"/>
 		<form-bean name="DocumentosForm" type="com.siga.envios.form.DocumentosForm"/>
 		<form-bean name="PlantillasEnviosForm" type="com.siga.envios.form.SIGAPlantillasEnviosForm"/>
-		
 		<form-bean name="PlantillasEnviosCamposForm" type="com.siga.envios.form.SIGAPlantillasEnviosCamposForm"/>
 		<form-bean name="PlantillasEnviosPlantillasForm" type="com.siga.envios.form.SIGAPlantillasEnviosPlantillasForm"/>
 		<form-bean name="PlantillasEnviosCorreoElectronicoForm" type="com.siga.envios.form.SIGAPlantillasEnviosCorreoElectronicoForm"/>
@@ -1676,26 +1675,24 @@
 			<forward name="plazo" path="/html/jsp/expedientes/setPlazo.jsp"/>
 			<forward name="ejecucionSancion" path="/html/jsp/expedientes/abrirEjecucionSancion.jsp"/>
 			<forward name="seleccion" path="/html/jsp/expedientes/selecTipoNuevoExpEjg.jsp"/>
-			<forward name="mostrar" path="/html/jsp/expedientes/estados_Edit.jsp"/>	
-			<forward name="busquedaCenso" path="/CEN_BusquedaCensoModal.do" />
-			<forward name="volverBusquedaCenso" path="/EXP_AuditoriaExpedientes.do" />
-			<forward name="busquedaPersona" path="/CEN_BusquedaClientesModal.do" />
-			<forward name="volverBusquedaPersona" path="/EXP_AuditoriaExpedientes.do" />		
-
+			<forward name="mostrar" path="/html/jsp/expedientes/estados_Edit.jsp"/>			
 		</action>
 
 		<action path="/EXP_Auditoria_Denunciante" type="com.siga.expedientes.action.ExpDenuncianteAction" name="ExpDenuncianteForm" scope="request">
 			<forward name="inicio" path="/html/jsp/expedientes/abrirDenunciantes.jsp"/>
 			<forward name="mostrar" path="/html/jsp/expedientes/denunciantes_Edit.jsp"/>
-			<forward name="busquedaCenso" path="/CEN_BusquedaCensoModal.do" />
-			<forward name="volverBusquedaCenso" path="/EXP_Auditoria_Denunciante" />
 		</action>
 		<action path="/EXP_Auditoria_Denunciado" type="com.siga.expedientes.action.ExpDenunciadoAction" name="ExpDenunciadoForm" scope="request">
 			<forward name="inicio" path="/html/jsp/expedientes/abrirDenunciados.jsp"/>
 			<forward name="mostrar" path="/html/jsp/expedientes/denunciados_Edit.jsp"/>
-			<forward name="busquedaCenso" path="/CEN_BusquedaCensoModal.do" />
-			<forward name="volverBusquedaCenso" path="/EXP_Auditoria_Denunciado.do" />
+			<forward name="seleccion" path="/html/jsp/expedientes/seleccionDenunciado.jsp"/>
 		</action>
+		
+		<action path="/EXP_Auditoria_Direccion_Denunciado" type="com.siga.expedientes.action.ExpDenunciadoDireccionAction" name="ExpDireccionDenunciadoForm" scope="request">
+			<forward name="mostrar" path="/html/jsp/expedientes/denunciados_Edit.jsp"/>
+			<forward name="seleccion" path="/html/jsp/expedientes/seleccionDenunciado.jsp"/>
+		</action>
+		
 
 		<action path="/EXP_Auditoria_Alertas" type="com.siga.expedientes.action.ExpAlertaAction" name="ExpAlertaForm" scope="request">
 			<forward name="inicio" path="/html/jsp/expedientes/abrirAlerta.jsp"/>
@@ -1705,9 +1702,6 @@
 		<action path="/EXP_Auditoria_Partes" type="com.siga.expedientes.action.ExpPartesAction" name="ExpPartesForm" scope="request">
 			<forward name="inicio" path="/html/jsp/expedientes/abrirPartes.jsp"/>
 			<forward name="mostrar" path="/html/jsp/expedientes/partes_Edit.jsp"/>
-			<forward name="busquedaCenso" path="/CEN_BusquedaCensoModal.do" />
-			<forward name="volverBusquedaCenso" path="/EXP_Auditoria_Partes" />
-			
 		</action>
 
 		<action path="/EXP_Auditoria_Documentacion" type="com.siga.expedientes.action.ExpDocumentacionAction" name="ExpDocumentacionForm" scope="request">
@@ -1761,10 +1755,10 @@
 		</action>
 
 		<!-- ***** Expedientes / Nuevo Expediente ***** -->
-		<action path="/EXP_NuevoExpediente" type="com.siga.expedientes.action.NuevoExpedienteAction" name="busquedaExpedientesForm" scope="request">
+		<action path="/EXP_NuevoExpediente" type="com.siga.expedientes.action.NuevoExpedienteAction" name="NuevoExpedienteForm" scope="request">
+			<forward name="avanzada" path="/html/jsp/expedientes/busqTipoNuevoExp.jsp"/>
 			<forward name="inicio" path="/html/jsp/expedientes/nuevoExp.jsp"/>
-			<forward name="nuevo" path="/EXP_AuditoriaExpedientes.do"/>
-		
+			<forward name="seleccion" path="/html/jsp/expedientes/selecTipoNuevoExp.jsp"/>
 		</action>
 
 		<action path="/EXP_PestanaConfigurable1" type="com.siga.expedientes.action.PestanaConfigurableAction1" name="PestanaConfigurableForm" scope="request">
@@ -1840,8 +1834,6 @@
 			<forward name="seleccionarPlantilla" path="/html/jsp/certificados/seleccionarPlantilla.jsp"/>
 			<forward name="preguntaNumeroFacturas" path="/html/jsp/certificados/preguntaNumeroFacturas.jsp"/>
 			<forward name="exitoConStringDescarga" path="/html/jsp/certificados/exitoConStringDescarga.jsp"/>
-			<forward name="busquedaCenso" path="/CEN_BusquedaCensoModal.do" />
-			<forward name="volverBusquedaCenso" path="/CER_GestionSolicitudes" />
 		</action>
 		
 		<!-- ***** Certificados / Detalle Solicitud ***** -->
@@ -1985,7 +1977,8 @@
 			<forward name="abrir" path="/html/jsp/envios/pestanaImagenes.jsp"/>
 			<forward name="mostrar" path="/html/jsp/envios/detalleImagenPlantilla.jsp"/>
 		</action>
-			
+		
+		
 		
 
 		<!-- ***** Envíos a Grupos / Seleccionar Remitentes ***** -->
