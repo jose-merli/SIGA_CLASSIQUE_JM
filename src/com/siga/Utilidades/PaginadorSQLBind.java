@@ -180,7 +180,7 @@ public class PaginadorSQLBind extends PaginadorBind implements IPaginador, Seria
 			Hashtable codigosReducido = (Hashtable)queryList.get(1);
 			String count = null;
 			//Ha fallado el quitar los ordenes a los campos
-			count = "SELECT  /*+ no_merge */ COUNT(*)  AS NUMREGISTROS FROM (" + queryCountSinOrderSinCampos + ")";
+			count = "SELECT  /*+ no_merge */ COUNT(1)  AS NUMREGISTROS FROM (" + queryCountSinOrderSinCampos + ")";
 			rc.queryNLSBind(count, codigosReducido);
 			
 			
