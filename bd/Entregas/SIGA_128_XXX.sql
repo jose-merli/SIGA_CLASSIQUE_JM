@@ -1838,3 +1838,16 @@ EXCEPTION
 
 end F_SIGA_TIENE_ACTS_VALIDADAS;
  
+
+INSERT INTO GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD)
+VALUES('gratuita.insertarEstado.mensaje.envioPericles', 'A continuación, serán enviados el expediente, la documentación y los informes económicos solicitados a la CAJG. ¿Desea continuar?', 
+0, 1, sysdate, 0, 15);
+INSERT INTO GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD)
+VALUES('gratuita.insertarEstado.mensaje.envioPericles', 'A continuación, serán enviados el expediente, la documentación y los informes económicos solicitados a la CAJG. ¿Desea continuar?#CA', 
+0, 2, sysdate, 0, 15);
+INSERT INTO GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD)
+VALUES('gratuita.insertarEstado.mensaje.envioPericles', 'A continuación, serán enviados el expediente, la documentación y los informes económicos solicitados a la CAJG. ¿Desea continuar?#EU', 
+0, 3, sysdate, 0, 15);
+INSERT INTO GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD)
+VALUES('gratuita.insertarEstado.mensaje.envioPericles', 'A continuación, serán enviados el expediente, la documentación y los informes económicos solicitados a la CAJG. ¿Desea continuar?#GL', 
+0, 4, sysdate, 0, 15);
