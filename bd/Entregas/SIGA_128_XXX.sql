@@ -1851,3 +1851,13 @@ VALUES('gratuita.insertarEstado.mensaje.envioPericles', 'A continuación, serán e
 INSERT INTO GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD)
 VALUES('gratuita.insertarEstado.mensaje.envioPericles', 'A continuación, serán enviados el expediente, la documentación y los informes económicos solicitados a la CAJG. ¿Desea continuar?#GL', 
 0, 4, sysdate, 0, 15);
+
+--https://redabogacia.atlassian.net/browse/SIGA-844
+DROP INDEX IND_FK_SCS_ACTUACIONASISTENCIA;
+create unique index SCS_DOCUMENTACIONASI_SI on SCS_DOCUMENTACIONASI(IDINSTITUCION, IDDOCUMENTACIONASI) TABLESPACE TS_SIGA_SCS_IDX;
+BEGIN
+  DBMS_STATS.GATHER_TABLE_STATS(
+    ownname=>'USCGAE' ,
+    tabname=>'SCS_DOCUMENTACIONASI' ,
+    cascade=>TRUE) ;
+END;
