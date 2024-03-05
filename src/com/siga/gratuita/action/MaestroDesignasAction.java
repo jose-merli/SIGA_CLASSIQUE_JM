@@ -1170,45 +1170,52 @@ public class MaestroDesignasAction extends MasterAction {
 	}
 	
 	
-	protected boolean ValidacionExisteDesigna(MaestroDesignasForm formulario,HttpServletRequest request) throws ClsExceptions,SIGAException {
+	protected boolean ValidacionExisteDesigna(MaestroDesignasForm formulario,HttpServletRequest request) throws ClsExceptions,SIGAException 
+	{
+		UsrBean usr = this.getUserBean(request);
+		if (formulario == null)
+			return false;
+		String idJuzgadoFormulario = formulario.getJuzgado();
+		String numeroProcedimientoFormulario = formulario.getNumeroProcedimiento();
+		if (idJuzgadoFormulario == null || idJuzgadoFormulario.isEmpty() || numeroProcedimientoFormulario == null || numeroProcedimientoFormulario.isEmpty()) 
+			return false;
+		
 		try{
-			String idJuzgadoObtenido=formulario.getJuzgado();
-			if ((idJuzgadoObtenido!=null && !idJuzgadoObtenido.equals("")) && (formulario.getNumeroProcedimiento()!=null && !formulario.getNumeroProcedimiento().equals(""))){
-				// BNS CAMBIO POR EL TAG SELECT
-				String idJuzgado = "";
-				String idinstitucionJuzgado="";
-				if (idJuzgadoObtenido.startsWith("{")){
-					// ES UN JSON
-					HashMap<String, String> hmIdJuzgadoObtenido = new ObjectMapper().readValue(idJuzgadoObtenido, HashMap.class);
-					idJuzgado = hmIdJuzgadoObtenido.get("idjuzgado");
-					idinstitucionJuzgado = hmIdJuzgadoObtenido.get("idinstitucion");
-				} else if (!idJuzgadoObtenido.equals("")) {
-					// MANTENEMOS LA FORMA ANTIGÜA 
-					String cadena[]=idJuzgadoObtenido.split(",");
-					idJuzgado=cadena[0];
-					idinstitucionJuzgado=cadena[1];
-				}
-			         
-				String consultaDesigna = " where " +ScsDesignaBean.C_IDJUZGADO+"="+idJuzgado+
-				 " and "+ScsDesignaBean.C_IDINSTITUCIONJUZGADO+"="+idinstitucionJuzgado+
-				 " and upper("+ScsDesignaBean.C_NUMPROCEDIMIENTO+")=upper('"+(String)formulario.getNumeroProcedimiento()+"')"+
-				 " and ("+ScsDesignaBean.C_NUMERO+","+ScsDesignaBean.C_IDINSTITUCION+","+ScsDesignaBean.C_IDTURNO+","+ScsDesignaBean.C_ANIO+") not in ("+
-				 "     select "+ScsDesignaBean.C_NUMERO+","+ScsDesignaBean.C_IDINSTITUCION+","+ScsDesignaBean.C_IDTURNO+","+ScsDesignaBean.C_ANIO+
-				 "      from  "+ ScsDesignaBean.T_NOMBRETABLA+
-				 "     where  "+ScsDesignaBean.C_IDINSTITUCIONJUZGADO+"="+idinstitucionJuzgado+
-				 "        and "+ScsDesignaBean.C_IDJUZGADO+"="+idJuzgado+
-				 "        and upper("+ScsDesignaBean.C_NUMPROCEDIMIENTO+")=upper('"+(String)formulario.getNumeroProcedimiento()+"')"+
-				 "        and "+ScsDesignaBean.C_NUMERO+"="+formulario.getNumero()+
-				 "        and "+ScsDesignaBean.C_IDINSTITUCION+"="+this.getUserBean(request).getLocation()+
-				 "        and "+ScsDesignaBean.C_IDTURNO+"="+formulario.getIdTurno()+
-				 "        and "+ScsDesignaBean.C_ANIO+"="+formulario.getAnio()+")"+
-				 "  and "+ScsDesignaBean.C_IDINSTITUCION+"="+this.getUserBean(request).getLocation();
-				 
-			  ScsDesignaAdm designaAdm = new ScsDesignaAdm (this.getUserBean(request));	 
-	          Vector existeDesigna=designaAdm.select(consultaDesigna);
-	          if (existeDesigna!=null && existeDesigna.size()>0){
-	          	return true;
-	          }
+			String idJuzgado = "";
+			String idinstitucionJuzgado="";
+			if (idJuzgadoFormulario.startsWith("{")){
+				// ES UN JSON
+				HashMap<String, String> hmIdJuzgadoObtenido = new ObjectMapper().readValue(idJuzgadoFormulario, HashMap.class);
+				idJuzgado = hmIdJuzgadoObtenido.get("idjuzgado");
+				idinstitucionJuzgado = hmIdJuzgadoObtenido.get("idinstitucion");
+			} else if (!idJuzgadoFormulario.equals("")) {
+				// MANTENEMOS LA FORMA ANTIGÜA 
+				String cadena[]=idJuzgadoFormulario.split(",");
+				idJuzgado=cadena[0];
+				idinstitucionJuzgado=cadena[1];
+			}
+		         
+			StringBuilder consultaDesigna = new StringBuilder();
+			consultaDesigna.append(" where /*SIGA-845 Optimizada original 6nyp2h0hza0d3*/ 1=1 ");
+			consultaDesigna.append("   and "+ScsDesignaBean.C_IDJUZGADO+"="+idJuzgado);
+			consultaDesigna.append("   and "+ScsDesignaBean.C_IDINSTITUCIONJUZGADO+"="+idinstitucionJuzgado);
+			consultaDesigna.append("   and upper("+ScsDesignaBean.C_NUMPROCEDIMIENTO+")=upper('"+numeroProcedimientoFormulario+"')");
+			consultaDesigna.append("   and ("+ScsDesignaBean.C_NUMERO+","+ScsDesignaBean.C_IDINSTITUCION+","+ScsDesignaBean.C_IDTURNO+","+ScsDesignaBean.C_ANIO+") not in (");
+			consultaDesigna.append("       select "+ScsDesignaBean.C_NUMERO+","+ScsDesignaBean.C_IDINSTITUCION+","+ScsDesignaBean.C_IDTURNO+","+ScsDesignaBean.C_ANIO);
+			consultaDesigna.append("         from "+ ScsDesignaBean.T_NOMBRETABLA);
+			consultaDesigna.append("        where "+ScsDesignaBean.C_IDINSTITUCIONJUZGADO+"="+idinstitucionJuzgado);
+			consultaDesigna.append("          and "+ScsDesignaBean.C_IDJUZGADO+"="+idJuzgado);
+			consultaDesigna.append("          and upper("+ScsDesignaBean.C_NUMPROCEDIMIENTO+")=upper('"+numeroProcedimientoFormulario+"')");
+			consultaDesigna.append("          and "+ScsDesignaBean.C_NUMERO+"="+formulario.getNumero());
+			consultaDesigna.append("          and "+ScsDesignaBean.C_IDINSTITUCION+"="+usr.getLocation());
+			consultaDesigna.append("          and "+ScsDesignaBean.C_IDTURNO+"="+formulario.getIdTurno());
+			consultaDesigna.append("          and "+ScsDesignaBean.C_ANIO+"="+formulario.getAnio()+")");
+			consultaDesigna.append("   and "+ScsDesignaBean.C_IDINSTITUCION+"="+usr.getLocation());
+			
+			ScsDesignaAdm designaAdm = new ScsDesignaAdm (usr);
+			Vector existeDesigna=designaAdm.select(consultaDesigna.toString());
+			if (existeDesigna!=null && existeDesigna.size()>0){
+				return true;
 			}
 		}
 		catch (Exception e){

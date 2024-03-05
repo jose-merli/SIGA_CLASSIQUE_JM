@@ -1861,3 +1861,12 @@ BEGIN
     tabname=>'SCS_DOCUMENTACIONASI' ,
     cascade=>TRUE) ;
 END;
+
+--https://redabogacia.atlassian.net/browse/SIGA-845
+create index SI_SCS_DESIGNA_UPPER_NUMPROC on SCS_DESIGNA(upper(NUMPROCEDIMIENTO), IDINSTITUCION_JUZG, IDJUZGADO) TABLESPACE TS_SIGA_SCS_IDX;
+BEGIN
+  DBMS_STATS.GATHER_TABLE_STATS(
+    ownname=>'USCGAE' ,
+    tabname=>'SCS_DESIGNA' ,
+    cascade=>TRUE) ;
+END;
