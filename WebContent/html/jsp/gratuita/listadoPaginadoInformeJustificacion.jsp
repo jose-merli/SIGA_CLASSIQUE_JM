@@ -2007,9 +2007,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																	<input type="hidden"
 																		id="nigactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
 																		value="${actuacion.nig}" />
-																	<c:if test="${InformeJustificacionMasivaForm.fichaColegial==false}">
-
-
+																	<c:if test="${actuacion.anulada==null ||  actuacion.anulada=='0'}">
 																		<input name="checkAcreditacion"
 																			id="acre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
 																			onclick="onCheckAcreditacion(this);" type="checkbox" />
@@ -2198,7 +2196,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																	<input type="hidden"
 																		id="nigactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
 																		value="${actuacion.nig}" />
-																	<c:if test="${InformeJustificacionMasivaForm.fichaColegial==false}">
+																	<c:if test="${actuacion.anulada==null ||  actuacion.anulada=='0'}">
 
 																		<input name="checkAcreditacion"
 																			id="acre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
@@ -2206,7 +2204,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																		<input name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion"
 																			id="checkacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
 																			type="hidden" />
-																	</c:if>
+																	</c:if> 
 																	<c:out value="${actuacion.descripcion}" />
 																</c:when>
 																<c:otherwise>
@@ -2525,7 +2523,10 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 				cadenaAcreditacion = objImgDivActuacion.attr("id").split("div_")[1];
 				countDesigna = cadenaAcreditacion.split("_")[0];
 				nigNumProcRequired = cadenaAcreditacion.split("_nigNumProc_")[1];
+				//alertStop("cadenaAcreditacion:"+cadenaAcreditacion);
+				//alertStop("nigNumProcRequired:"+nigNumProcRequired);
 				isAcreditacionCompleta =  document.getElementById("acreditacionCompleta_"+countDesigna).value;
+				//alertStop("isAcreditacionCompleta:"+isAcreditacionCompleta);
 				var formularioActuacionPte = '';
 				objImagen = '<img id="img_';
 				objImagen += cadenaAcreditacion;
