@@ -60,15 +60,11 @@ public class ScsDesignaDatosAdicionalesAdm extends MasterBeanAdministrador {
 				ScsDesignaDatosAdicionalesBean.C_NUMEROASUNTO                        ,
 				ScsDesignaDatosAdicionalesBean.C_FECHAMODIFICACION                   ,
 				ScsDesignaDatosAdicionalesBean.C_USUMODIFICACION                     ,
-				ScsDesignaDatosAdicionalesBean.C_INICIO_PROCESO                      ,
 				ScsDesignaDatosAdicionalesBean.C_TIPO_AUTO                           ,
-				ScsDesignaDatosAdicionalesBean.C_FECHA_RESOLUCION_JUDICIAL           ,
 				ScsDesignaDatosAdicionalesBean.C_FECHA_RESOLUCION_JUDICIAL_OPOSICION ,
-				ScsDesignaDatosAdicionalesBean.C_FECHA_ESCRITURA                     ,
 				ScsDesignaDatosAdicionalesBean.C_FECHA_RESOLUCION_SENTENCIA_FIRME    ,
 				ScsDesignaDatosAdicionalesBean.C_NUMERO_VISTAS_ADICIONALES           ,
 				ScsDesignaDatosAdicionalesBean.C_FECHA_VISTA                         ,
-				ScsDesignaDatosAdicionalesBean.C_FECHA_REQUERIMIENTO_JUDICIAL        ,
 				ScsDesignaDatosAdicionalesBean.C_NUMERO_PERSONADOS_MACROCAUSA        ,
 				ScsDesignaDatosAdicionalesBean.C_ESVICTIMA                           ,
 				ScsDesignaDatosAdicionalesBean.C_ESSUSTITUCION                       
@@ -107,15 +103,11 @@ public class ScsDesignaDatosAdicionalesAdm extends MasterBeanAdministrador {
 			bean.setNumeroAsunto(UtilidadesHash.getLong(hash,ScsDesignaDatosAdicionalesBean.C_NUMEROASUNTO));
 			bean.setFechaMod(UtilidadesHash.getString(hash,ScsDesignaDatosAdicionalesBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,ScsDesignaDatosAdicionalesBean.C_USUMODIFICACION));	
-			bean.setInicioProceso(UtilidadesHash.getString(hash,ScsDesignaDatosAdicionalesBean.C_INICIO_PROCESO                      ));
 			bean.setTipoAuto(UtilidadesHash.getInteger(hash,ScsDesignaDatosAdicionalesBean.C_TIPO_AUTO                           ));
-			bean.setFechaResolucionJudicial(UtilidadesHash.getString(hash,ScsDesignaDatosAdicionalesBean.C_FECHA_RESOLUCION_JUDICIAL           ));
 			bean.setFechaResolucionJudicialOposicion(UtilidadesHash.getString(hash,ScsDesignaDatosAdicionalesBean.C_FECHA_RESOLUCION_JUDICIAL_OPOSICION ));
-			bean.setFechaEscritura(UtilidadesHash.getString(hash,ScsDesignaDatosAdicionalesBean.C_FECHA_ESCRITURA                     ));
 			bean.setFechaResolucionSentenciaFirme(UtilidadesHash.getString(hash,ScsDesignaDatosAdicionalesBean.C_FECHA_RESOLUCION_SENTENCIA_FIRME    ));
 			bean.setNumeroVistasAdicionales(UtilidadesHash.getInteger(hash,ScsDesignaDatosAdicionalesBean.C_NUMERO_VISTAS_ADICIONALES           ));
 			bean.setFechaVista(UtilidadesHash.getString(hash,ScsDesignaDatosAdicionalesBean.C_FECHA_VISTA                         ));
-			bean.setFechaRequerimientoJudicial(UtilidadesHash.getString(hash,ScsDesignaDatosAdicionalesBean.C_FECHA_REQUERIMIENTO_JUDICIAL        ));
 			bean.setNumeroPersonadosMacrocausa(UtilidadesHash.getInteger(hash,ScsDesignaDatosAdicionalesBean.C_NUMERO_PERSONADOS_MACROCAUSA        ));
 			bean.setEsVictima(UtilidadesHash.getString(hash,ScsDesignaDatosAdicionalesBean.C_ESVICTIMA                           ));
 			bean.setEsSustitucion(UtilidadesHash.getString(hash,ScsDesignaDatosAdicionalesBean.C_ESSUSTITUCION                       ));
@@ -144,15 +136,11 @@ public class ScsDesignaDatosAdicionalesAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsDesignaDatosAdicionalesBean.C_NUMEROASUNTO,b.getNumeroAsunto());
 			UtilidadesHash.set(hash, ScsDesignaDatosAdicionalesBean.C_FECHAMODIFICACION,b.getFechaMod());
 			UtilidadesHash.set(hash, ScsDesignaDatosAdicionalesBean.C_USUMODIFICACION,b.getUsuMod());
-			UtilidadesHash.set(hash, ScsDesignaDatosAdicionalesBean.C_INICIO_PROCESO,b.getInicioProceso());
 			UtilidadesHash.set(hash, ScsDesignaDatosAdicionalesBean.C_TIPO_AUTO,b.getTipoAuto());
-			UtilidadesHash.set(hash, ScsDesignaDatosAdicionalesBean.C_FECHA_RESOLUCION_JUDICIAL,b.getFechaResolucionJudicial());
 			UtilidadesHash.set(hash, ScsDesignaDatosAdicionalesBean.C_FECHA_RESOLUCION_JUDICIAL_OPOSICION,b.getFechaResolucionJudicialOposicion());
-			UtilidadesHash.set(hash, ScsDesignaDatosAdicionalesBean.C_FECHA_ESCRITURA,b.getFechaEscritura());
 			UtilidadesHash.set(hash, ScsDesignaDatosAdicionalesBean.C_FECHA_RESOLUCION_SENTENCIA_FIRME,b.getFechaResolucionSentenciaFirme());
 			UtilidadesHash.set(hash, ScsDesignaDatosAdicionalesBean.C_NUMERO_VISTAS_ADICIONALES,b.getNumeroVistasAdicionales());
 			UtilidadesHash.set(hash, ScsDesignaDatosAdicionalesBean.C_FECHA_VISTA,b.getFechaVista());
-			UtilidadesHash.set(hash, ScsDesignaDatosAdicionalesBean.C_FECHA_REQUERIMIENTO_JUDICIAL,b.getFechaRequerimientoJudicial());
 			UtilidadesHash.set(hash, ScsDesignaDatosAdicionalesBean.C_NUMERO_PERSONADOS_MACROCAUSA,b.getNumeroPersonadosMacrocausa());
 			UtilidadesHash.set(hash, ScsDesignaDatosAdicionalesBean.C_ESVICTIMA,b.getEsVictima());
 			UtilidadesHash.set(hash, ScsDesignaDatosAdicionalesBean.C_ESSUSTITUCION,b.getEsSustitucion());

@@ -16,15 +16,11 @@ public class ScsDesignaDatosAdicionalesBean extends MasterBean {
 	private Long	numeroAsunto ;
 	private String	fechaModificacion ;
 	private Integer	usuModificacion ;
-	private String	inicioProceso ;
 	private Integer	tipoAuto ;
-	private String	fechaResolucionJudicial ;
 	private String	fechaResolucionJudicialOposicion ;
-	private String	fechaEscritura ;
 	private String	fechaResolucionSentenciaFirme ;
 	private Integer	numeroVistasAdicionales ;
 	private String	fechaVista ;
-	private String	fechaRequerimientoJudicial ;
 	private Integer	numeroPersonadosMacrocausa ;
 	private String	esVictima ;
 	private String	esSustitucion ;
@@ -40,15 +36,11 @@ public class ScsDesignaDatosAdicionalesBean extends MasterBean {
 	static public final String	C_NUMEROASUNTO                          =  "NUMEROASUNTO";
 	static public final String	C_FECHAMODIFICACION                     =  "FECHAMODIFICACION";
 	static public final String	C_USUMODIFICACION                       =  "USUMODIFICACION";
-	static public final String	C_INICIO_PROCESO                        =  "INICIO_PROCESO";
 	static public final String	C_TIPO_AUTO                             =  "TIPO_AUTO";
-	static public final String	C_FECHA_RESOLUCION_JUDICIAL             =  "FECHA_RESOLUCION_JUDICIAL";
 	static public final String	C_FECHA_RESOLUCION_JUDICIAL_OPOSICION   =  "FECHA_RESOLUCION_JUDICIAL_OPOSICION";
-	static public final String	C_FECHA_ESCRITURA                       =  "FECHA_ESCRITURA";
 	static public final String	C_FECHA_RESOLUCION_SENTENCIA_FIRME      =  "FECHA_RESOLUCION_SENTENCIA_FIRME";
 	static public final String	C_NUMERO_VISTAS_ADICIONALES             =  "NUMERO_VISTAS_ADICIONALES";
 	static public final String	C_FECHA_VISTA                           =  "FECHA_VISTA";
-	static public final String	C_FECHA_REQUERIMIENTO_JUDICIAL          =  "FECHA_REQUERIMIENTO_JUDICIAL";
 	static public final String	C_NUMERO_PERSONADOS_MACROCAUSA          =  "NUMERO_PERSONADOS_MACROCAUSA";
 	static public final String	C_ESVICTIMA                             =  "ESVICTIMA";
 	static public final String	C_ESSUSTITUCION                         =  "ESSUSTITUCION";
@@ -95,35 +87,17 @@ public class ScsDesignaDatosAdicionalesBean extends MasterBean {
 	public void setUsuModificacion(Integer usuModificacion) {
 		this.usuModificacion = usuModificacion;
 	}
-	public String getInicioProceso() {
-		return inicioProceso;
-	}
-	public void setInicioProceso(String inicioProceso) {
-		this.inicioProceso = inicioProceso;
-	}
 	public Integer getTipoAuto() {
 		return tipoAuto;
 	}
 	public void setTipoAuto(Integer tipoAuto) {
 		this.tipoAuto = tipoAuto;
 	}
-	public String getFechaResolucionJudicial() {
-		return fechaResolucionJudicial;
-	}
-	public void setFechaResolucionJudicial(String fechaResolucionJudicial) {
-		this.fechaResolucionJudicial = fechaResolucionJudicial;
-	}
 	public String getFechaResolucionJudicialOposicion() {
 		return fechaResolucionJudicialOposicion;
 	}
 	public void setFechaResolucionJudicialOposicion(String fechaResolucionJudicialOposicion) {
 		this.fechaResolucionJudicialOposicion = fechaResolucionJudicialOposicion;
-	}
-	public String getFechaEscritura() {
-		return fechaEscritura;
-	}
-	public void setFechaEscritura(String fechaEscritura) {
-		this.fechaEscritura = fechaEscritura;
 	}
 	public String getFechaResolucionSentenciaFirme() {
 		return fechaResolucionSentenciaFirme;
@@ -142,12 +116,6 @@ public class ScsDesignaDatosAdicionalesBean extends MasterBean {
 	}
 	public void setFechaVista(String fechaVista) {
 		this.fechaVista = fechaVista;
-	}
-	public String getFechaRequerimientoJudicial() {
-		return fechaRequerimientoJudicial;
-	}
-	public void setFechaRequerimientoJudicial(String fechaRequerimientoJudicial) {
-		this.fechaRequerimientoJudicial = fechaRequerimientoJudicial;
 	}
 	public Integer getNumeroPersonadosMacrocausa() {
 		return numeroPersonadosMacrocausa;
