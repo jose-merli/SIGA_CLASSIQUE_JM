@@ -626,17 +626,16 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 	    int contador=0;
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT AC.IDACREDITACION,AC.DESCRIPCION ACREDITACION,AC.IDTIPOACREDITACION,Decode(to_char(acp.Porcentaje), to_char(Trunc(acp.Porcentaje)), to_char(acp.Porcentaje), f_Siga_Formatonumero(to_char(acp.Porcentaje), 2)) PORCENTAJE, TAC.DESCRIPCION TIPO, ");
-		sql.append(" PRO.NOMBRE PROCEDIMIENTO,PRO.CODIGO CATEGORIA, PRO.IDJURISDICCION,PRO.COMPLEMENTO,PRO.PERMITIRANIADIRLETRADO,ACT.NUMEROASUNTO,ACT.IDPROCEDIMIENTO,ACT.IDJUZGADO,");
-		sql.append(" TO_CHAR(ACT.FECHAJUSTIFICACION,'dd/mm/yyyy') FECHAJUSTIFICACION,ACT.VALIDADA,ACT.IDFACTURACION,ACT.NUMEROPROCEDIMIENTO,ACT.ANIOPROCEDIMIENTO ");
-		sql.append(" ,(SELECT NOMBRE || ' (' || FECHADESDE || '-' || FECHAHASTA || ')' ");
-		sql.append(" FROM FCS_FACTURACIONJG FJG ");
-		sql.append(" WHERE FJG.IDINSTITUCION = ACT.IDINSTITUCION ");
-		sql.append(" AND FJG.IDFACTURACION = ACT.IDFACTURACION) AS ");
-		sql.append(" DESCRIPCIONFACTURACION ");
-		sql.append(" ,ACT.DOCJUSTIFICACION ");
-		sql.append(" ,ACT.ANULACION ");
-		sql.append(" ,ACP.NIG_NUMPROCEDIMIENTO ");
-		sql.append(" ,ACT.NIG,ACT.FECHA");
+		sql.append("        PRO.NOMBRE PROCEDIMIENTO,PRO.CODIGO CATEGORIA, PRO.IDJURISDICCION,PRO.COMPLEMENTO,PRO.PERMITIRANIADIRLETRADO,ACT.NUMEROASUNTO,ACT.IDPROCEDIMIENTO,ACT.IDJUZGADO,");
+		sql.append("        TO_CHAR(ACT.FECHAJUSTIFICACION,'dd/mm/yyyy') FECHAJUSTIFICACION,ACT.VALIDADA,ACT.IDFACTURACION,ACT.NUMEROPROCEDIMIENTO,ACT.ANIOPROCEDIMIENTO ");
+		sql.append("       ,(SELECT NOMBRE || ' (' || FECHADESDE || '-' || FECHAHASTA || ')' FROM FCS_FACTURACIONJG FJG WHERE FJG.IDINSTITUCION = ACT.IDINSTITUCION AND FJG.IDFACTURACION = ACT.IDFACTURACION) AS DESCRIPCIONFACTURACION ");
+		sql.append("       ,ACT.DOCJUSTIFICACION ,ACT.ANULACION ");
+		sql.append("       ,ACP.NIG_NUMPROCEDIMIENTO ");
+		sql.append("       ,(select LISTAGG(ADIC.nombrecampo || 'ссс' || ADIC.obligatorio_fichacolegial, '-') within group (order by ADIC.nombrecampo) "); 
+		sql.append("           from SCS_ACREDITACION_CAMPOSNECESARIOS ADIC  ");
+		sql.append("          WHERE ADIC.IDINSTITUCION = ACP.IDINSTITUCION AND ADIC.IDPROCEDIMIENTO = ACP.IDPROCEDIMIENTO and ADIC.IDACREDITACION = ACP.IDACREDITACION ");
+		sql.append("        ) CAMPOS_ADICIONALES ");
+		sql.append("       ,ACT.NIG,ACT.FECHA");
 		
 		if(idPermitirEditarLetrado){
 			if(this.usrbean.isLetrado()){
@@ -656,15 +655,10 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 				sql.append(" 0) PERMITIREDITARLETRADO ");
 			}else{
 				sql.append(" ,DECODE(NVL(ACT.IDFACTURACION, 0), 0,1,0) PERMITIREDITARLETRADO "); 
-				
-				
 			}
 		}else{
 			sql.append(" ,0 PERMITIREDITARLETRADO ");
 		}
-		
-		
-		
 		
 		sql.append(" FROM SCS_ACTUACIONDESIGNA          ACT, ");
 		sql.append(" SCS_PROCEDIMIENTOS            PRO, ");
@@ -1002,25 +996,22 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 	//END BNS INC_07532_SIGA
 	public List<AcreditacionForm> getAcreditacionesPendientes(String idInstitucion,String idProcedimiento,String idJuzgado,boolean restriccionesActivas, List<ActuacionDesignaForm> actuacionesList) throws ClsExceptions, SIGAException 
 	{
-	    
-		
 		Hashtable<Integer,String> codigos = new Hashtable<Integer,String>();
 	    int contador=0;
 		StringBuffer sql = new StringBuffer();
 
-		sql.append(" SELECT AC.IDACREDITACION,AC.DESCRIPCION,TAC.IDTIPOACREDITACION,Decode(to_char(acpro.Porcentaje), to_char(Trunc(acpro.Porcentaje)), to_char(acpro.Porcentaje), f_Siga_Formatonumero(to_char(acpro.Porcentaje), 2)) PORCENTAJE,PRO.IDJURISDICCION,ACPRO.NIG_NUMPROCEDIMIENTO ");
-		sql.append(" FROM SCS_ACREDITACIONPROCEDIMIENTO ACPRO, ");
-		sql.append(" SCS_PROCEDIMIENTOS            PRO, ");
-		sql.append(" SCS_ACREDITACION              AC, ");
-		sql.append(" SCS_TIPOACREDITACION          TAC ");
-		sql.append(" WHERE  ");
-		sql.append(" AC.IDTIPOACREDITACION = TAC.IDTIPOACREDITACION ");
-		sql.append(" AND ACPRO.IDACREDITACION = AC.IDACREDITACION ");
-		sql.append(" AND PRO.IDINSTITUCION = ACPRO.IDINSTITUCION ");
-		sql.append(" AND PRO.IDPROCEDIMIENTO = ACPRO.IDPROCEDIMIENTO ");
-
-		
-		
+		sql.append(" SELECT AC.IDACREDITACION,AC.DESCRIPCION,TAC.IDTIPOACREDITACION,");
+		sql.append("        Decode(to_char(acpro.Porcentaje), to_char(Trunc(acpro.Porcentaje)), to_char(acpro.Porcentaje), f_Siga_Formatonumero(to_char(acpro.Porcentaje), 2)) PORCENTAJE,");
+		sql.append("        PRO.IDJURISDICCION, ACPRO.NIG_NUMPROCEDIMIENTO, ");
+		sql.append("        (select LISTAGG(ADIC.nombrecampo || 'ссс' || ADIC.obligatorio_fichacolegial, '-') within group (order by ADIC.nombrecampo) "); 
+		sql.append("           from SCS_ACREDITACION_CAMPOSNECESARIOS ADIC  ");
+		sql.append("          WHERE ADIC.IDINSTITUCION = ACPRO.IDINSTITUCION AND ADIC.IDPROCEDIMIENTO = ACPRO.IDPROCEDIMIENTO and ADIC.IDACREDITACION = ACPRO.IDACREDITACION ");
+		sql.append("        ) CAMPOS_ADICIONALES ");
+		sql.append(" FROM SCS_PROCEDIMIENTOS PRO ");
+		sql.append(" inner join SCS_ACREDITACIONPROCEDIMIENTO ACPRO on PRO.IDINSTITUCION = ACPRO.IDINSTITUCION AND PRO.IDPROCEDIMIENTO = ACPRO.IDPROCEDIMIENTO ");
+		sql.append(" inner join SCS_ACREDITACION AC on ACPRO.IDACREDITACION = AC.IDACREDITACION ");
+		sql.append(" inner join SCS_TIPOACREDITACION TAC on AC.IDTIPOACREDITACION = TAC.IDTIPOACREDITACION ");
+		sql.append(" WHERE 1=1 ");
 		sql.append(" AND ACPRO.IDINSTITUCION = :");
 		contador++;
 		codigos.put(new Integer(contador),idInstitucion);
@@ -1032,9 +1023,6 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" AND TAC.IDTIPOACREDITACION NOT IN (4) ");
 		sql.append(" AND AC.IDACREDITACION NOT IN (10,11)");
 		
-		
-		
-//		ArrayList
 		if(restriccionesActivas && actuacionesList!=null && actuacionesList.size()>0){
 			boolean isInicio = false;
 			boolean isFin = false;
@@ -1044,11 +1032,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 				String multiplesComplementos = actuacion.getMultiplesComplementos();
 				if(multiplesComplementos!=null && multiplesComplementos.equals(ClsConstants.DB_TRUE))
 					return new ArrayList<AcreditacionForm>();
-//					break;
 				
-//				if(multiplesComplementos!=null && multiplesComplementos.equals(ClsConstants.DB_FALSE))
-//					return new ArrayList<AcreditacionForm>();
-//				
 				if(i==0){
 					sql.append(" AND AC.IDACREDITACION NOT IN (");
 				
@@ -1059,7 +1043,6 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 					sql.append(contador);
 					sql.append(")");
 				}
-				
 				
 				if(!isInicio){
 					isInicio = actuacion.getAcreditacion().getIdTipo().equals("1");
@@ -1089,19 +1072,9 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 						return new ArrayList<AcreditacionForm>();
 					}
 				}
-				
-				
-				
-//				if(i!=actuacionesList.size()-1)
-//					sql.append(",");
-//				else
-//					sql.append(")");
-				
 			}
 			if(isInicio && isFin)
 				return new ArrayList<AcreditacionForm>();
-			
-			
 		}
 		else{
 			if(actuacionesList!=null && actuacionesList.size()>0){
@@ -1111,7 +1084,6 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 						idJuzgado = actuacion.getIdJuzgado();
 						break;
 					}
-					
 				}
 			}
 		}
