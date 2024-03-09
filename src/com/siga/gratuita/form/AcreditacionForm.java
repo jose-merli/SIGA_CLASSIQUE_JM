@@ -24,8 +24,16 @@ public class AcreditacionForm extends MasterForm
 	private String idProcedimiento;
 	private String idJurisdiccion;
 	private String nigNumProcedimiento;
+	private String camposAdicionales;
 	
 	
+	
+	public String getCamposAdicionales() {
+		return camposAdicionales;
+	}
+	public void setCamposAdicionales(String camposAdicionales) {
+		this.camposAdicionales = camposAdicionales;
+	}
 	private int rowSpan;
 	
 	

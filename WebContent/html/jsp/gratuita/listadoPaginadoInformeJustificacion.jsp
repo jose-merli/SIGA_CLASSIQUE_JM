@@ -276,6 +276,25 @@ function accionGuardar (isLetrado)
 					datosInsertables += ","+jQuery("#anioprocact_"+idsValidacion[1]).val();
 				if(jQuery("#nigact_"+idsValidacion[1]))
 					datosInsertables += ","+jQuery("#nigact_"+idsValidacion[1]).val();
+				datosInsertables+=","
+				
+				if(jQuery("#inicio_procesoact_"+idsValidacion[1]).val()!='undefined') datosInsertables += "inicio_proceso="+jQuery("#inicio_procesoact_"+idsValidacion[1]).val()+",";
+				if(jQuery("#tipo_autoact_"+idsValidacion[1]).val()!='undefined') datosInsertables += "tipo_auto="+jQuery("#tipo_autoact_"+idsValidacion[1]).val()+",";
+				
+				
+				if(jQuery("#fecha_resolucion_judicialact_"+idsValidacion[1]).val()!='undefined') 
+					datosInsertables += "fecha_resolucion_judicial="+jQuery("#fecha_resolucion_judicialact_"+idsValidacion[1]).val()+",";
+				if(jQuery("#fecha_resolucion_judicial_oposicionact_"+idsValidacion[1]).val()!='undefined') datosInsertables += "fecha_resolucion_judicial_oposicion="+jQuery("#fecha_resolucion_judicial_oposicionact_"+idsValidacion[1]).val()+",";
+				if(jQuery("#fecha_escrituraact_"+idsValidacion[1]).val()!='undefined') datosInsertables += "fecha_escritura="+jQuery("#fecha_escrituraact_"+idsValidacion[1]).val()+",";
+				if(jQuery("#fecha_resolucion_sentencia_firmeact_"+idsValidacion[1]).val()!='undefined') datosInsertables += "fecha_resolucion_sentencia_firme="+jQuery("#fecha_resolucion_sentencia_firmeact_"+idsValidacion[1]).val()+",";
+				if(jQuery("#numero_vistas_adicionalesact_"+idsValidacion[1]).val()!='undefined') datosInsertables += "numero_vistas_adicionales="+jQuery("#numero_vistas_adicionalesact_"+idsValidacion[1]).val()+",";
+				if(jQuery("#fecha_vistaact_"+idsValidacion[1]).val()!='undefined') datosInsertables += "fecha_vista="+jQuery("#fecha_vistaact_"+idsValidacion[1]).val()+",";
+				if(jQuery("#fecha_requerimiento_judicialact_"+idsValidacion[1]).val()!='undefined') datosInsertables += "fecha_requerimiento_judicial="+jQuery("#fecha_requerimiento_judicialact_"+idsValidacion[1]).val()+",";
+				if(jQuery("#numero_personados_macrocausaact_"+idsValidacion[1]).val()!='undefined') datosInsertables += "numero_personados_macrocausa="+jQuery("#numero_personados_macrocausaact_"+idsValidacion[1]).val()+",";
+				if(jQuery("#esvictimaact_"+idsValidacion[1]).val()!='undefined') datosInsertables += "esvictima="+jQuery("#esvictimaact_"+idsValidacion[1]).val()+",";
+				if(jQuery("#essustitucionact_"+idsValidacion[1]).val()!='undefined')	datosInsertables += "essustitucion="+jQuery("#essustitucionact_"+idsValidacion[1]).val();					
+				
+
 				
 			datosJustificacion = datosJustificacion + anio + "," + 
 								numero + "," + 
@@ -310,7 +329,18 @@ function accionGuardar (isLetrado)
 			//si existe ya lo valida lo de arriba
 			if(!document.getElementById(cadenaAcreditacion)){
 				isAcreditacionCompleta = 'true';
-				if(cadenaValidacion.split("nigNumProc_")[1]=='1'){
+				
+				
+
+
+				allCamposAdicionales = cadenaValidacion.split("_nigNumProc_");
+				nigNumProcRequired = allCamposAdicionales[1].substring(0,1);
+				camposAdicionales = allCamposAdicionales[1].split("_camposAdicionales_")[1];
+				
+				
+				
+				
+				if(nigNumProcRequired){
 						
 					identificador = cadenaValidacion.split("vali_")[1];
 					if(document.getElementById("numprocactold_"+identificador)){
@@ -329,6 +359,32 @@ function accionGuardar (isLetrado)
 						
 					}
 				}
+				
+				
+				lineasCamposAdicionales = camposAdicionales.split("_");
+				
+				//alertStop("lineaCamposAdicionales:"+lineasCamposAdicionales);
+				for (var i = 0; i < lineasCamposAdicionales.length; i++) {
+					lineaCamposAdicionales = lineasCamposAdicionales[i];
+					campos = lineaCamposAdicionales.split('-');
+					campo = campos[0];
+					requerido = campos[1];
+					if(existecampoRequerido=='0')
+						existecampoRequerido = requerido;
+					auxCampoOld = campo+'actold_';
+					
+					if(document.getElementById(""+auxCampoOld+cadenaValidacion)){
+						if(document.getElementById(""+auxCampoOld+cadenaValidacion).value=='')
+							isAcreditacionCompleta = 'false';
+						
+					}
+					
+				}
+				
+				
+				
+				
+				
 				if(isAcreditacionCompleta=='false'){
 					existenActuacionesIncompletas = 'true';
 				}else{
@@ -1851,16 +1907,16 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																	<c:when test="${estadoAcreditacion.first}">
 																		<td height="24px">
 																			<div align="center"
-																				id="div_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}">&nbsp;</div>
+																				id="div_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}_camposAdicionales_${acreditacion.camposAdicionales}">&nbsp;</div>
 																		</td>
 																		<td><input name="checkAcreditacion"
-																			id="acre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}"
+																			id="acre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}_camposAdicionales_${acreditacion.camposAdicionales}"
 																			onclick="onCheckAcreditacion(this);" type="checkbox" /> <c:out value="${acreditacion.descripcion}" /> <input
 																			name="${status.count}_${acreditacion.idProcedimiento}_checkAcreditacion"
-																			id="checkacre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}"
+																			id="checkacre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}_camposAdicionales_${acreditacion.camposAdicionales}"
 																			type="hidden" /></td>
 																		<td title="<siga:Idioma	key='gratuita.informeJustificacionMasiva.informacion.validacion'/>"><input name="checkValidacion"
-																			id="vali_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}"
+																			id="vali_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}_camposAdicionales_${acreditacion.camposAdicionales}"
 																			type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled} /></td>
 																		<td rowspan="${designa.rowSpan}"><c:choose>
 																				<c:when
@@ -1899,17 +1955,17 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																		</c:choose>
 																		<td height="24px">
 																			<div align="center"
-																				id="div_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}">&nbsp;</div>
+																				id="div_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}_camposAdicionales_${acreditacion.camposAdicionales}">&nbsp;</div>
 																		</td>
 
 																		<td><input name="checkAcreditacion"
-																			id="acre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}"
+																			id="acre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}_camposAdicionales_${acreditacion.camposAdicionales}"
 																			onclick="onCheckAcreditacion(this);" type="checkbox" /> <c:out value="${acreditacion.descripcion}" /> <input
 																			name="${status.count}_${acreditacion.idProcedimiento}_checkAcreditacion"
-																			id="checkacre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}"
+																			id="checkacre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}_camposAdicionales_${acreditacion.camposAdicionales}"
 																			type="hidden" /></td>
 																		<td title="<siga:Idioma	key='gratuita.informeJustificacionMasiva.informacion.validacion'/>"><input name="chechValidacion"
-																			id="vali_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}"
+																			id="vali_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}_camposAdicionales_${acreditacion.camposAdicionales}"
 																			type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled} /></td>
 																		</tr>
 																	</c:otherwise>
@@ -1985,7 +2041,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																			<td style="text-align: left; font-size: 13px; white-space: nowrap; vertical-align: top"><span
 																				style='align: right; word-wrap: break-word; display: inline-block; width: 60px'>
 																					<div
-																						id="div_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}">&nbsp;</div>
+																						id="div_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}">&nbsp;</div>
 																			</span>
 																		</c:otherwise>
 																	</c:choose>
@@ -1996,42 +2052,42 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																<c:when test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
 
 																	<input type="hidden"
-																		id="fechaactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																		id="fechaactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																		value="${actuacion.fecha}" />
 																	<input type="hidden"
-																		id="numprocactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																		id="numprocactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																		value="${actuacion.numeroProcedimiento}" />
 																	<input type="hidden"
-																		id="anioprocactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																		id="anioprocactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																		value="${actuacion.anioProcedimiento}" />
 																	<input type="hidden"
-																		id="nigactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																		id="nigactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																		value="${actuacion.nig}" />
 																	<c:if test="${actuacion.anulada==null ||  actuacion.anulada=='0'}">
 																		<input name="checkAcreditacion"
-																			id="acre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																			id="acre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																			onclick="onCheckAcreditacion(this);" type="checkbox" />
 																		<input name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion"
-																			id="checkacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																			id="checkacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																			type="hidden" />
 																	</c:if>
 																	<c:out value="${actuacion.descripcion}" />
 																</c:when>
 																<c:otherwise>
 																	<input type="hidden"
-																		id="fechaactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																		id="fechaactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																		value="${actuacion.fecha}" />
 																	<input type="hidden"
-																		id="numprocactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																		id="numprocactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																		value="${actuacion.numeroProcedimiento}" />
 																	<input type="hidden"
-																		id="anioprocactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																		id="anioprocactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																		value="${actuacion.anioProcedimiento}" />
 																	<input type="hidden"
-																		id="nigactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																		id="nigactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																		value="${actuacion.nig}" />
 																	<input name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion"
-																		id="hiddacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																		id="hiddacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																		type="hidden" />
 																	<c:out value="${actuacion.descripcion}" />
 																</c:otherwise>
@@ -2050,12 +2106,12 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																			<c:choose>
 																				<c:when test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
 																					<input name="checkValidacion"
-																						id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																						id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																						type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled} />
 																				</c:when>
 																				<c:otherwise>
 																					<input name="checkValidacion"
-																						id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																						id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																						type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled} />
 																				</c:otherwise>
 																			</c:choose>
@@ -2173,7 +2229,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																			<td style="text-align: left; font-size: 13px; white-space: nowrap; vertical-align: top"><span
 																				style='align: right; word-wrap: break-word; display: inline-block; width: 60px'>
 																					<div
-																						id="div_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}">&nbsp;</div>
+																						id="div_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}">&nbsp;</div>
 																			</span></td>
 																			<td></td>
 																		</c:otherwise>
@@ -2185,43 +2241,43 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																<c:when test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
 
 																	<input type="hidden"
-																		id="fechaactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																		id="fechaactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																		value="${actuacion.fecha}" />
 																	<input type="hidden"
-																		id="numprocactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																		id="numprocactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																		value="${actuacion.numeroProcedimiento}" />
 																	<input type="hidden"
-																		id="anioprocactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																		id="anioprocactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																		value="${actuacion.anioProcedimiento}" />
 																	<input type="hidden"
-																		id="nigactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																		id="nigactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																		value="${actuacion.nig}" />
 																	<c:if test="${actuacion.anulada==null ||  actuacion.anulada=='0'}">
 
 																		<input name="checkAcreditacion"
-																			id="acre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																			id="acre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																			onclick="onCheckAcreditacion(this);" type="checkbox" />
 																		<input name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion"
-																			id="checkacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																			id="checkacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																			type="hidden" />
 																	</c:if> 
 																	<c:out value="${actuacion.descripcion}" />
 																</c:when>
 																<c:otherwise>
 																	<input type="hidden"
-																		id="fechaactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																		id="fechaactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																		value="${actuacion.fecha}" />
 																	<input type="hidden"
-																		id="numprocactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																		id="numprocactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																		value="${actuacion.numeroProcedimiento}" />
 																	<input type="hidden"
-																		id="anioprocactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																		id="anioprocactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																		value="${actuacion.anioProcedimiento}" />
 																	<input type="hidden"
-																		id="nigactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																		id="nigactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																		value="${actuacion.nig}" />
 																	<input name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion"
-																		id="hiddacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																		id="hiddacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																		type="hidden" />
 																	<c:out value="${actuacion.descripcion}" />
 																</c:otherwise>
@@ -2239,12 +2295,12 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																			<c:choose>
 																				<c:when test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
 																					<input name="checkValidacion"
-																						id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																						id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																						type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled} />
 																				</c:when>
 																				<c:otherwise>
 																					<input name="checkValidacion"
-																						id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																						id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																						type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled} />
 																				</c:otherwise>
 																			</c:choose>
@@ -2296,16 +2352,16 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 													<td>&nbsp;</td>
 													<td height="24px">
 														<div align="center"
-															id="div_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}_nigNumProc_${acreditacionPte.nigNumProcedimiento}">&nbsp;</div>
+															id="div_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}_nigNumProc_${acreditacionPte.nigNumProcedimiento}_camposAdicionales_${acreditacionPte.camposAdicionales}">&nbsp;</div>
 													</td>
 													<td><input name="checkAcreditacion"
-														id="acre_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}_nigNumProc_${acreditacionPte.nigNumProcedimiento}"
+														id="acre_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}_nigNumProc_${acreditacionPte.nigNumProcedimiento}_camposAdicionales_${acreditacionPte.camposAdicionales}"
 														onclick="onCheckAcreditacion(this);" type="checkbox" /> <c:out value="${acreditacionPte.descripcion}" /> <input
 														name="${status.count}_${acreditacionPte.idProcedimiento}_checkAcreditacion"
-														id="checkacre_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}_nigNumProc_${acreditacionPte.nigNumProcedimiento}"
+														id="checkacre_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}_nigNumProc_${acreditacionPte.nigNumProcedimiento}_camposAdicionales_${acreditacionPte.camposAdicionales}"
 														type="hidden" /></td>
 													<td title="<siga:Idioma	key='gratuita.informeJustificacionMasiva.informacion.validacion'/>"><input name="checkValidacion"
-														id="vali_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}_nigNumProc_${acreditacionPte.nigNumProcedimiento}"
+														id="vali_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}_nigNumProc_${acreditacionPte.nigNumProcedimiento}_camposAdicionales_${acreditacionPte.camposAdicionales}"
 														type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled} /></td>
 
 													<c:if test="${estadoListAcreditacionesPte.first}">
@@ -2395,6 +2451,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 	</div>
 
 	<div id="dialogo" title='<bean:message key="gratuita.actuacionesDesigna.literal.titulo"/>' style="display: none">
+				
+	
 		<div>&nbsp;</div>
 		<div>
 
@@ -2409,7 +2467,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 			<div class="labelText">
 
 				<label for="dialogNumProc" style="width: 170px; float: left; color: black"><siga:Idioma
-						key="gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento" /><label id="asteriscoNumProc"></label></label>
+						key="gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento" /></label><label id="asteriscoNumProc"></label>
 				<c:choose>
 					<c:when test="${EJIS_ACTIVO=='1'}">
 						<input type="text" id="dialogNumProc" maxlength="7" size="7" />
@@ -2425,8 +2483,70 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 				</c:choose>
 			</div>
 			<div class="labelText">
-				<label for="dialogNig" style="width: 170px; float: left; color: black"><siga:Idioma key='gratuita.mantAsistencias.literal.NIG' /><label
-					id="asteriscoNig"></label></label> <input type="text" id="dialogNig" size="25" maxlength="19" />
+				
+				<label for="dialogNig" style="width: 170px; float: left; color: black"><siga:Idioma key='gratuita.mantAsistencias.literal.NIG' /></label><label
+					id="asteriscoNig"></label> <input type="text" id="dialogNig" size="25" maxlength="19" />
+					</div>
+			
+			<div id="div_dialoginicio_proceso" class="labeltext" style="display:none"><label for="dialoginicio_proceso" style=" float: left; color: black"><siga:Idioma key='gratuita.actuacionesDesigna.literal.inicio_proceso' /></label>
+			<label id="asteriscoinicio_proceso"></label>
+			<select id="dialoginicio_proceso" class="boxCombo" style="width:50px;">
+					<option></option>
+						<option value="I">Intrajudicial</option>
+						<option value="E"Extrajudicial</option>
+					</select>
+			
+			
+			</div>
+			<div id="div_dialognumero_vistas_adicionales" class="labeltext" style="display:none"><label for="dialognumero_vistas_adicionales" style=" float: left; color: black"><siga:Idioma key='gratuita.actuacionesDesigna.literal.numero_vistas_adicionales' /></label><label id="asterisconumero_vistas_adicionales"></label><input type="text" id="dialognumero_vistas_adicionales" size="10" maxlength="3" /></div>
+			<div id="div_dialogesvictima" class="labelText" style="display:none">
+				<label for="dialogesvictima"   style="width: 170px;float:left;color: black"><siga:Idioma key='gratuita.actuacionesDesigna.literal.esvictima' /></label><label id="asteriscoesvictima"></label>
+					<select id="dialogesvictima" class="boxCombo" style="width:50px;">
+						<option></option>
+						<option value="1">Si</option>
+						<option value="0">No</option>
+					</select>
+											
+			</div>
+			<div id="div_dialogessustitucion" class="labelText" style="display:none">
+				<label for="dialogessustitucion"   style="width: 170px;float:left;color: black"><siga:Idioma key='gratuita.actuacionesDesigna.literal.essustitucion' /></label><label id="asteriscoessustitucion"></label>
+					<select id="dialogessustitucion" class="boxCombo" style="width:50px;">
+						<option></option>
+						<option value="1">Si</option>
+						<option value="0">No</option>
+					</select>
+											
+			</div>
+			
+			
+			<div id="div_dialogfecha_resolucion_judicial" class="labeltext" style="display:none"><label for="dialogfecha_resolucion_judicial" style=" float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_resolucion_judicial' /></label><label id="asteriscofecha_resolucion_judicial"></label><p><siga:Fecha nombrecampo="dialogfecha_resolucion_judicial" valorinicial="sysdate" styleid="dialogfecha_resolucion_judicial" anchotextfield="11" />	</div>
+			<div id="div_dialogfecha_resolucion_judicial_oposicion" class="labeltext" style="display:none"><label for="dialogfecha_resolucion_judicial_oposicion" style=" float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_resolucion_judicial_oposicion' /></label><label id="asteriscofecha_resolucion_judicial_oposicion"></label><p><siga:Fecha nombrecampo="dialogfecha_resolucion_judicial_oposicion" valorinicial="sysdate" styleid="dialogfecha_resolucion_judicial_oposicion" anchotextfield="11" />	</div>
+			<div id="div_dialogfecha_escritura" class="labeltext" style="display:none"><label for="dialogfecha_escritura" style=" float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_escritura' /></label><label id="asteriscofecha_escritura"></label><p><siga:Fecha nombrecampo="dialogfecha_escritura" valorinicial="sysdate" styleid="dialogfecha_escritura" anchotextfield="11" />	</div>
+			<div id="div_dialogfecha_resolucion_sentencia_firme" class="labeltext" style="display:none"><label for="dialogfecha_resolucion_sentencia_firme" style=" float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_resolucion_sentencia_firme' /></label><label id="asteriscofecha_resolucion_sentencia_firme"></label><p><siga:Fecha nombrecampo="dialogfecha_resolucion_sentencia_firme" valorinicial="sysdate" styleid="dialogfecha_resolucion_sentencia_firme" anchotextfield="11" />	</div>
+			<div id="div_dialogfecha_vista" class="labeltext" style="display:none"><label for="dialogfecha_vista" style=" width: 170px; float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_vista' /></label><label id="asteriscofecha_vista"></label><siga:Fecha nombrecampo="dialogfecha_vista" valorinicial="sysdate" styleid="dialogfecha_vista" anchotextfield="11" />	</div>
+			<div id="div_dialogfecha_requerimiento_judicial" class="labeltext" style="display:none"><label for="dialogfecha_requerimiento_judicial" style=" float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_requerimiento_judicial' /></label><label id="asteriscofecha_requerimiento_judicial"></label><p><siga:Fecha nombrecampo="dialogfecha_requerimiento_judicial" valorinicial="sysdate" styleid="dialogfecha_requerimiento_judicial" anchotextfield="11" />	</div>
+			<div id="div_dialognumero_personados_macrocausa" class="labeltext" style="display:none">
+			<label for="dialognumero_personados_macrocausa" style=" float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.numero_personados_macrocausa' /></label><label id="asterisconumero_personados_macrocausa"></label><input type="text" id="dialognumero_personados_macrocausa" size="6" maxlength="3" />	</div>
+
+			
+			
+			
+			
+			<div id="div_dialogtipo_auto" class="labelText" style="display:none"><label for="dialogtipo_auto"   style="width:170px;float:left;color: black"><siga:Idioma key='gratuita.actuacionesDesigna.literal.tipo_auto' /></label>
+					<select id="dialogtipo_auto" class="boxCombo" style="width:50px;">
+						<option></option>
+						<option value=1>1</option>
+						<option value=2>2</option>
+						<option value=3>3</option>
+						<option value=4>4</option>
+						<option value=5>5</option>
+						<option value=6>6</option>
+						<option value=7>7</option>
+						<option value=8>8</option>
+						<option value=9>9</option>
+						<option value=10>10</option>
+					</select>
+											
 			</div>
 
 		</div>
@@ -2516,17 +2636,24 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		openDialog(objImgDivActuacion,mostrarDatosDesigna);
 		
 	}
+	
 	function muestraIconosActuacion(objImgDivActuacion,mostrarIcono){
 		
 		if(objImgDivActuacion && objImgDivActuacion.attr("id")){
 			if(mostrarIcono==true){
+				
 				cadenaAcreditacion = objImgDivActuacion.attr("id").split("div_")[1];
-				countDesigna = cadenaAcreditacion.split("_")[0];
-				nigNumProcRequired = cadenaAcreditacion.split("_nigNumProc_")[1];
 				//alertStop("cadenaAcreditacion:"+cadenaAcreditacion);
-				//alertStop("nigNumProcRequired:"+nigNumProcRequired);
+				countDesigna = cadenaAcreditacion.split("_")[0];
+				allCamposAdicionales = cadenaAcreditacion.split("_nigNumProc_");
+				nigNumProcRequired = allCamposAdicionales[1].substring(0,1);
+				camposAdicionales = allCamposAdicionales[1].split("_camposAdicionales_")[1];
+				existecampoRequerido = nigNumProcRequired;
+				//alertStop("camposAdicionales"+camposAdicionales);
+				lineasCamposAdicionales = camposAdicionales.split("___")
+				
 				isAcreditacionCompleta =  document.getElementById("acreditacionCompleta_"+countDesigna).value;
-				//alertStop("isAcreditacionCompleta:"+isAcreditacionCompleta);
+								
 				var formularioActuacionPte = '';
 				objImagen = '<img id="img_';
 				objImagen += cadenaAcreditacion;
@@ -2550,31 +2677,81 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 				formularioActuacionPte +=nigNumProcRequired;
 				formularioActuacionPte += '"/>';
 				
-				if(document.getElementById("fechaactold_"+cadenaAcreditacion)){
-					isAcreditacionCompleta = 'true';
+				
+				
+				//alertStop("lineaCamposAdicionales:"+lineasCamposAdicionales);
+				for (var i = 0; i < lineasCamposAdicionales.length; i++) {
+					lineaCamposAdicionales = lineasCamposAdicionales[i];
 					
-				}
-
-				if(document.getElementById("numprocactold_"+cadenaAcreditacion)){
-					if(document.getElementById("numprocactold_"+cadenaAcreditacion).value=='')
+					campos = lineaCamposAdicionales.split('-');
+					
+					//tabla = campos[0];
+					//campo = campos[1];
+					campo = campos[0];
+					//alertStop("campo:"+campo);
+					requerido = campos[1];
+					//alertStop("requerido:"+requerido);
+					if(existecampoRequerido=='0')
+						existecampoRequerido = requerido;
+					auxCampoOld = campo+'actold_';
+					formularioActuacionPte += '<input type="hidden" id="';
+					formularioActuacionPte += campo;
+					formularioActuacionPte += 'act_';
+					formularioActuacionPte +=cadenaAcreditacion;
+					formularioActuacionPte += '"/>'
+					formularioActuacionPte += '<input type="hidden" id="';
+					formularioActuacionPte += campo;
+					formularioActuacionPte += 'Required_';
+					formularioActuacionPte +=cadenaAcreditacion;
+					formularioActuacionPte += '" value ="';
+					formularioActuacionPte +=requerido;
+					formularioActuacionPte += '"/>';
+					
+					if(document.getElementById(""+auxCampoOld+cadenaAcreditacion)){
+					
+						if(document.getElementById(""+auxCampoOld+cadenaAcreditacion).value=='')
+							isAcreditacionCompleta = 'false';
+						
+					}else{
 						isAcreditacionCompleta = 'false';
+					}
 					
 				}
 				
-				
-				if(document.getElementById("anioprocactold_"+cadenaAcreditacion)){
-					if(document.getElementById("anioprocactold_"+cadenaAcreditacion).value=='')
-						isAcreditacionCompleta = 'false';
-					
+				//alertStop("formularioActuacionPte"+formularioActuacionPte);
+				//alertStop("cadenaAcreditacion"+cadenaAcreditacion);
+				if(isAcreditacionCompleta=='true'){
+					if(document.getElementById("fechaactold_"+cadenaAcreditacion)){
+						isAcreditacionCompleta = 'true';
+						
+					}
 				}
-				if(document.getElementById("nigactold_"+cadenaAcreditacion)){
-					if(document.getElementById("nigactold_"+cadenaAcreditacion).value=='')
-						isAcreditacionCompleta = 'false';
-					
+				if(isAcreditacionCompleta=='true'){
+					if(document.getElementById("numprocactold_"+cadenaAcreditacion)){
+						if(document.getElementById("numprocactold_"+cadenaAcreditacion).value=='')
+							isAcreditacionCompleta = 'false';
+						
+					}
+				}
+				
+				if(isAcreditacionCompleta=='true'){
+					if(document.getElementById("anioprocactold_"+cadenaAcreditacion)){
+						if(document.getElementById("anioprocactold_"+cadenaAcreditacion).value=='')
+							isAcreditacionCompleta = 'false';
+						
+					}
+				}
+				if(isAcreditacionCompleta=='true'){
+					if(document.getElementById("nigactold_"+cadenaAcreditacion)){
+						if(document.getElementById("nigactold_"+cadenaAcreditacion).value=='')
+							isAcreditacionCompleta = 'false';
+						
+					}
 				}
 				
 				
-				if(nigNumProcRequired=='1' && isAcreditacionCompleta=='false'){
+				
+				if(existecampoRequerido=='1' && isAcreditacionCompleta=='false'){
 					formularioActuacionPte += '<input type="hidden" id="insertar_';
 					formularioActuacionPte +=cadenaAcreditacion;
 					formularioActuacionPte += '" value="0" />';
@@ -2597,6 +2774,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		}
 		
 	}
+	
+	
 	
 	
 	function muestraIconoActuacion(objImgDivActuacion,completa){
@@ -2634,7 +2813,39 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 
 		
 		
+		//valdenominacionsocialRequired='';if(jQuery("#denominacionsocialact_"+cadenaAcreditacion)){valdenominacionsocial = jQuery("#denominacionsocialact_"+cadenaAcreditacion).val();valdenominacionsocialRequired = jQuery("#denominacionsocialRequired_"+cadenaAcreditacion).val();}
+		
+		valinicio_procesoRequired='';
+		if(jQuery("#inicio_procesoact_"+cadenaAcreditacion)){
+			valinicio_proceso = jQuery("#inicio_procesoact_"+cadenaAcreditacion).val();
+			valinicio_procesoRequired = jQuery("#inicio_procesoRequired_"+cadenaAcreditacion).val();
+		}
+		
+		valnumero_vistas_adicionalesRequired='';
+		if(jQuery("#numero_vistas_adicionalesact_"+cadenaAcreditacion))	{
+			valnumero_vistas_adicionales = jQuery("#numero_vistas_adicionalesact_"+cadenaAcreditacion).val();
+			valnumero_vistas_adicionalesRequired = jQuery("#numero_vistas_adicionalesRequired_"+cadenaAcreditacion).val();
+		}
 
+		valfecha_resolucion_judicialRequired='';if(jQuery("#fecha_resolucion_judicialact_"+cadenaAcreditacion)){valfecha_resolucion_judicial = jQuery("#fecha_resolucion_judicialact_"+cadenaAcreditacion).val();valfecha_resolucion_judicialRequired = jQuery("#fecha_resolucion_judicialRequired_"+cadenaAcreditacion).val();}
+		valfecha_resolucion_judicial_oposicionRequired='';if(jQuery("#fecha_resolucion_judicial_oposicionact_"+cadenaAcreditacion)){valfecha_resolucion_judicial_oposicion = jQuery("#fecha_resolucion_judicial_oposicionact_"+cadenaAcreditacion).val();valfecha_resolucion_judicial_oposicionRequired = jQuery("#fecha_resolucion_judicial_oposicionRequired_"+cadenaAcreditacion).val();}
+		valfecha_escrituraRequired='';if(jQuery("#fecha_escrituraact_"+cadenaAcreditacion)){valfecha_escritura = jQuery("#fecha_escrituraact_"+cadenaAcreditacion).val();valfecha_escrituraRequired = jQuery("#fecha_escrituraRequired_"+cadenaAcreditacion).val();}
+		valfecha_resolucion_sentencia_firmeRequired='';if(jQuery("#fecha_resolucion_sentencia_firmeact_"+cadenaAcreditacion)){valfecha_resolucion_sentencia_firme = jQuery("#fecha_resolucion_sentencia_firmeact_"+cadenaAcreditacion).val();valfecha_resolucion_sentencia_firmeRequired = jQuery("#fecha_resolucion_sentencia_firmeRequired_"+cadenaAcreditacion).val();}
+		valfecha_vistaRequired='';if(jQuery("#fecha_vistaact_"+cadenaAcreditacion)){valfecha_vista = jQuery("#fecha_vistaact_"+cadenaAcreditacion).val();valfecha_vistaRequired = jQuery("#fecha_vistaRequired_"+cadenaAcreditacion).val();}
+		valfecha_requerimiento_judicialRequired='';if(jQuery("#fecha_requerimiento_judicialact_"+cadenaAcreditacion)){valfecha_requerimiento_judicial = jQuery("#fecha_requerimiento_judicialact_"+cadenaAcreditacion).val();valfecha_requerimiento_judicialRequired = jQuery("#fecha_requerimiento_judicialRequired_"+cadenaAcreditacion).val();}
+		valnumero_personados_macrocausaRequired='';if(jQuery("#numero_personados_macrocausaact_"+cadenaAcreditacion)){valnumero_personados_macrocausa = jQuery("#numero_personados_macrocausaact_"+cadenaAcreditacion).val();valnumero_personados_macrocausaRequired = jQuery("#numero_personados_macrocausaRequired_"+cadenaAcreditacion).val();}
+		
+		valesvictimaRequired='';
+		if(jQuery("#esvictimaact_"+cadenaAcreditacion)){
+			valesvictima = jQuery("#esvictimaact_"+cadenaAcreditacion).val();
+			valesvictimaRequired = jQuery("#esvictimaRequired_"+cadenaAcreditacion).val();
+		}
+		valessustitucionRequired='';if(jQuery("#essustitucionact_"+cadenaAcreditacion)){valessustitucion = jQuery("#essustitucionact_"+cadenaAcreditacion).val();valessustitucionRequired = jQuery("#essustitucionRequired_"+cadenaAcreditacion).val();}
+		valtipo_autoRequired='';if(jQuery("#tipo_autoact_"+cadenaAcreditacion)){valtipo_auto = jQuery("#tipo_autoact_"+cadenaAcreditacion).val();valtipo_autoRequired = jQuery("#tipo_autoRequired_"+cadenaAcreditacion).val();}
+	
+		
+		
+		
 		if(valFechaActuacion && valFechaActuacion!=''){
 			jQuery("#dialogo").dialog("open");
 			jQuery("#dialogFechaActuacion").val(valFechaActuacion);
@@ -2643,11 +2854,48 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 			jQuery("#dialogNig").val(valNig);
 			jQuery("#dialogNigNumProcRequired").val(valNigNumProcRequired);
 			
+			
+			//if(jQuery("#denominacionsocialact_"+cadenaAcreditacion)){jQuery("#dialogdenominacionsocial").val(valdenominacionsocial);jQuery("#dialogdenominacionsocialRequired").val(valdenominacionsocialRequired);	}
+			if(jQuery("#inicio_procesoact_"+cadenaAcreditacion)){
+				jQuery("#dialoginicio_proceso").val(valinicio_proceso);
+				jQuery("#dialoginicio_procesoRequired").val(valinicio_procesoRequired);	
+			}
+			if(jQuery("#numero_vistas_adicionalesact_"+cadenaAcreditacion)){
+				jQuery("#dialognumero_vistas_adicionales").val(valnumero_vistas_adicionales);
+				jQuery("#dialognumero_vistas_adicionalesRequired").val(valnumero_vistas_adicionalesRequired);
+			} 
+
+			if(jQuery("#fecha_resolucion_judicialact_"+cadenaAcreditacion)){jQuery("#dialogfecha_resolucion_judicial").val(valfecha_resolucion_judicial);jQuery("#dialogfecha_resolucion_judicialRequired").val(valfecha_resolucion_judicialRequired);	}
+			if(jQuery("#fecha_resolucion_judicial_oposicionact_"+cadenaAcreditacion)){jQuery("#dialogfecha_resolucion_judicial_oposicion").val(valfecha_resolucion_judicial_oposicion);jQuery("#dialogfecha_resolucion_judicial_oposicionRequired").val(valfecha_resolucion_judicial_oposicionRequired);	}
+			if(jQuery("#fecha_escrituraact_"+cadenaAcreditacion)){jQuery("#dialogfecha_escritura").val(valfecha_escritura);jQuery("#dialogfecha_escrituraRequired").val(valfecha_escrituraRequired);	}
+			if(jQuery("#fecha_resolucion_sentencia_firmeact_"+cadenaAcreditacion)){jQuery("#dialogfecha_resolucion_sentencia_firme").val(valfecha_resolucion_sentencia_firme);jQuery("#dialogfecha_resolucion_sentencia_firmeRequired").val(valfecha_resolucion_sentencia_firmeRequired);	}
+			if(jQuery("#fecha_vistaact_"+cadenaAcreditacion)){jQuery("#dialogfecha_vista").val(valfecha_vista);jQuery("#dialogfecha_vistaRequired").val(valfecha_vistaRequired);	}
+			if(jQuery("#fecha_requerimiento_judicialact_"+cadenaAcreditacion)){jQuery("#dialogfecha_requerimiento_judicial").val(valfecha_requerimiento_judicial);jQuery("#dialogfecha_requerimiento_judicialRequired").val(valfecha_requerimiento_judicialRequired);	}
+			if(jQuery("#numero_personados_macrocausaact_"+cadenaAcreditacion)){jQuery("#dialognumero_personados_macrocausa").val(valnumero_personados_macrocausa);jQuery("#dialognumero_personados_macrocausaRequired").val(valnumero_personados_macrocausaRequired);	}
+
+			if(jQuery("#esvictimaact_"+cadenaAcreditacion)){
+				jQuery("#dialogesvictima").val(valesvictima);
+				jQuery("#dialogesvictimaRequired").val(valesvictimaRequired);	
+			}
+			if(jQuery("#essustitucionact_"+cadenaAcreditacion)){jQuery("#dialogessustitucion").val(valessustitucion);jQuery("#dialogessustitucionRequired").val(valessustitucionRequired);	}
+			if(jQuery("#tipo_autoact_"+cadenaAcreditacion)){jQuery("#dialogtipo_auto").val(valtipo_auto);jQuery("#dialogtipo_autoRequired").val(valtipo_autoRequired);	}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 		}else{
 			jQuery("#dialogo").dialog(
 				{
-					height: 350,
-				   	width: 525,
+					height: 450,
+				   	width: 825,
 					modal: true,
 					resizable: false,
 					
@@ -2659,8 +2907,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 			);
 			jQuery("#dialogNigNumProcRequired").val(valNigNumProcRequired);
 			
-			if(valNigNumProcRequired=='1'){
-				jQuery("#asteriscoNumProc").text("(*)");
+			if(valNigNumProcRequired=='1'){	jQuery("#asteriscoNumProc").text("(*)");
 				jQuery("#asteriscoNig").text("(*)");
 				
 			}else{
@@ -2668,6 +2915,93 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 				jQuery("#asteriscoNig").text("");
 				
 			}
+			
+			
+			
+				
+			//if(valdenominacionsocialRequired=='1'){	jQuery("#asteriscodenominacionsocial").text("(*)");	jQuery("#div_dialogdenominacionsocial").show();	}else if(valdenominacionsocialRequired=='0'){jQuery("#asteriscodenominacionsocial").text("");jQuery("#div_dialogdenominacionsocial").show();}else{jQuery("#asteriscodenominacionsocial").text("");jQuery("#div_dialogdenominacionsocial").hide();	}
+			
+			if(valinicio_procesoRequired=='1'){	
+				jQuery("#asteriscoinicio_proceso").text("(*)");	
+				jQuery("#div_dialoginicio_proceso").show();	
+			}else if(valinicio_procesoRequired=='0'){
+				jQuery("#asteriscoinicio_proceso").text("");
+				jQuery("#div_dialoginicio_proceso").show();
+			}else{
+				jQuery("#asteriscoinicio_proceso").text("");
+				jQuery("#div_dialoginicio_proceso").hide();	
+			}
+			
+			if(valnumero_vistas_adicionalesRequired=='1'){
+				jQuery("#asterisconumero_vistas_adicionales").text("(*)");	
+				jQuery("#div_dialognumero_vistas_adicionales").show();	
+			}else if(valnumero_vistas_adicionalesRequired=='0'){
+				jQuery("#asterisconumero_vistas_adicionales").text("");
+				jQuery("#div_dialognumero_vistas_adicionales").show();
+			}
+
+			if(valfecha_resolucion_judicialRequired=='1'){	
+				jQuery("#asteriscofecha_resolucion_judicial").text("(*)");
+				jQuery("#div_dialogfecha_resolucion_judicial").show();	
+			}else if(valfecha_resolucion_judicialRequired=='0'){
+				jQuery("#asteriscofecha_resolucion_judicial").text("");
+				jQuery("#div_dialogfecha_resolucion_judicial").show();
+			}else{
+				jQuery("#asteriscofecha_resolucion_judicial").text("");
+				jQuery("#div_dialogfecha_resolucion_judicial").hide();	}
+			if(valfecha_resolucion_judicial_oposicionRequired=='1'){
+				jQuery("#asteriscofecha_resolucion_judicial_oposicion").text("(*)");	
+				jQuery("#div_dialogfecha_resolucion_judicial_oposicion").show();	
+			}else if(valfecha_resolucion_judicial_oposicionRequired=='0'){
+				jQuery("#asteriscofecha_resolucion_judicial_oposicion").text("");
+				jQuery("#div_dialogfecha_resolucion_judicial_oposicion").show();
+			}else{
+				jQuery("#asteriscofecha_resolucion_judicial_oposicion").text("");
+				jQuery("#div_dialogfecha_resolucion_judicial_oposicion").hide();
+			}
+			if(valfecha_escrituraRequired=='1'){
+				jQuery("#asteriscofecha_escritura").text("(*)");
+				jQuery("#div_dialogfecha_escritura").show();	
+			}else if(valfecha_escrituraRequired=='0'){
+				jQuery("#asteriscofecha_escritura").text("");
+				jQuery("#div_dialogfecha_escritura").show();
+			}else{
+				jQuery("#asteriscofecha_escritura").text("");
+				jQuery("#div_dialogfecha_escritura").hide();	
+			}
+			if(valfecha_resolucion_sentencia_firmeRequired=='1'){
+				jQuery("#asteriscofecha_resolucion_sentencia_firme").text("(*)");
+				jQuery("#div_dialogfecha_resolucion_sentencia_firme").show();	
+			}else if(valfecha_resolucion_sentencia_firmeRequired=='0'){
+				jQuery("#asteriscofecha_resolucion_sentencia_firme").text("");
+				jQuery("#div_dialogfecha_resolucion_sentencia_firme").show();
+			}else{
+				jQuery("#asteriscofecha_resolucion_sentencia_firme").text("");
+				jQuery("#div_dialogfecha_resolucion_sentencia_firme").hide();	
+			}
+			if(valfecha_vistaRequired=='1'){	jQuery("#asteriscofecha_vista").text("(*)");	jQuery("#div_dialogfecha_vista").show();	}else if(valfecha_vistaRequired=='0'){jQuery("#asteriscofecha_vista").text("");jQuery("#div_dialogfecha_vista").show();}else{jQuery("#asteriscofecha_vista").text("");jQuery("#div_dialogfecha_vista").hide();	}
+			if(valfecha_requerimiento_judicialRequired=='1'){	jQuery("#asteriscofecha_requerimiento_judicial").text("(*)");	jQuery("#div_dialogfecha_requerimiento_judicial").show();	}else if(valfecha_requerimiento_judicialRequired=='0'){jQuery("#asteriscofecha_requerimiento_judicial").text("");jQuery("#div_dialogfecha_requerimiento_judicial").show();}else{jQuery("#asteriscofecha_requerimiento_judicial").text("");jQuery("#div_dialogfecha_requerimiento_judicial").hide();	}
+			if(valnumero_personados_macrocausaRequired=='1'){	jQuery("#asterisconumero_personados_macrocausa").text("(*)");	jQuery("#div_dialognumero_personados_macrocausa").show();	}else if(valnumero_personados_macrocausaRequired=='0'){jQuery("#asterisconumero_personados_macrocausa").text("");jQuery("#div_dialognumero_personados_macrocausa").show();}else{jQuery("#asterisconumero_personados_macrocausa").text("");jQuery("#div_dialognumero_personados_macrocausa").hide();	}
+
+			if(valesvictimaRequired=='1'){	
+				jQuery("#asteriscoesvictima").text("(*)");
+				jQuery("#div_dialogesvictima").show();	
+			}else if(valesvictimaRequired=='0'){
+				jQuery("#asteriscoesvictima").text("");
+				jQuery("#div_dialogesvictima").show();
+			}else{
+				jQuery("#asteriscoesvictima").text("");
+				jQuery("#div_dialogesvictima").hide();	
+			}
+			
+			if(valessustitucionRequired=='1'){	jQuery("#asteriscoessustitucion").text("(*)");	jQuery("#div_dialogessustitucion").show();	}else if(valessustitucionRequired=='0'){jQuery("#asteriscoessustitucion").text("");jQuery("#div_dialogessustitucion").show();}else{jQuery("#asteriscoessustitucion").text("");jQuery("#div_dialogessustitucion").hide();	}
+			if(valtipo_autoRequired=='1'){	jQuery("#asteriscotipo_auto").text("(*)");	jQuery("#div_dialogtipo_auto").show();	}else if(valtipo_autoRequired=='0'){jQuery("#asteriscotipo_auto").text("");jQuery("#div_dialogtipo_auto").show();}else{jQuery("#asteriscotipo_auto").text("");jQuery("#div_dialogtipo_auto").hide();	}
+
+			
+			
+			
+			
+			
 			jQuery(".ui-widget-overlay").css("opacity","0");
 			
 			var hoy = new Date();
@@ -2716,6 +3050,31 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		valNigNumProcRequired = jQuery("#dialogNigNumProcRequired").val();
 		
 		
+		//valdenominacionsocial = jQuery('#dialogdenominacionsocial').val();valdenominacionsocialRequired='';	if(jQuery("#denominacionsocialact_"+cadenaAcreditacion)){valdenominacionsocialRequired = jQuery("#denominacionsocialRequired_"+cadenaAcreditacion).val();}
+		
+		valinicio_proceso = jQuery('#dialoginicio_proceso').val();valinicio_procesoRequired='';	if(jQuery("#inicio_procesoact_"+cadenaAcreditacion)){valinicio_procesoRequired = jQuery("#inicio_procesoRequired_"+cadenaAcreditacion).val();}
+		valnumero_vistas_adicionales = jQuery('#dialognumero_vistas_adicionales').val();valnumero_vistas_adicionalesRequired='';	if(jQuery("#numero_vistas_adicionalesact_"+cadenaAcreditacion)){valnumero_vistas_adicionalesRequired = jQuery("#numero_vistas_adicionalesRequired_"+cadenaAcreditacion).val();}
+
+		valfecha_resolucion_judicial = jQuery('#dialogfecha_resolucion_judicial').val();valfecha_resolucion_judicialRequired='';	if(jQuery("#fecha_resolucion_judicialact_"+cadenaAcreditacion)){valfecha_resolucion_judicialRequired = jQuery("#fecha_resolucion_judicialRequired_"+cadenaAcreditacion).val();}
+		valfecha_resolucion_judicial_oposicion = jQuery('#dialogfecha_resolucion_judicial_oposicion').val();valfecha_resolucion_judicial_oposicionRequired='';	if(jQuery("#fecha_resolucion_judicial_oposicionact_"+cadenaAcreditacion)){valfecha_resolucion_judicial_oposicionRequired = jQuery("#fecha_resolucion_judicial_oposicionRequired_"+cadenaAcreditacion).val();}
+		valfecha_escritura = jQuery('#dialogfecha_escritura').val();valfecha_escrituraRequired='';	if(jQuery("#fecha_escrituraact_"+cadenaAcreditacion)){valfecha_escrituraRequired = jQuery("#fecha_escrituraRequired_"+cadenaAcreditacion).val();}
+		valfecha_resolucion_sentencia_firme = jQuery('#dialogfecha_resolucion_sentencia_firme').val();valfecha_resolucion_sentencia_firmeRequired='';	if(jQuery("#fecha_resolucion_sentencia_firmeact_"+cadenaAcreditacion)){valfecha_resolucion_sentencia_firmeRequired = jQuery("#fecha_resolucion_sentencia_firmeRequired_"+cadenaAcreditacion).val();}
+		valfecha_vista = jQuery('#dialogfecha_vista').val();valfecha_vistaRequired='';	if(jQuery("#fecha_vistaact_"+cadenaAcreditacion)){valfecha_vistaRequired = jQuery("#fecha_vistaRequired_"+cadenaAcreditacion).val();}
+		valfecha_requerimiento_judicial = jQuery('#dialogfecha_requerimiento_judicial').val();valfecha_requerimiento_judicialRequired='';	if(jQuery("#fecha_requerimiento_judicialact_"+cadenaAcreditacion)){valfecha_requerimiento_judicialRequired = jQuery("#fecha_requerimiento_judicialRequired_"+cadenaAcreditacion).val();}
+		valnumero_personados_macrocausa = jQuery('#dialognumero_personados_macrocausa').val();valnumero_personados_macrocausaRequired='';	if(jQuery("#numero_personados_macrocausaact_"+cadenaAcreditacion)){valnumero_personados_macrocausaRequired = jQuery("#numero_personados_macrocausaRequired_"+cadenaAcreditacion).val();}
+
+		valesvictima = jQuery('#dialogesvictima').val();valesvictimaRequired='';	if(jQuery("#esvictimaact_"+cadenaAcreditacion)){valesvictimaRequired = jQuery("#esvictimaRequired_"+cadenaAcreditacion).val();}
+		valessustitucion = jQuery('#dialogessustitucion').val();valessustitucionRequired='';	if(jQuery("#essustitucionact_"+cadenaAcreditacion)){valessustitucionRequired = jQuery("#essustitucionRequired_"+cadenaAcreditacion).val();}
+		valtipo_auto = jQuery('#dialogtipo_auto').val();valtipo_autoRequired='';	if(jQuery("#tipo_autoact_"+cadenaAcreditacion)){valtipo_autoRequired = jQuery("#tipo_autoRequired_"+cadenaAcreditacion).val();}
+
+
+		
+		
+		
+		
+		
+		
+		
 		cadenaAcreditacion = objImgDivActuacion.attr("id").split("div_")[1]
 		var indexDesigna = cadenaAcreditacion.split("_")[0];
 		var fechaDesigna = document.getElementById("fechaDesigna_"+indexDesigna).value;
@@ -2745,6 +3104,26 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 			}
 			
 		}
+		
+		//if(valdenominacionsocialRequired=='1' &&valdenominacionsocial==''){error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.denominacionsocial'/>"+ '\n';}
+		if(valinicio_procesoRequired=='1' &&valinicio_proceso==''){error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.inicio_proceso'/>"+ '\n';}
+		if(valnumero_vistas_adicionalesRequired=='1' &&valnumero_vistas_adicionales==''){error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.numero_vistas_adicionales'/>"+ '\n';}
+
+		if(valfecha_resolucion_judicialRequired=='1' &&valfecha_resolucion_judicial==''){error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.fecha_resolucion_judicial'/>"+ '\n';}
+		if(valfecha_resolucion_judicial_oposicionRequired=='1' &&valfecha_resolucion_judicial_oposicion==''){error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.fecha_resolucion_judicial_oposicion'/>"+ '\n';}
+		if(valfecha_escrituraRequired=='1' &&valfecha_escritura==''){error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.fecha_escritura'/>"+ '\n';}
+		if(valfecha_resolucion_sentencia_firmeRequired=='1' &&valfecha_resolucion_sentencia_firme==''){error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.fecha_resolucion_sentencia_firme'/>"+ '\n';}
+		if(valfecha_vistaRequired=='1' &&valfecha_vista==''){error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.fecha_vista'/>"+ '\n';}
+		if(valfecha_requerimiento_judicialRequired=='1' &&valfecha_requerimiento_judicial==''){error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.fecha_requerimiento_judicial'/>"+ '\n';}
+		if(valnumero_personados_macrocausaRequired=='1' &&valnumero_personados_macrocausa==''){error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.numero_personados_macrocausa'/>"+ '\n';}
+
+		if(valesvictimaRequired=='1' &&valesvictima==''){error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.esvictima'/>"+ '\n';}
+		if(valessustitucionRequired=='1' &&valessustitucion==''){error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.essustitucion'/>"+ '\n';}
+		if(valtipo_autoRequired=='1' &&valtipo_auto==''){error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.tipo_auto'/>"+ '\n';}
+
+		
+		
+		
 		valueNumProcedimiento = valNumProc;
 		objectConsejo = document.getElementById("idConsejo");
 		valueEjisActivo = document.getElementById("ejisActivo").value;
@@ -2780,6 +3159,23 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		jQuery("#nigNumProcRequired_"+cadenaAcreditacion).val(valNigNumProcRequired);
 		jQuery("#insertar_"+cadenaAcreditacion).val("1");
 
+		//jQuery("#denominacionsocialact_"+cadenaAcreditacion).val(valdenominacionsocial);
+		jQuery("#inicio_procesoact_"+cadenaAcreditacion).val(valinicio_proceso);
+		jQuery("#numero_vistas_adicionalesact_"+cadenaAcreditacion).val(valnumero_vistas_adicionales);
+		
+		jQuery("#fecha_resolucion_judicialact_"+cadenaAcreditacion).val(valfecha_resolucion_judicial);
+		jQuery("#fecha_resolucion_judicial_oposicionact_"+cadenaAcreditacion).val(valfecha_resolucion_judicial_oposicion);
+		jQuery("#fecha_escrituraact_"+cadenaAcreditacion).val(valfecha_escritura);
+		jQuery("#fecha_resolucion_sentencia_firmeact_"+cadenaAcreditacion).val(valfecha_resolucion_sentencia_firme);
+		jQuery("#fecha_vistaact_"+cadenaAcreditacion).val(valfecha_vista);
+		jQuery("#fecha_requerimiento_judicialact_"+cadenaAcreditacion).val(valfecha_requerimiento_judicial);
+		jQuery("#numero_personados_macrocausaact_"+cadenaAcreditacion).val(valnumero_personados_macrocausa);
+		
+		jQuery("#esvictimaact_"+cadenaAcreditacion).val(valesvictima);
+		jQuery("#essustitucionact_"+cadenaAcreditacion).val(valessustitucion);
+		jQuery("#tipo_autoact_"+cadenaAcreditacion).val(valtipo_auto);
+		
+		
 		muestraIconoActuacion(objImgDivActuacion,true);
 		closeDialog('dialogo'); //Los dialogos los cierra el refrescar local
 

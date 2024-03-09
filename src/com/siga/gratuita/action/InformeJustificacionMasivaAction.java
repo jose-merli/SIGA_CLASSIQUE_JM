@@ -45,6 +45,8 @@ import com.siga.beans.ScsActuacionDesignaAdm;
 import com.siga.beans.ScsActuacionDesignaBean;
 import com.siga.beans.ScsDesignaAdm;
 import com.siga.beans.ScsDesignaBean;
+import com.siga.beans.ScsDesignaDatosAdicionalesAdm;
+import com.siga.beans.ScsDesignaDatosAdicionalesBean;
 import com.siga.beans.ScsDesignasLetradoAdm;
 import com.siga.beans.ScsJuzgadoBean;
 import com.siga.beans.ScsProcedimientosBean;
@@ -269,6 +271,9 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 	    ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		final String idAcreditacionPenal = rp3.returnProperty("codigo.general.scsacreditacion.jurisdiccion.penal");
 		List<String> designasList = new ArrayList<String>();
+		ScsDesignaDatosAdicionalesAdm adicionalesAdm = new ScsDesignaDatosAdicionalesAdm(this.getUserBean(request));
+		
+		
 		try {
 			InformeJustificacionMasivaForm miForm = (InformeJustificacionMasivaForm) formulario;
 
@@ -288,17 +293,20 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			String clavesActuacion[] = { ScsActuacionDesignaBean.C_ANIO, ScsActuacionDesignaBean.C_NUMERO,
 					ScsActuacionDesignaBean.C_IDINSTITUCION, ScsActuacionDesignaBean.C_IDTURNO ,ScsActuacionDesignaBean.C_NUMEROASUNTO};
 			
-			
+//			scs
 			
 			String idPersona   =  miForm.getIdPersona();
 			String datosJustificacion = miForm.getDatosJustificacion();
 			tx = user.getTransactionPesada();
 			tx.begin();
 			Hashtable<String,ScsDesignaBean> scsDesignaHashtable = new Hashtable<String , ScsDesignaBean>();
+			
+			 
 			if(datosJustificacion.length()>0){
 				String[] arrayDatosJustificacion = datosJustificacion.split("#");
 				
 				for (int i = 0; i < arrayDatosJustificacion.length; i++) {
+					Hashtable scsDatosAdicionalesHashtable = null;
 					String rowJustificacion = arrayDatosJustificacion[i];
 					String[] arrayRowsJustificacion = rowJustificacion.split(",");
 					int numDatosJustif =  arrayRowsJustificacion.length;
@@ -336,6 +344,21 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 					if(numDatosJustif>=17)
 						nigActuacion   =  arrayRowsJustificacion[16];
 					
+					scsDatosAdicionalesHashtable = new Hashtable();
+					for (int j = 17; j < arrayRowsJustificacion.length; j++) {
+						String  datosAdicionales   =  arrayRowsJustificacion[j];
+						if(datosAdicionales!=null && !datosAdicionales.trim().equals("")) {
+							
+							String[] datosAdicionalesArray = datosAdicionales.split("=");
+							String campo = datosAdicionalesArray[0].toUpperCase(); 
+	//						System.out.println("campo:"+campo);
+							String valor = datosAdicionalesArray[1];
+							if(!valor.equals("undefined")) {
+								if(campo.startsWith("FECHA_")) scsDatosAdicionalesHashtable.put(campo,valor!=null?GstDate.getApplicationFormatDate("", valor):"" );
+								else scsDatosAdicionalesHashtable.put(campo, valor!=null?valor:"");
+							}
+						}
+					}
 					
 					
 					
@@ -344,6 +367,19 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 					Hashtable hashActuacion = new Hashtable();
 					Map<String,Hashtable<String, Object>> fksActuacionMap = new HashMap<String, Hashtable<String,Object>>(); 
 					Hashtable<String, Object> fksActuacionHashtable = null;
+					if(scsDatosAdicionalesHashtable!=null) {
+						UtilidadesHash.set(scsDatosAdicionalesHashtable,
+								ScsDesignaDatosAdicionalesBean.C_ANIO, anio);
+						UtilidadesHash.set(scsDatosAdicionalesHashtable,
+								ScsDesignaDatosAdicionalesBean.C_IDINSTITUCION,
+								idInstitucion);
+						UtilidadesHash.set(scsDatosAdicionalesHashtable,
+								ScsDesignaDatosAdicionalesBean.C_NUMERO, numero);
+						UtilidadesHash.set(scsDatosAdicionalesHashtable,
+								ScsDesignaDatosAdicionalesBean.C_IDTURNO, idTurno);
+						
+					}
+					
 					if(numActuacion.equals("x")){
 						
 						UtilidadesHash.set(hashActuacion,
@@ -506,7 +542,17 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 								factConvenio = scsDesignaBean.getFactConvenio();
 							hashActuacion.put(ScsActuacionDesignaBean.C_FACTCONVENIO,factConvenio);
 							
+							
+							
 							actuacionDesginaAdm.insertHistorico(new Long(idPersona), hashActuacion,ocultarClaveList,ClsConstants.TIPO_CAMBIO_HISTORICO_DESIGNACIONJUSTIFICACION);
+							
+							if(scsDatosAdicionalesHashtable!=null) {
+								UtilidadesHash.set(scsDatosAdicionalesHashtable,
+										ScsDesignaDatosAdicionalesBean.C_NUMEROASUNTO, UtilidadesHash.getString(hashActuacion,ScsActuacionDesignaBean.C_NUMEROASUNTO));
+								adicionalesAdm.insert(scsDatosAdicionalesHashtable);
+								
+							}
+							
 						
 					}else{
 						List<String> camposList = new ArrayList<String>();
@@ -583,6 +629,19 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 						}else{
 							UtilidadesHash.set(hashActuacion,
 									ScsActuacionDesignaBean.C_VALIDADA, "0");
+							
+						}
+						
+						if(scsDatosAdicionalesHashtable!=null) {
+							UtilidadesHash.set(scsDatosAdicionalesHashtable,ScsDesignaDatosAdicionalesBean.C_NUMEROASUNTO, UtilidadesHash.getString(hashActuacion,ScsActuacionDesignaBean.C_NUMEROASUNTO));
+							Vector datosAdicionales =  adicionalesAdm.selectByPK(scsDatosAdicionalesHashtable);
+							if(datosAdicionales!=null && datosAdicionales.size()>0) {
+								
+								adicionalesAdm.update(scsDatosAdicionalesHashtable, hashActuacion);
+							}else {
+								adicionalesAdm.insert(scsDatosAdicionalesHashtable);
+							}
+							
 							
 						}
 						

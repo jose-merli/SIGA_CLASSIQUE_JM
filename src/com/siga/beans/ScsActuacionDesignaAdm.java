@@ -754,6 +754,10 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 				acreditacion.setIdTipo((String)registro.get("IDTIPOACREDITACION"));
 				acreditacion.setIdProcedimiento(idProcedimiento);
 				acreditacion.setNigNumProcedimiento(registro.get("NIG_NUMPROCEDIMIENTO")!=null?(String)registro.get("NIG_NUMPROCEDIMIENTO"):"0");
+				if(registro.get("CAMPOS_ADICIONALES")!=null)
+					acreditacion.setCamposAdicionales( getCamposAdicionales((String)registro.get("CAMPOS_ADICIONALES")));
+				else
+					acreditacion.setCamposAdicionales("");
 				
 				actuacionesList.add(actuacionDesigna);
 				tmActuaciones.put(idProcedimiento, actuacionesList);
@@ -1007,11 +1011,15 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		sql.append("           from SCS_ACREDITACION_CAMPOSNECESARIOS ADIC  ");
 		sql.append("          WHERE ADIC.IDINSTITUCION = ACPRO.IDINSTITUCION AND ADIC.IDPROCEDIMIENTO = ACPRO.IDPROCEDIMIENTO and ADIC.IDACREDITACION = ACPRO.IDACREDITACION ");
 		sql.append("        ) CAMPOS_ADICIONALES ");
+//		sql.append("'INICIO_PROCESOñññ1-NUMERO_VISTAS_ADICIONALESñññ1-FECHA_RESOLUCION_JUDICIALñññ1-FECHA_RESOLUCION_JUDICIAL_OPOSICIONñññ1-FECHA_ESCRITURAñññ1-FECHA_RESOLUCION_SENTENCIA_FIRMEñññ1-FECHA_VISTAñññ1-FECHA_REQUERIMIENTO_JUDICIALñññ1-NUMERO_PERSONADOS_MACROCAUSAñññ1-ESVICTIMAñññ1-ESSUSTITUCIONñññ1-TIPO_AUTOñññ1'");
+//		sql.append("         CAMPOS_ADICIONALES ");
+		
 		sql.append(" FROM SCS_PROCEDIMIENTOS PRO ");
 		sql.append(" inner join SCS_ACREDITACIONPROCEDIMIENTO ACPRO on PRO.IDINSTITUCION = ACPRO.IDINSTITUCION AND PRO.IDPROCEDIMIENTO = ACPRO.IDPROCEDIMIENTO ");
 		sql.append(" inner join SCS_ACREDITACION AC on ACPRO.IDACREDITACION = AC.IDACREDITACION ");
 		sql.append(" inner join SCS_TIPOACREDITACION TAC on AC.IDTIPOACREDITACION = TAC.IDTIPOACREDITACION ");
 		sql.append(" WHERE 1=1 ");
+		
 		sql.append(" AND ACPRO.IDINSTITUCION = :");
 		contador++;
 		codigos.put(new Integer(contador),idInstitucion);
@@ -1101,6 +1109,11 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 			acreditacionForm.setId((String)registro.get("IDACREDITACION"));
 			acreditacionForm.setIdJurisdiccion((String)registro.get("IDJURISDICCION"));
 			acreditacionForm.setNigNumProcedimiento((String)registro.get("NIG_NUMPROCEDIMIENTO"));
+			if(registro.get("CAMPOS_ADICIONALES")!=null)
+				acreditacionForm.setCamposAdicionales( getCamposAdicionales((String)registro.get("CAMPOS_ADICIONALES")));
+			else
+				acreditacionForm.setCamposAdicionales("");
+			
 			
 			acreditacionForm.setIdJuzgado(idJuzgado);
 			acreditacionForm.setIdProcedimiento(idProcedimiento);
@@ -1109,6 +1122,28 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		}
 		return acreditacionesPtesList;
 
+	}
+	
+	private String getCamposAdicionales(String camposAdicionales) {
+//		String[] datosAdicionelesReturn;
+//		SCSACTUACIONDESIGNAñññINICIO_PROCESOñññAñññ1-SCSACTUACIONDESIGNAñññFECHA_RESOLUCION_JUDICIALñññAñññ1
+		if(camposAdicionales==null)
+			return "";
+		String[] camposAdicionalesReturn = camposAdicionales.split("-");
+		StringBuilder camposAdicionlesBuilder = new StringBuilder();
+		for (int i = 0; i < camposAdicionalesReturn.length; i++) {
+			String campoAdicional = camposAdicionalesReturn[i];
+			String[] datosAdicionales = campoAdicional.split("ñññ");
+			camposAdicionlesBuilder.append(datosAdicionales[0].toLowerCase());
+			camposAdicionlesBuilder.append("-");
+			camposAdicionlesBuilder.append(datosAdicionales[1]);
+			if(i!=camposAdicionalesReturn.length-1)
+				camposAdicionlesBuilder.append("___");
+						
+			
+		}
+		return camposAdicionlesBuilder.toString();
+		
 	}
 	
 	/**
