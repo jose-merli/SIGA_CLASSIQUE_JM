@@ -463,9 +463,9 @@ public class ActuacionesDesignasAction extends MasterAction {
 			UtilidadesHash.set(hashDatosDesigna,ScsDesignaBean.C_IDTURNO, idTurno);
 			UtilidadesHash.set(hashDatosDesigna,"VISIBLE",numeroAsunto);		
 			
-			ScsActuacionDesignaAdm designaAdm = new ScsActuacionDesignaAdm (this.getUserBean(request));	
+			ScsActuacionDesignaAdm actDesignaAdm = new ScsActuacionDesignaAdm (this.getUserBean(request));	
 			//consultamos las designas
-			Vector hashDesignaVectorObtenerlosEjG =  (Vector)(designaAdm.getConsultaDesigna(hashDatosDesigna, request));	
+			Vector hashDesignaVectorObtenerlosEjG =  (Vector)(actDesignaAdm.getConsultaDesigna(hashDatosDesigna, request));	
 			
 			List<ScsEJGBean> ejgList = new ArrayList<ScsEJGBean>();
 			ScsEJGBean ejg = new ScsEJGBean();
@@ -524,18 +524,18 @@ public class ActuacionesDesignasAction extends MasterAction {
 	
 			miform.setEjgs(ejgList);
 
-			Hashtable hashDesigna =  (Hashtable)(designaAdm.getConsultaDesigna(hashDatosDesigna, request)).get(0);
+			Hashtable hashDesigna =  (Hashtable)(actDesignaAdm.getConsultaDesigna(hashDatosDesigna, request)).get(0);
 			
 			
 			//Se muestra todas las Actuaciones de la designa.
-		    Vector vAct = designaAdm.getConsultaActuacion(hashDatosDesigna, usr);
+		    Vector vAct = actDesignaAdm.getConsultaActuacion(hashDatosDesigna, usr);
 		    Hashtable hashActuacion = new Hashtable();
 		    if(vAct.size()>0){
 		    	hashActuacion = (Hashtable)(vAct).get(0);
 		    }
 		    
 		    //Mostrar Las Actuaciones antiguas.
-		   Hashtable actuacionAntigua =(Hashtable)(designaAdm.getDesignaActuaciones(hashDatosDesigna, request)).get(0);
+		   Hashtable actuacionAntigua =(Hashtable)(actDesignaAdm.getDesignaActuaciones(hashDatosDesigna, request)).get(0);
 		   
 		   	GenParametrosAdm adm = new GenParametrosAdm (this.getUserBean(request));
 		   	
@@ -648,6 +648,11 @@ public class ActuacionesDesignasAction extends MasterAction {
 								" from scs_procedimientos proc"+
 								" where proc.idinstitucion="+(String)usr.getLocation()+
 								"  and  proc.idprocedimiento=des.idprocedimiento) nombreprocedimiento, "+
+								" (select fechabaja "+
+								" from scs_procedimientos proc"+
+								" where proc.idinstitucion="+(String)usr.getLocation()+
+								"  and  proc.idprocedimiento=des.idprocedimiento" +
+								"  and fechabaja < sysdate) bajaprocedimiento, "+
 								" des.codigo codigo, "+
 								" ejgdesigna.anioejg anioejg, "+
 								" ejgdesigna.idtipoejg idtipoejg, "+

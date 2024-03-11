@@ -204,7 +204,7 @@
 		idJuzgado = (String) hashDesigna.get(ScsDesignaBean.C_IDJUZGADO);
 		idInstitucionJuzgado = (String) hashDesigna.get(ScsDesignaBean.C_IDINSTITUCIONJUZGADO);
 		// Datos del Procedimiento seleccionado:
-		if (hashDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO) != null && !((String) hashDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO)).equals("")) {
+		if (hashDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO) != null && !((String) hashDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO)).equals("") && hashDesigna.get("BAJAPROCEDIMIENTO") == null) {
 			idProcedimiento = (String) hashDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO);
 		}
 		idPretension = (String) hashDesigna.get(ScsDesignaBean.C_IDPRETENSION);

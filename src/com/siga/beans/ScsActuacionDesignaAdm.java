@@ -488,6 +488,11 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 									" from scs_procedimientos proc"+
 									" where proc.idinstitucion="+entrada.get("IDINSTITUCION")+
 									"  and  proc.idprocedimiento=des.idprocedimiento) nombreprocedimiento , "+
+									" (select fechabaja "+
+									" from scs_procedimientos proc"+
+									" where proc.idinstitucion="+entrada.get("IDINSTITUCION")+
+									"  and  proc.idprocedimiento=des.idprocedimiento" +
+									"  and fechabaja < sysdate) bajaprocedimiento , "+
 								    " ejgdesigna.anioejg anioejg, "+
 								    " ejgdesigna.idtipoejg idtipoejg, "+
 							        " ejgdesigna.numeroejg numeroejg"+
