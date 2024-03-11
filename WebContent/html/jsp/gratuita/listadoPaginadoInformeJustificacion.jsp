@@ -291,6 +291,7 @@ function accionGuardar (isLetrado)
 				if(jQuery("#fecha_vistaact_"+idsValidacion[1]).val()!='undefined') datosInsertables += "fecha_vista="+jQuery("#fecha_vistaact_"+idsValidacion[1]).val()+",";
 				if(jQuery("#fecha_requerimiento_judicialact_"+idsValidacion[1]).val()!='undefined') datosInsertables += "fecha_requerimiento_judicial="+jQuery("#fecha_requerimiento_judicialact_"+idsValidacion[1]).val()+",";
 				if(jQuery("#numero_personados_macrocausaact_"+idsValidacion[1]).val()!='undefined') datosInsertables += "numero_personados_macrocausa="+jQuery("#numero_personados_macrocausaact_"+idsValidacion[1]).val()+",";
+				
 				if(jQuery("#esvictimaact_"+idsValidacion[1]).val()!='undefined') datosInsertables += "esvictima="+jQuery("#esvictimaact_"+idsValidacion[1]).val()+",";
 				if(jQuery("#essustitucionact_"+idsValidacion[1]).val()!='undefined')	datosInsertables += "essustitucion="+jQuery("#essustitucionact_"+idsValidacion[1]).val();					
 				
@@ -363,7 +364,6 @@ function accionGuardar (isLetrado)
 				
 				lineasCamposAdicionales = camposAdicionales.split("_");
 				
-				//alertStop("lineaCamposAdicionales:"+lineasCamposAdicionales);
 				for (var i = 0; i < lineasCamposAdicionales.length; i++) {
 					lineaCamposAdicionales = lineasCamposAdicionales[i];
 					campos = lineaCamposAdicionales.split('-');
@@ -1168,10 +1168,9 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 
 	<!-- Contenido de la tabla -->
 	<div id='listadoInformeJustificacionDiv' style='height: 400; width: 100%; overflow-y: auto; overflow-x: hidden'>
-
 		<table id='listadoInformeJustificacion' class='fixedHeaderTable dataScroll' border='1' align='center' width='100%' cellspacing='0' cellpadding='0'
 			style='table-layout: fixed; border-style: solid;'>
-			<tr style="visibility: collapse;">
+			<tr style="display:none; visibility: collapse;">
 				<td width="8%"></td>
 				<td width="8%"></td>
 				<td width="17%"></td>
@@ -1184,6 +1183,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 				<td width="3%"></td>
 				<td width="4%"></td>
 			</tr>
+			
 			<bean:define id="permitirBotones" name="permitirBotones" scope="request"></bean:define>
 			<bean:define id="editarDesignaLetrados" name="EDITAR_DESIGNA_LETRADOS" scope="request"></bean:define>
 
@@ -2638,21 +2638,18 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 	}
 	
 	function muestraIconosActuacion(objImgDivActuacion,mostrarIcono){
-		
 		if(objImgDivActuacion && objImgDivActuacion.attr("id")){
 			if(mostrarIcono==true){
 				
 				cadenaAcreditacion = objImgDivActuacion.attr("id").split("div_")[1];
-				//alertStop("cadenaAcreditacion:"+cadenaAcreditacion);
 				countDesigna = cadenaAcreditacion.split("_")[0];
 				allCamposAdicionales = cadenaAcreditacion.split("_nigNumProc_");
 				nigNumProcRequired = allCamposAdicionales[1].substring(0,1);
 				camposAdicionales = allCamposAdicionales[1].split("_camposAdicionales_")[1];
 				existecampoRequerido = nigNumProcRequired;
-				//alertStop("camposAdicionales"+camposAdicionales);
 				lineasCamposAdicionales = camposAdicionales.split("___")
 				
-				isAcreditacionCompleta =  document.getElementById("acreditacionCompleta_"+countDesigna).value;
+				isAcreditacionCompleta =  "true";
 								
 				var formularioActuacionPte = '';
 				objImagen = '<img id="img_';
@@ -2679,58 +2676,70 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 				
 				
 				
-				//alertStop("lineaCamposAdicionales:"+lineasCamposAdicionales);
-				for (var i = 0; i < lineasCamposAdicionales.length; i++) {
-					lineaCamposAdicionales = lineasCamposAdicionales[i];
-					
-					campos = lineaCamposAdicionales.split('-');
-					
-					//tabla = campos[0];
-					//campo = campos[1];
-					campo = campos[0];
-					//alertStop("campo:"+campo);
-					requerido = campos[1];
-					//alertStop("requerido:"+requerido);
-					if(existecampoRequerido=='0')
-						existecampoRequerido = requerido;
-					auxCampoOld = campo+'actold_';
-					formularioActuacionPte += '<input type="hidden" id="';
-					formularioActuacionPte += campo;
-					formularioActuacionPte += 'act_';
-					formularioActuacionPte +=cadenaAcreditacion;
-					formularioActuacionPte += '"/>'
-					formularioActuacionPte += '<input type="hidden" id="';
-					formularioActuacionPte += campo;
-					formularioActuacionPte += 'Required_';
-					formularioActuacionPte +=cadenaAcreditacion;
-					formularioActuacionPte += '" value ="';
-					formularioActuacionPte +=requerido;
-					formularioActuacionPte += '"/>';
-					
-					if(document.getElementById(""+auxCampoOld+cadenaAcreditacion)){
-					
-						if(document.getElementById(""+auxCampoOld+cadenaAcreditacion).value=='')
-							isAcreditacionCompleta = 'false';
+				
+				
+				if(lineasCamposAdicionales.length > 0){
+					for (var i = 0; i < lineasCamposAdicionales.length; i++) {
 						
-					}else{
-						isAcreditacionCompleta = 'false';
+						
+						lineaCamposAdicionales = lineasCamposAdicionales[i];
+						
+						campos = lineaCamposAdicionales.split('-');
+						if(campos.lentgh>0){
+							
+							campo = campos[0];
+							requerido = campos[1];
+							if(existecampoRequerido=='0')
+								existecampoRequerido = requerido;
+							auxCampoOld = campo+'actold_';
+							formularioActuacionPte += '<input type="hidden" id="';
+							formularioActuacionPte += campo;
+							formularioActuacionPte += 'act_';
+							formularioActuacionPte +=cadenaAcreditacion;
+							formularioActuacionPte += '"/>'
+							formularioActuacionPte += '<input type="hidden" id="';
+							formularioActuacionPte += campo;
+							formularioActuacionPte += 'Required_';
+							formularioActuacionPte +=cadenaAcreditacion;
+							formularioActuacionPte += '" value ="';
+							formularioActuacionPte +=requerido;
+							formularioActuacionPte += '"/>';
+							
+							if(document.getElementById(""+auxCampoOld+cadenaAcreditacion)){
+							
+								if(document.getElementById(""+auxCampoOld+cadenaAcreditacion).value=='')
+									isAcreditacionCompleta = 'false';
+								
+							}else{
+								isAcreditacionCompleta = 'false';
+							}
+						}
 					}
+				}
+				
+				
+				valFechaActuacionOld = jQuery("#fechaactold_"+cadenaAcreditacion);
+				valNumProcDesigna = '';
+				valAnioProcDesigna = '';
+				valNigDesigna = '';
+				
+				if(valFechaActuacionOld.val()!='undefined'){
+					countDesigna = cadenaAcreditacion.split("_x_")[0];
+					valNumProcDesigna = jQuery("#numProcedimientoDesigna_"+countDesigna).val();
+					valAnioProcDesigna = jQuery("#anioProcedimientoDesigna_"+countDesigna).val();
+					valNigDesigna = jQuery("#nigDesigna_"+countDesigna).val();
 					
 				}
 				
-				//alertStop("formularioActuacionPte"+formularioActuacionPte);
-				//alertStop("cadenaAcreditacion"+cadenaAcreditacion);
-				if(isAcreditacionCompleta=='true'){
-					if(document.getElementById("fechaactold_"+cadenaAcreditacion)){
-						isAcreditacionCompleta = 'true';
-						
-					}
-				}
 				if(isAcreditacionCompleta=='true'){
 					if(document.getElementById("numprocactold_"+cadenaAcreditacion)){
 						if(document.getElementById("numprocactold_"+cadenaAcreditacion).value=='')
 							isAcreditacionCompleta = 'false';
 						
+					}else{
+						if(valNumProcDesigna=='')
+							isAcreditacionCompleta = 'false';
+							
 					}
 				}
 				
@@ -2739,6 +2748,10 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 						if(document.getElementById("anioprocactold_"+cadenaAcreditacion).value=='')
 							isAcreditacionCompleta = 'false';
 						
+					}else{
+						if(valAnioProcDesigna=='')
+							isAcreditacionCompleta = 'false';
+							
 					}
 				}
 				if(isAcreditacionCompleta=='true'){
@@ -2746,9 +2759,12 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 						if(document.getElementById("nigactold_"+cadenaAcreditacion).value=='')
 							isAcreditacionCompleta = 'false';
 						
+					}else{
+						if(valNigDesigna=='')
+							isAcreditacionCompleta = 'false';
+							
 					}
 				}
-				
 				
 				
 				if(existecampoRequerido=='1' && isAcreditacionCompleta=='false'){
@@ -2811,8 +2827,6 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		valNig = jQuery("#nigact_"+cadenaAcreditacion).val();
 		valNigNumProcRequired = jQuery("#nigNumProcRequired_"+cadenaAcreditacion).val();
 
-		
-		
 		//valdenominacionsocialRequired='';if(jQuery("#denominacionsocialact_"+cadenaAcreditacion)){valdenominacionsocial = jQuery("#denominacionsocialact_"+cadenaAcreditacion).val();valdenominacionsocialRequired = jQuery("#denominacionsocialRequired_"+cadenaAcreditacion).val();}
 		
 		valinicio_procesoRequired='';
@@ -2842,8 +2856,6 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		}
 		valessustitucionRequired='';if(jQuery("#essustitucionact_"+cadenaAcreditacion)){valessustitucion = jQuery("#essustitucionact_"+cadenaAcreditacion).val();valessustitucionRequired = jQuery("#essustitucionRequired_"+cadenaAcreditacion).val();}
 		valtipo_autoRequired='';if(jQuery("#tipo_autoact_"+cadenaAcreditacion)){valtipo_auto = jQuery("#tipo_autoact_"+cadenaAcreditacion).val();valtipo_autoRequired = jQuery("#tipo_autoRequired_"+cadenaAcreditacion).val();}
-	
-		
 		
 		
 		if(valFechaActuacion && valFechaActuacion!=''){
@@ -2879,16 +2891,6 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 			}
 			if(jQuery("#essustitucionact_"+cadenaAcreditacion)){jQuery("#dialogessustitucion").val(valessustitucion);jQuery("#dialogessustitucionRequired").val(valessustitucionRequired);	}
 			if(jQuery("#tipo_autoact_"+cadenaAcreditacion)){jQuery("#dialogtipo_auto").val(valtipo_auto);jQuery("#dialogtipo_autoRequired").val(valtipo_autoRequired);	}
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
 			
 			
 		}else{
@@ -2997,19 +2999,11 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 			if(valessustitucionRequired=='1'){	jQuery("#asteriscoessustitucion").text("(*)");	jQuery("#div_dialogessustitucion").show();	}else if(valessustitucionRequired=='0'){jQuery("#asteriscoessustitucion").text("");jQuery("#div_dialogessustitucion").show();}else{jQuery("#asteriscoessustitucion").text("");jQuery("#div_dialogessustitucion").hide();	}
 			if(valtipo_autoRequired=='1'){	jQuery("#asteriscotipo_auto").text("(*)");	jQuery("#div_dialogtipo_auto").show();	}else if(valtipo_autoRequired=='0'){jQuery("#asteriscotipo_auto").text("");jQuery("#div_dialogtipo_auto").show();}else{jQuery("#asteriscotipo_auto").text("");jQuery("#div_dialogtipo_auto").hide();	}
 
-			
-			
-			
-			
-			
 			jQuery(".ui-widget-overlay").css("opacity","0");
 			
 			var hoy = new Date();
 			var hoyformateada = hoy.getDate()+"/"+(hoy.getMonth()+1)+"/"+hoy.getFullYear();
 
-			
-			
-			
 			if(mostrarDatosDesigna==true){
 				valFechaActuacionOld = jQuery("#fechaactold_"+cadenaAcreditacion).val();
 				if(valFechaActuacionOld && valFechaActuacionOld!=''){
@@ -3048,8 +3042,6 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		valAnioProc = jQuery('#dialogAnioProc').val();
 		valNig = jQuery('#dialogNig').val();
 		valNigNumProcRequired = jQuery("#dialogNigNumProcRequired").val();
-		
-		
 		//valdenominacionsocial = jQuery('#dialogdenominacionsocial').val();valdenominacionsocialRequired='';	if(jQuery("#denominacionsocialact_"+cadenaAcreditacion)){valdenominacionsocialRequired = jQuery("#denominacionsocialRequired_"+cadenaAcreditacion).val();}
 		
 		valinicio_proceso = jQuery('#dialoginicio_proceso').val();valinicio_procesoRequired='';	if(jQuery("#inicio_procesoact_"+cadenaAcreditacion)){valinicio_procesoRequired = jQuery("#inicio_procesoRequired_"+cadenaAcreditacion).val();}
@@ -3067,19 +3059,10 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		valessustitucion = jQuery('#dialogessustitucion').val();valessustitucionRequired='';	if(jQuery("#essustitucionact_"+cadenaAcreditacion)){valessustitucionRequired = jQuery("#essustitucionRequired_"+cadenaAcreditacion).val();}
 		valtipo_auto = jQuery('#dialogtipo_auto').val();valtipo_autoRequired='';	if(jQuery("#tipo_autoact_"+cadenaAcreditacion)){valtipo_autoRequired = jQuery("#tipo_autoRequired_"+cadenaAcreditacion).val();}
 
-
-		
-		
-		
-		
-		
-		
-		
 		cadenaAcreditacion = objImgDivActuacion.attr("id").split("div_")[1]
 		var indexDesigna = cadenaAcreditacion.split("_")[0];
 		var fechaDesigna = document.getElementById("fechaDesigna_"+indexDesigna).value;
 		var fechaJustificacion = document.getElementById("fecha").value;
-		
 		
 		error = '';
 		if( valFechaActuacion==''){
@@ -3121,8 +3104,6 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		if(valessustitucionRequired=='1' &&valessustitucion==''){error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.essustitucion'/>"+ '\n';}
 		if(valtipo_autoRequired=='1' &&valtipo_auto==''){error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.tipo_auto'/>"+ '\n';}
 
-		
-		
 		
 		valueNumProcedimiento = valNumProc;
 		objectConsejo = document.getElementById("idConsejo");

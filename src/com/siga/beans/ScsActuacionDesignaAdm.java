@@ -538,7 +538,11 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 								",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION+
 								",act."+ScsActuacionDesignaBean.C_IDPROCEDIMIENTO+
 								",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO+
-								",act."+ScsActuacionDesignaBean.C_IDACREDITACION+"||','||ap.nig_numprocedimiento IDACREDITACION"+
+								",act."+ScsActuacionDesignaBean.C_IDACREDITACION+"|| ',' || ('nig_numprocedimientoñññ'||ap.nig_numprocedimiento||'-'||"+
+								"(select LISTAGG(lower(ADIC.nombrecampo) || 'ñññ' || ADIC.obligatorio_fichacolegial, '-') within group (order by ADIC.nombrecampo)  " + 
+								" from SCS_ACREDITACION_CAMPOSNECESARIOS ADIC  " + 
+								" WHERE ADIC.IDINSTITUCION = ap.IDINSTITUCION AND ADIC.IDPROCEDIMIENTO = ap.IDPROCEDIMIENTO and ADIC.IDACREDITACION = ap.IDACREDITACION)) IDACREDITACION"+
+								
 								",act."+ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO+
 								",act."+ScsActuacionDesignaBean.C_IDFACTURACION+
 								",act."+ScsActuacionDesignaBean.C_IDMOVIMIENTO+		
@@ -1139,11 +1143,13 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		for (int i = 0; i < camposAdicionalesReturn.length; i++) {
 			String campoAdicional = camposAdicionalesReturn[i];
 			String[] datosAdicionales = campoAdicional.split("ñññ");
-			camposAdicionlesBuilder.append(datosAdicionales[0].toLowerCase());
-			camposAdicionlesBuilder.append("-");
-			camposAdicionlesBuilder.append(datosAdicionales[1]);
-			if(i!=camposAdicionalesReturn.length-1)
-				camposAdicionlesBuilder.append("___");
+			if(datosAdicionales.length>1) {
+				camposAdicionlesBuilder.append(datosAdicionales[0].toLowerCase());
+				camposAdicionlesBuilder.append("-");
+				camposAdicionlesBuilder.append(datosAdicionales[1]);
+				if(i!=camposAdicionalesReturn.length-1)
+					camposAdicionlesBuilder.append("___");
+			}
 						
 			
 		}

@@ -56,7 +56,13 @@ public class ActuacionesDesignasForm extends MasterForm {
 	private String idfacturacion;
 	private String facturado;
 	private String convenio;
-	
+	private String datosJustificacion;
+	public String getDatosJustificacion() {
+		return datosJustificacion;
+	}
+	public void setDatosJustificacion(String datosJustificacion) {
+		this.datosJustificacion = datosJustificacion;
+	}
 	public boolean getFichaColegial() {
 		return fichaColegial;
 	}

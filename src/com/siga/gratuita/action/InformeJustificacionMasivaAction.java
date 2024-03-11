@@ -352,10 +352,16 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 							String[] datosAdicionalesArray = datosAdicionales.split("=");
 							String campo = datosAdicionalesArray[0].toUpperCase(); 
 	//						System.out.println("campo:"+campo);
-							String valor = datosAdicionalesArray[1];
-							if(!valor.equals("undefined")) {
-								if(campo.startsWith("FECHA_")) scsDatosAdicionalesHashtable.put(campo,valor!=null?GstDate.getApplicationFormatDate("", valor):"" );
-								else scsDatosAdicionalesHashtable.put(campo, valor!=null?valor:"");
+							if(datosAdicionalesArray.length==1) {
+								if(campo.startsWith("FECHA_")) scsDatosAdicionalesHashtable.put(campo,"" );
+								else scsDatosAdicionalesHashtable.put(campo,"");
+							}else {
+								
+								String valor = datosAdicionalesArray[1];
+								if(!valor.equals("undefined")) {
+									if(campo.startsWith("FECHA_")) scsDatosAdicionalesHashtable.put(campo,valor!=null?GstDate.getApplicationFormatDate("", valor):"" );
+									else scsDatosAdicionalesHashtable.put(campo, valor!=null?valor:"");
+								}
 							}
 						}
 					}
