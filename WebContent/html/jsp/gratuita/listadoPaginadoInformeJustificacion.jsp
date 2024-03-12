@@ -2685,8 +2685,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 						lineaCamposAdicionales = lineasCamposAdicionales[i];
 						
 						campos = lineaCamposAdicionales.split('-');
-						if(campos.lentgh>0){
-							
+						if(campos.length > 0){
+								
 							campo = campos[0];
 							requerido = campos[1];
 							if(existecampoRequerido=='0')
