@@ -1028,7 +1028,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" inner join SCS_ACREDITACION AC on ACPRO.IDACREDITACION = AC.IDACREDITACION ");
 		sql.append(" inner join SCS_TIPOACREDITACION TAC on AC.IDTIPOACREDITACION = TAC.IDTIPOACREDITACION ");
 		sql.append(" WHERE 1=1 ");
-		
+		sql.append(" AND (PRO.FECHABAJA is null or PRO.FECHABAJA < sysdate) ");
 		sql.append(" AND ACPRO.IDINSTITUCION = :");
 		contador++;
 		codigos.put(new Integer(contador),idInstitucion);
