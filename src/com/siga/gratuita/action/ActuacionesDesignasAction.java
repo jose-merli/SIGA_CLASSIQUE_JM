@@ -1426,15 +1426,22 @@ public class ActuacionesDesignasAction extends MasterAction {
 			scsDatosAdicionalesHashtable = new Hashtable();
 			for (int j = 0; j < arrayRowsJustificacion.length; j++) {
 				String  datosAdicionales   =  arrayRowsJustificacion[j];
-			
-				
-				String[] datosAdicionalesArray = datosAdicionales.split("=");
-				String campo = datosAdicionalesArray[0].toUpperCase(); 
-				//						System.out.println("campo:"+campo);
-				String valor = datosAdicionalesArray[1];
-				if(!valor.equals("undefined")) {
-					if(campo.startsWith("FECHA_")) scsDatosAdicionalesHashtable.put(campo,valor!=null?GstDate.getApplicationFormatDate("", valor):"" );
-					else scsDatosAdicionalesHashtable.put(campo, valor!=null?valor:"");
+				if(datosAdicionales!=null && !datosAdicionales.trim().equals("")) {
+					
+					String[] datosAdicionalesArray = datosAdicionales.split("=");
+					String campo = datosAdicionalesArray[0].toUpperCase(); 
+//						System.out.println("campo:"+campo);
+					if(datosAdicionalesArray.length==1) {
+						if(campo.startsWith("FECHA_")) scsDatosAdicionalesHashtable.put(campo,"" );
+						else scsDatosAdicionalesHashtable.put(campo,"");
+					}else {
+						
+						String valor = datosAdicionalesArray[1];
+						if(!valor.equals("undefined")) {
+							if(campo.startsWith("FECHA_")) scsDatosAdicionalesHashtable.put(campo,valor!=null?GstDate.getApplicationFormatDate("", valor):"" );
+							else scsDatosAdicionalesHashtable.put(campo, valor!=null?valor:"");
+						}
+					}
 				}
 			}
 		}
@@ -1690,7 +1697,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 						Vector datosAdicionalesVector =  adicionalesAdm.selectByPK(scsDatosAdicionalesHashtable);
 						if(datosAdicionalesVector!=null && datosAdicionalesVector.size()>0) {
 							
-							adicionalesAdm.update(scsDatosAdicionalesHashtable,actuacionModificada);
+							adicionalesAdm.update(scsDatosAdicionalesHashtable,adicionalesAdm.beanToHashTable( (ScsDesignaDatosAdicionalesBean)datosAdicionalesVector.get(0)));
 						}else {
 							adicionalesAdm.insert(scsDatosAdicionalesHashtable);
 						}
@@ -1718,7 +1725,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 					Vector datosAdicionalesVector =  adicionalesAdm.selectByPK(scsDatosAdicionalesHashtable);
 					if(datosAdicionalesVector!=null && datosAdicionalesVector.size()>0) {
 						
-						adicionalesAdm.update(scsDatosAdicionalesHashtable, actuacionModificada);
+						adicionalesAdm.update(scsDatosAdicionalesHashtable,adicionalesAdm.beanToHashTable( (ScsDesignaDatosAdicionalesBean)datosAdicionalesVector.get(0)));
 					}else {
 						adicionalesAdm.insert(scsDatosAdicionalesHashtable);
 					}

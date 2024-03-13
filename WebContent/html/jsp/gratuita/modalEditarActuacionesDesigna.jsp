@@ -384,13 +384,11 @@
 	
 	<!-- Incluido jquery en siga.js -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	
+
+	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>	
 	<!-- validaciones struct -->
 	<html:javascript formName="ActuacionesDesignasForm" staticJavascript="false" />  
-	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
-	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
-	
 
 	<script type="text/javascript" src="<html:rewrite page='/html/js/prototype.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/scriptaculous/scriptaculous.js'/>"></script>
@@ -398,12 +396,15 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
 	
 <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.9.1.js?v=${sessionScope.VERSIONJS}'/>"></script>
+<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
 <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
-<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
-<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>
-
-
 <link rel="stylesheet" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>">
+
+	
+
+
+
+
 
 <style type="text/css">
 .ui-dialog-titlebar-close {
@@ -418,7 +419,6 @@ td {
 	
 	
 	<!-- fin validaciones struct -->
-
 	<script type="text/javascript" >
 	
 	
@@ -850,7 +850,7 @@ td {
 								<%	} else {
 									
 										if(isColegioAlcala && (modoAnterior==null || !modoAnterior.equalsIgnoreCase("VER")) && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))){%>
-											<siga:Select id="pretension" queryId="getPretensionesAlcala" parentQueryParamIds="<%=comboPretensionesParentQueryIds %>" params="<%=idPretensionParamsJSON%>" queryParamId="idpretension" selectedIds="<%=pretensionSel %>" childrenIds="procedimiento" width="380" readOnly='readOnlyCombo%>"' />
+											2<siga:Select id="pretension" queryId="getPretensionesAlcala" parentQueryParamIds="<%=comboPretensionesParentQueryIds %>" params="<%=idPretensionParamsJSON%>" queryParamId="idpretension" selectedIds="<%=pretensionSel %>" childrenIds="procedimiento" width="380" readOnly='readOnlyCombo%>"' />
 											<font class="labelText">
 												<siga:Idioma key="gratuita.altaGuardia.literal.motivoCambio"/>
 											</font>
@@ -1712,22 +1712,20 @@ td {
 			}			
 		}
 		
-		var tagSelect_select = jQuery("#acreditacion");
+		var tagSelect_acreditacion= jQuery("#acreditacion");
 		
-		tagSelect_select.on("change",function(){
+		tagSelect_acreditacion.on("change",function(){
 			
-			
-			if(document.getElementById("acreditacion")){
-				
 				if(document.getElementById("acreditacion").value!='')
 					return onchangeacreditacion();
 				
-			}
-			//alertStop("hay que mostrar dinamicamente el asterisco del nig y numproc y sacar el boton del jdialog");
 				
 		});
 		
+		
+		
 		function onchangeacreditacion(){
+			cambiarAcreditacion
 			valueAcreditacion  = document.getElementById("acreditacion").value; 
 			objImgDivActuacion =  jQuery('#div_acreditacion');
 			
@@ -1736,9 +1734,7 @@ td {
 			existecampoRequerido = 0;
 			//alert("hay que comprobar que pasa para los que no tienen configurados los modulo(si viene el nignum en el elemnto cero)");
 			
-			//alertStop("valueAcreditacion"+valueAcreditacion);
 			if(valueAcreditacion!='' && valueAcreditacion!='undefined' ){
-				
 				
 				var formularioActuacionPte = '';
 				objImagen = '<img id="img_acreditacion"  style="cursor: hand;" border="0" onClick="accionEditarPreActuacion(this,true);"   />';
@@ -1777,7 +1773,6 @@ td {
 				
 				
 				
-				//alertStop("Entramos"+lineasCamposAdicionales);
 				
 				mostrarIconos = 'false';
 				if(lineasCamposAdicionales.length>1){
@@ -1811,7 +1806,6 @@ td {
 							formularioActuacionPte +=requerido;
 							formularioActuacionPte += '"/>';
 							
-							//alertStop("auxCampoOld obj:"+document.getElementById(""+auxCampoOld) );
 							 if(requerido=='1'){
 								if(document.getElementById(""+auxCampoOld)){
 									if(document.getElementById(""+auxCampoOld).value=='')
@@ -1825,6 +1819,7 @@ td {
 				
 					}
 				}
+			
 				if(existecampoRequerido=='1' && isAcreditacionCompleta=='false'){
 					formularioActuacionPte += '<input type="hidden" id="insertaract" value="0" />';
 					objImgDivActuacion.html(formularioActuacionPte);
@@ -1838,8 +1833,9 @@ td {
 						muestraIconoActuacion(true);
 					
 				}
-				
 			}
+			
+			
 		
 		}
 		
@@ -2144,9 +2140,11 @@ td {
 			return objRegExp.test(strValue);
 		}
 		<%if (modoAnterior != null && !modoAnterior.equalsIgnoreCase("VER")) {%>
-			if(document.getElementById("juzgado") && document.getElementById("juzgado").onchange)
+			if(document.getElementById("juzgado") && document.getElementById("juzgado").onchange){
 				document.getElementById("juzgado").onchange();
+			}
 		<%}%>
+		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 

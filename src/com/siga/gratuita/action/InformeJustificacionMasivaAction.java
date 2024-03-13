@@ -642,8 +642,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 							UtilidadesHash.set(scsDatosAdicionalesHashtable,ScsDesignaDatosAdicionalesBean.C_NUMEROASUNTO, UtilidadesHash.getString(hashActuacion,ScsActuacionDesignaBean.C_NUMEROASUNTO));
 							Vector datosAdicionales =  adicionalesAdm.selectByPK(scsDatosAdicionalesHashtable);
 							if(datosAdicionales!=null && datosAdicionales.size()>0) {
-								
-								adicionalesAdm.update(scsDatosAdicionalesHashtable, hashActuacion);
+								adicionalesAdm.update(scsDatosAdicionalesHashtable,adicionalesAdm.beanToHashTable( (ScsDesignaDatosAdicionalesBean)datosAdicionales.get(0)));
 							}else {
 								adicionalesAdm.insert(scsDatosAdicionalesHashtable);
 							}

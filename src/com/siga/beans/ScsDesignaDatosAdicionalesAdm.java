@@ -124,7 +124,7 @@ public class ScsDesignaDatosAdicionalesAdm extends MasterBeanAdministrador {
 	 *  @return hashtable con la información del bean
 	 * 
 	 */
-	protected Hashtable beanToHashTable(MasterBean bean) throws ClsExceptions {
+	public Hashtable beanToHashTable(MasterBean bean) throws ClsExceptions {
 		Hashtable hash = null;
 		try{
 			hash = new Hashtable();
