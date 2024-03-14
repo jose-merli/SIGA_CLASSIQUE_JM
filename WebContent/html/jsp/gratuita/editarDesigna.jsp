@@ -1120,53 +1120,6 @@ if (ejisActivo>0 || pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_CANTABRI
 						
 						<tr>
 							<td class="labelText">
-							
-							<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA|| usr.getIdConsejo()== AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ) { %>
-								 	<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>
-									<% if (obligatorioProcedimiento){ %>
-										<%= asterisco %>
-									<%} 
-								}else{%>
-									<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo" />
-									<%if (obligatorioModulo){ %>
-										<%= asterisco %>
-									<%}
-								}%>
-							
-								 
-								
-							</td>
-							
-							<td colspan="7">
-								<%-- Procedimiento --%> 
-								<% if (filtroJuzgadoModuloEspecial!=null && filtroJuzgadoModuloEspecial.equals("1")) { %>
-								 	<html:select styleId="idPretension"
-										styleClass="<%=estiloCombo%>" style="width:380px;"
-										
-										property="idPretension"></html:select>
-									
-									
-									
-								 	
-								 
-								<%}else{%>
-								
-								<html:select styleId="idProcedimiento"
-										style="width:750px;" styleClass="<%=estiloCombo%>"
-										property="idProcedimiento" ></html:select>
-									
-									
-									
-									
-								<%}%>						
-								
-								 
-															
-							</td>
-						</tr>
-						
-						<tr>
-							<td class="labelText">
 								<siga:Idioma key="gratuita.editarDesigna.literal.asunto" />
 							</td>
 							
@@ -1206,51 +1159,61 @@ if (ejisActivo>0 || pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_CANTABRI
 								<html:hidden name="MaestroDesignasForm" styleId="convenio"  property="convenio" />
 								<td colspan = "3"></td>
 							<%} %>
-						</tr>
+						</tr>	
 						
-						<!-- JBD 16/2/2009 INC-5739-SIGA -->
-						<tr>
-						
-							
-							<td class="labelText">
-								
-							
-								
-								<% if (filtroJuzgadoModuloEspecial!=null && filtroJuzgadoModuloEspecial.equals("1")) { %>
-								 	<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo" />
-									<%if (obligatorioModulo){ %>
-										<%= asterisco %>
-									<%}
-								}else{%>
-								<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>
-									<% if (obligatorioProcedimiento){ %>
-										<%= asterisco %>
-									<%} 
-									
-								}%>
-							
-							</td>				
 					
-							<td  colspan="7">
-							<% if (filtroJuzgadoModuloEspecial!=null && filtroJuzgadoModuloEspecial.equals("1")) { %>
-									<html:select styleId="idProcedimiento"
-										 styleClass="<%=estiloCombo%>" style="width:750px;"
-										property="idProcedimiento"></html:select>
-									
-									
-								 	
-								<%}else{%>
-									<html:select styleId="idPretension"
-										 styleClass="<%=estiloCombo%>" style="width:380px;"
-										property="idPretension"></html:select>
-									
-									
-									
-								<%}%>
-							
-															
-							</td>
-						</tr>
+						<!-- Procedimiento --> 
+						<% if (filtroJuzgadoModuloEspecial!=null && filtroJuzgadoModuloEspecial.equals("1")) { %>
+								<tr>					
+									<td  class="labelText">
+									<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>
+										<% if (obligatorioProcedimiento){ %>
+										<%= asterisco %>
+										<%}%>
+									</td>
+									<td colspan="7">
+							 			<html:select styleId="idPretension"	styleClass="<%=estiloCombo%>" style="width:380px;"	property="idPretension"></html:select>
+									</td>
+								</tr>
+								<tr>
+								<td  class="labelText">
+									<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo" />
+										<%if (obligatorioModulo){ %>
+											<%= asterisco %>
+										<%}%>
+								</td>
+								<td colspan="7">
+									<html:select styleId="idProcedimiento"	style="width:750px;" styleClass="<%=estiloCombo%>" property="idProcedimiento" ></html:select>
+								</td
+							</tr>
+						 
+						<%}else{%>
+							<tr>
+								<td  class="labelText">
+									<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo" />
+										<%if (obligatorioModulo){ %>
+											<%= asterisco %>
+										<%}%>
+								</td>
+								<td colspan="7">
+									<html:select styleId="idProcedimiento"	style="width:750px;" styleClass="<%=estiloCombo%>" property="idProcedimiento" ></html:select>
+								</td
+							</tr>
+							<tr>					
+									<td  class="labelText">
+									<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>
+										<% if (obligatorioProcedimiento){ %>
+										<%= asterisco %>
+										<%}%>
+									</td>
+									<td colspan="7">
+							 			<html:select styleId="idPretension"	styleClass="<%=estiloCombo%>" style="width:380px;"	property="idPretension"></html:select>
+									</td>
+								</tr>
+						<%}%>						
+						
+						
+						
 						
 						<!-- JBD 16/2/2009 INC-5739-SIGA -->
 					</table>
