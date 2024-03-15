@@ -1592,16 +1592,28 @@ public class ActuacionesDesignasAction extends MasterAction {
 			catch (Exception e) {
 
 			}
-
+			boolean isModificarDesigna = false;
+			
 			if(sdb.getNIG() == null || sdb.getNIG().equals("")){     				
 				if (miform.getNig()!=null && !miform.getNig().equals("")){
 					sdb.setNIG(miform.getNig());
-					designaAdm.updateDirect(sdb);
+					isModificarDesigna = true;
+
 				}
 			}
-
-
-
+			if(sdb.getNumProcedimiento() == null || sdb.getNumProcedimiento().equals("")){     				
+				if (miform.getNumeroProcedimiento()!=null && !miform.getNumeroProcedimiento().equals("")){
+					sdb.setNumProcedimiento(miform.getNumeroProcedimiento());
+					if(miform.getAnioProcedimiento()!=null && !miform.getAnioProcedimiento().equals("")) {
+						sdb.setAnioProcedimiento(Integer.valueOf(miform.getAnioProcedimiento()));
+					}
+					isModificarDesigna = true;
+				}
+			}
+			if(isModificarDesigna) {
+				designaAdm.updateDirect(sdb);
+				
+			}
 			if (miform.getActuacionValidada() != null) {
 				if (UtilidadesString.stringToBoolean(miform.getActuacionValidada())) 
 					actuacionModificada.put(ScsActuacionDesignaBean.C_VALIDADA, "1");
@@ -1732,6 +1744,51 @@ public class ActuacionesDesignasAction extends MasterAction {
 					
 					
 				}
+				if ((nig!=null && !nig.equals("")) || (numeroProcedimiento!=null && !numeroProcedimiento.equals(""))  ){
+					Hashtable hashDesigna = new Hashtable();
+					UtilidadesHash.set(hashDesigna,
+							ScsActuacionDesignaBean.C_ANIO,(String) actuacionModificada.get(ScsActuacionDesignaBean.C_ANIO));
+					UtilidadesHash.set(hashDesigna,	ScsActuacionDesignaBean.C_IDINSTITUCION,(String)	actuacionModificada.get(ScsActuacionDesignaBean.C_IDINSTITUCION));
+					UtilidadesHash.set(hashDesigna,	ScsActuacionDesignaBean.C_NUMERO,(String) actuacionModificada.get(ScsActuacionDesignaBean.C_NUMERO));
+					UtilidadesHash.set(hashDesigna,	ScsActuacionDesignaBean.C_IDTURNO,(String) actuacionModificada.get(ScsActuacionDesignaBean.C_IDTURNO));
+					
+					
+					
+					Vector actuacionesVector =  actuacionDesignaAdm.select(hashDesigna);
+					for (int j = 0; j < actuacionesVector.size(); j++) {
+						ScsActuacionDesignaBean actuacion = (ScsActuacionDesignaBean) actuacionesVector.get(j);
+						List<String> camposActualizarActuacion = new ArrayList<String>();
+						boolean isModificarActuaciones = false;
+						
+						if(actuacion.getNig() == null || actuacion.getNig().equals("")){     				
+							if (nig!=null && !nig.equals("")){
+								actuacion.setNig(nig);
+								camposActualizarActuacion.add(ScsActuacionDesignaBean.C_NIG);
+								isModificarActuaciones = true;
+	
+							}
+						}
+						if(actuacion.getNumeroProcedimiento() == null || actuacion.getNumeroProcedimiento().equals("")){     				
+							if (numeroProcedimiento!=null && !numeroProcedimiento.equals("")){
+								camposActualizarActuacion.add(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO);
+								actuacion.setNumeroProcedimiento(numeroProcedimiento);
+								if(anioProcedimiento!=null && !anioProcedimiento.equals("")) {
+									camposActualizarActuacion.add(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO);
+									actuacion.setAnioProcedimiento(anioProcedimiento);
+								}
+								isModificarActuaciones = true;
+								
+							}
+						}
+						if(isModificarActuaciones) {
+							actuacionDesignaAdm.updateDirect(actuacion, clavesActuaciones, camposActualizarActuacion.toArray(new String[camposActualizarActuacion.size()]));
+						}
+					}
+				}
+				
+				
+				
+				
 				
 				actuacionDesignaAdm.updateDirect(actuacionModificada,clavesActuaciones,campos);
 				
