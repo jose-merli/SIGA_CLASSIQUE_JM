@@ -2499,7 +2499,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 			
 			</div>
 			<div id="div_dialognumero_vistas_adicionales" class="labeltext" style="display:none"><label for="dialognumero_vistas_adicionales" style=" float: left; color: black"><siga:Idioma key='gratuita.actuacionesDesigna.literal.numero_vistas_adicionales' /></label><label id="asterisconumero_vistas_adicionales"></label><input type="text" id="dialognumero_vistas_adicionales" size="10" maxlength="3" /></div>
-			<div id="div_dialogesvictima" class="labelText" style="display:none">
+			<div id="div_dialogesvictima_quitado_por_orden_deLP" class="labelText" style="display:none">
 				<label for="dialogesvictima"   style="width: 170px;float:left;color: black"><siga:Idioma key='gratuita.actuacionesDesigna.literal.esvictima' /></label><label id="asteriscoesvictima"></label>
 					<select id="dialogesvictima" class="boxCombo" style="width:50px;">
 						<option></option>
@@ -2508,7 +2508,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 					</select>
 											
 			</div>
-			<div id="div_dialogessustitucion" class="labelText" style="display:none">
+			<div id="div_dialogessustitucion_quitado_por_orden_deLP" class="labelText" style="display:none">
 				<label for="dialogessustitucion"   style="width: 170px;float:left;color: black"><siga:Idioma key='gratuita.actuacionesDesigna.literal.essustitucion' /></label><label id="asteriscoessustitucion"></label>
 					<select id="dialogessustitucion" class="boxCombo" style="width:50px;">
 						<option></option>
@@ -2704,6 +2704,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 							formularioActuacionPte += '" value ="';
 							formularioActuacionPte +=requerido;
 							formularioActuacionPte += '"/>';
+							//alertStop("campo"+campo);
+							//alertStop("Existe"+document.getElementById(""+auxCampoOld+cadenaAcreditacion));
 							
 							if(document.getElementById(""+auxCampoOld+cadenaAcreditacion)){
 							
@@ -2711,7 +2713,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 									isAcreditacionCompleta = 'false';
 								
 							}else{
-								isAcreditacionCompleta = 'false';
+								if(requerido=='1')
+									isAcreditacionCompleta = 'false';
 							}
 						}
 					}
