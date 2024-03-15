@@ -57,7 +57,6 @@ import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.gratuita.form.DesignaForm;
 import com.siga.gratuita.form.InformeJustificacionMasivaForm;
-import com.siga.gratuita.pcajg.resoluciones.ResolucionesFicheroAbstract;
 import com.siga.ws.CajgConfiguracion;
 
 
@@ -660,13 +659,33 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 					Vector vDesignaModificada = desginaAdm.selectByPK(hashActuacion);
 					ScsDesignaBean sdb = (ScsDesignaBean)vDesignaModificada.get(0);
 			        //Se rellena el NIG si no estuviera completo en datos generales
+					List<String> camposActualizarDesigna = new ArrayList<String>();
+					boolean isModificarDesigna = false;
 					if(sdb.getNIG() == null || sdb.getNIG().equals("")){     				
 						if (nigActuacion!=null && !nigActuacion.equals("")){
 							sdb.setNIG(nigActuacion);
-							String camposDesignaNig[]={ScsDesignaBean.C_NIG};
-							desginaAdm.updateDirect(sdb, clavesDesigna, camposDesignaNig);
+							camposActualizarDesigna.add(ScsDesignaBean.C_NIG);
+							isModificarDesigna = true;
+
 						}
 					}
+					if(sdb.getNumProcedimiento() == null || sdb.getNumProcedimiento().equals("")){     				
+						if (numProcActuacion!=null && !numProcActuacion.equals("")){
+							camposActualizarDesigna.add(ScsDesignaBean.C_NUMPROCEDIMIENTO);
+							sdb.setNumProcedimiento(numProcActuacion);
+							if(anioProcActuacion!=null && !anioProcActuacion.equals("")) {
+								camposActualizarDesigna.add(ScsDesignaBean.C_ANIOPROCEDIMIENTO);
+								sdb.setAnioProcedimiento(new Integer(anioProcActuacion));
+							}
+							isModificarDesigna = true;
+							
+						}
+					}
+					if(isModificarDesigna) {
+						desginaAdm.updateDirect(sdb, clavesDesigna, camposActualizarDesigna.toArray(new String[camposActualizarDesigna.size()]));
+					}
+					
+					
 				}
 			}
 			String datosBaja = miForm.getDatosBaja();
