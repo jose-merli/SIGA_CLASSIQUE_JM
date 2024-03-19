@@ -292,8 +292,6 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			String clavesActuacion[] = { ScsActuacionDesignaBean.C_ANIO, ScsActuacionDesignaBean.C_NUMERO,
 					ScsActuacionDesignaBean.C_IDINSTITUCION, ScsActuacionDesignaBean.C_IDTURNO ,ScsActuacionDesignaBean.C_NUMEROASUNTO};
 			
-//			scs
-			
 			String idPersona   =  miForm.getIdPersona();
 			String datosJustificacion = miForm.getDatosJustificacion();
 			tx = user.getTransactionPesada();
@@ -652,10 +650,10 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 						
 						
 						actuacionDesginaAdm.updateDirect(hashActuacion,clavesActuacion,camposList.toArray(new String[camposList.size()]));
-						
-						
-						
 					}
+					
+					
+					
 					if ((nigActuacion!=null && !nigActuacion.equals("")) || (numProcActuacion!=null && !numProcActuacion.equals(""))  ){
 						Hashtable hashDesigna = new Hashtable();
 						UtilidadesHash.set(hashDesigna,
@@ -669,7 +667,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 								ScsActuacionDesignaBean.C_IDTURNO, idTurno);
 						
 						
-						
+						/* El codigo siguiente requiere de unas buenas pruebas antes de subir
 						Vector actuacionesVector =  actuacionDesginaAdm.select(hashDesigna);
 						for (int j = 0; j < actuacionesVector.size(); j++) {
 							ScsActuacionDesignaBean actuacion = (ScsActuacionDesignaBean) actuacionesVector.get(j);
@@ -699,7 +697,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 							if(isModificarDesigna) {
 								actuacionDesginaAdm.updateDirect(actuacion, clavesActuacion, camposActualizarActuacion.toArray(new String[camposActualizarActuacion.size()]));
 							}
-						}
+						}*/
 						
 						
 						
