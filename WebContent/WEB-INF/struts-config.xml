@@ -2313,6 +2313,7 @@
 		<action path="/JGR_PestanaDesignas" type="com.siga.gratuita.action.InformeJustificacionMasivaAction" name="InformeJustificacionMasivaForm">
 			<forward name="inicio" path="/html/jsp/gratuita/informeJustificacionMasiva.jsp"/>
 			<forward name="listadoPaginado" path="/html/jsp/gratuita/listadoPaginadoInformeJustificacion.jsp" />
+			<forward name="listadoPaginado3003" path="/html/jsp/gratuita/listadoPaginadoInformeJustificacion3003.jsp" />
 		</action>
 				
 		
