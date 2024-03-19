@@ -1106,10 +1106,10 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		request.setAttribute("permitirBotones", isPermisoActualizarDesignas);
 		request.setAttribute("resolucionLetradoActivo", isResolucionLetradoActivo);
 		request.setAttribute("informesOficioLetradoActivo", isinformesOficioLetradoActivo);
-		
-		
-		
-		return "listadoPaginado";
+		if(usrBean.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ)
+			return "listadoPaginado3003";
+		else 
+			return "listadoPaginado";
 	}
 	
 	protected String download (ActionMapping mapping,

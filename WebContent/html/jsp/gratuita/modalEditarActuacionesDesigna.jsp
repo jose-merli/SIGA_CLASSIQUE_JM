@@ -204,7 +204,7 @@
 		idJuzgado = (String) hashDesigna.get(ScsDesignaBean.C_IDJUZGADO);
 		idInstitucionJuzgado = (String) hashDesigna.get(ScsDesignaBean.C_IDINSTITUCIONJUZGADO);
 		// Datos del Procedimiento seleccionado:
-		if (hashDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO) != null && !((String) hashDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO)).equals("") && hashDesigna.get("BAJAPROCEDIMIENTO") == null) {
+		if (hashDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO) != null && !((String) hashDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO)).equals("") && (hashDesigna.get("BAJAPROCEDIMIENTO") == null || hashDesigna.get("BAJAPROCEDIMIENTO").equals(""))) {
 			idProcedimiento = (String) hashDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO);
 		}
 		idPretension = (String) hashDesigna.get(ScsDesignaBean.C_IDPRETENSION);
@@ -411,10 +411,7 @@
 	visibility: hidden;
 }
 
-td {
-	padding-top: .3em;
-	height: 27px;
-}
+
 </style>
 	
 	
@@ -850,7 +847,7 @@ td {
 								<%	} else {
 									
 										if(isColegioAlcala && (modoAnterior==null || !modoAnterior.equalsIgnoreCase("VER")) && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))){%>
-											2<siga:Select id="pretension" queryId="getPretensionesAlcala" parentQueryParamIds="<%=comboPretensionesParentQueryIds %>" params="<%=idPretensionParamsJSON%>" queryParamId="idpretension" selectedIds="<%=pretensionSel %>" childrenIds="procedimiento" width="380" readOnly='readOnlyCombo%>"' />
+											<siga:Select id="pretension" queryId="getPretensionesAlcala" parentQueryParamIds="<%=comboPretensionesParentQueryIds %>" params="<%=idPretensionParamsJSON%>" queryParamId="idpretension" selectedIds="<%=pretensionSel %>" childrenIds="procedimiento" width="380" readOnly='readOnlyCombo%>"' />
 											<font class="labelText">
 												<siga:Idioma key="gratuita.altaGuardia.literal.motivoCambio"/>
 											</font>
@@ -980,68 +977,87 @@ td {
 						</tr>
 						<%} %>		
 					<tr>
-						<td class="labelText" nowrap style="vertical-align: middle;">
-							<siga:Idioma key="gratuita.altaGuardia.literal.observaciones"/>
-						</td>
-						<td  colspan="4">
-							<%
-								if (!modoAnterior.equalsIgnoreCase("VER") && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))) {
-							%>
-								<textarea class="box" name="observaciones"
-									onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" style="overflow:auto;width:600px;height:45px" 
-								><%=observaciones%></textarea>
-							<%
-								} else {
-							%>
-								<textarea class="boxConsulta" name="observaciones" readonly
-									style="overflow:auto;width:600px;height:40px"
-								><%=observaciones%></textarea>
-							<%
-								}
-							%>							
+						<td  colspan = "5">
+							<table>
+							<tr>	
+								<td class="labelText" nowrap style="vertical-align: middle;width:123px">
+									<siga:Idioma key="gratuita.altaGuardia.literal.observaciones"/>
+								</td>
+								<td  >
+									<%
+										if (!modoAnterior.equalsIgnoreCase("VER") && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))) {
+									%>
+										<textarea class="box" name="observaciones"
+											onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" style="overflow:auto;width:450px;height:40px" 
+										><%=observaciones%></textarea>
+									<%
+										} else {
+									%>
+										<textarea class="boxConsulta" name="observaciones" readonly
+											style="overflow:auto;width:450px;height:40px"
+										><%=observaciones%></textarea>
+									<%
+										}
+									%>							
+								</td>
+							
+								<%if(usr.getIdConsejo()!=AppConstants.IDINSTITUCION_CONSEJO_VALENCIANO){ %>
+									
+										<td class="labelText" nowrap>
+											<siga:Idioma key="gratuita.actuacionesDesigna.literal.talonario"/></td>
+												 <td class="labelText">/</td>
+								     				<td class="labelText"><siga:Idioma key="gratuita.actuacionesDesigna.literal.talon"/>					     
+										</td>
+											
+											 <%
+												 	if (!modoAnterior.equalsIgnoreCase("VER") && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))) {
+												 %>
+												 <td class="labelText">
+													<html:text name="ActuacionesDesignasForm" property="talonario" size="15" maxlength="10" styleClass="box" />
+												</td>
+												 <td class="labelText">/</td> 
+												 <td class="labelText"><html:text name="ActuacionesDesignasForm" property="talon" size="5"  maxlength="20" styleClass="box" />
+									     		</td>
+										     <%
+										     	} else {
+										     %>	
+									     		<td class="labelText">
+									     			<html:text name="ActuacionesDesignasForm" property="talonario" size="10" styleClass="box" readonly="true"/>
+									     		</td>
+												 <td class="labelText">/</td>
+								     				<td class="labelText"><html:text name="ActuacionesDesignasForm" property="talon" size="5" styleClass="box" readonly="true"/>
+									     		</td>
+										     <%
+										     	}
+										     %>				     
+										</td>			
+									
+								<%}else{ %>
+									<%
+										if (modoAnterior.equalsIgnoreCase("VER") || (modoAnterior.equalsIgnoreCase("EDITAR"))) {
+									 %>
+									 	
+											<td class="labelText">
+												<siga:Idioma key="gratuita.actuacionesDesigna.literal.talonario"/></td>
+												 <td class="labelText">/</td>
+								     				<td class="labelText">
+												<siga:Idioma key="gratuita.actuacionesDesigna.literal.talon"/>					     
+											</td>
+											<td class="labelText"  >	
+											 	<html:text name="ActuacionesDesignasForm" property="talonario" size="10" styleClass="box" readonly="true"/>
+											 </td>
+											 <td class="labelText">/</td>
+											    <td class="labelText" >
+											    <html:text name="ActuacionesDesignasForm" property="talon" size="5" styleClass="box" readonly="true"/>
+											</td>
+										
+									<%} %>
+								<%} %>
+							</tr>
+							</table>
 						</td>
 					</tr>
-						<%if(usr.getIdConsejo()!=AppConstants.IDINSTITUCION_CONSEJO_VALENCIANO){ %>
-							<tr>
-								<td class="labelText" nowrap>
-									<siga:Idioma key="gratuita.actuacionesDesigna.literal.talonario"/>&nbsp;/&nbsp;
-									<siga:Idioma key="gratuita.actuacionesDesigna.literal.talon"/>					     
-								</td>
-								<td  colspan="4">	
-									 <%
-										 	if (!modoAnterior.equalsIgnoreCase("VER") && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))) {
-										 %>
-										<html:text name="ActuacionesDesignasForm" property="talonario" size="20" maxlength="20" styleClass="box" />
-										&nbsp;/&nbsp;
-							     		<html:text name="ActuacionesDesignasForm" property="talon" size="20"  maxlength="20" styleClass="box" />
-								     <%
-								     	} else {
-								     %>	
-							     		<html:text name="ActuacionesDesignasForm" property="talonario" size="20" styleClass="boxConsulta" readonly="true"/>
-							     		&nbsp;/&nbsp;
-							     		<html:text name="ActuacionesDesignasForm" property="talon" size="20" styleClass="boxConsulta" readonly="true"/>
-								     <%
-								     	}
-								     %>				     
-								</td>			
-							</tr>
-						<%}else{ %>
-							<%
-								if (modoAnterior.equalsIgnoreCase("VER") || (modoAnterior.equalsIgnoreCase("EDITAR"))) {
-							 %>
-							 	<tr>
-									<td class="labelText" nowrap>
-										<siga:Idioma key="gratuita.actuacionesDesigna.literal.talonario"/>&nbsp;/&nbsp;
-										<siga:Idioma key="gratuita.actuacionesDesigna.literal.talon"/>					     
-									</td>
-									<td  colspan="4">	
-									 	<html:text name="ActuacionesDesignasForm" property="talonario" size="20" styleClass="boxConsulta" readonly="true"/>
-									    &nbsp;/&nbsp;
-									    <html:text name="ActuacionesDesignasForm" property="talon" size="20" styleClass="boxConsulta" readonly="true"/>
-									</td>
-								</tr>
-							<%} %>
-						<%} %>
+					
 				</table>
 			</siga:ConjCampos>			
 
@@ -1158,11 +1174,7 @@ td {
 				<div id="panelEJGs" style="display: inline;overflow-x: hidden;">
 					<div style="position:relative; left:0px; width:100%; height:30px; top:0px; " id="divid">
 					<logic:notEmpty name="ActuacionesDesignasForm" property="ejgs">
-						<table  class="tablaLineaPestanasArriba"  >
-							<tr>
-							<td></td>
-							</tr>
-							</table>
+						
 							<table id="tabs" class="pest" style="width:100%;border-bottom: 2px;border-bottom-color: black;">
 								<tr>
 									<logic:iterate name="ActuacionesDesignasForm" property="ejgs" id="ejg1" indexId="index">
