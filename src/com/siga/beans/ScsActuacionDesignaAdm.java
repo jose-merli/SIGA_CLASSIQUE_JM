@@ -488,11 +488,11 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 									" from scs_procedimientos proc"+
 									" where proc.idinstitucion="+entrada.get("IDINSTITUCION")+
 									"  and  proc.idprocedimiento=des.idprocedimiento) nombreprocedimiento , "+
-									" (select fechabaja "+
+									" (select proc.fechabaja "+
 									" from scs_procedimientos proc"+
 									" where proc.idinstitucion="+entrada.get("IDINSTITUCION")+
 									"  and  proc.idprocedimiento=des.idprocedimiento" +
-									"  and fechabaja < sysdate) bajaprocedimiento , "+
+									"  and proc.fechabaja < sysdate) bajaprocedimiento , "+
 								    " ejgdesigna.anioejg anioejg, "+
 								    " ejgdesigna.idtipoejg idtipoejg, "+
 							        " ejgdesigna.numeroejg numeroejg"+
@@ -538,8 +538,8 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 								",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION+
 								",act."+ScsActuacionDesignaBean.C_IDPROCEDIMIENTO+
 								",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO+
-								",act."+ScsActuacionDesignaBean.C_IDACREDITACION+"|| ',' || ('nig_numprocedimientoñññ'||ap.nig_numprocedimiento||'-'||"+
-								"(select LISTAGG(lower(ADIC.nombrecampo) || 'ñññ' || ADIC.obligatorio_fichacolegial, '-') within group (order by ADIC.nombrecampo)  " + 
+								",act."+ScsActuacionDesignaBean.C_IDACREDITACION+"|| ',' || ('nig_numprocedimientoñññ'||ap.nig_numprocedimiento||"+
+								"(select LISTAGG('-' || lower(ADIC.nombrecampo) || 'ñññ' || ADIC.obligatorio_fichacolegial) within group (order by ADIC.nombrecampo)  " + 
 								" from SCS_ACREDITACION_CAMPOSNECESARIOS ADIC  " + 
 								" WHERE ADIC.IDINSTITUCION = ap.IDINSTITUCION AND ADIC.IDPROCEDIMIENTO = ap.IDPROCEDIMIENTO and ADIC.IDACREDITACION = ap.IDACREDITACION)) IDACREDITACION"+
 								
