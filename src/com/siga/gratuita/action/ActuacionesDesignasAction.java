@@ -672,15 +672,15 @@ public class ActuacionesDesignasAction extends MasterAction {
 								" from scs_juzgado juz"+
 								" where juz.idinstitucion=des.idinstitucion_juzg "+
 								"  and  juz.idjuzgado=des.idjuzgado) nombrejuzgado, "+
-								" (select nombre "+
+								" (select proc.nombre "+
 								" from scs_procedimientos proc"+
 								" where proc.idinstitucion="+(String)usr.getLocation()+
 								"  and  proc.idprocedimiento=des.idprocedimiento) nombreprocedimiento, "+
-								" (select fechabaja "+
+								" (select proc.fechabaja "+
 								" from scs_procedimientos proc"+
 								" where proc.idinstitucion="+(String)usr.getLocation()+
 								"  and  proc.idprocedimiento=des.idprocedimiento" +
-								"  and fechabaja < sysdate) bajaprocedimiento, "+
+								"  and proc.fechabaja < sysdate) bajaprocedimiento, "+
 								" des.codigo codigo, "+
 								" ejgdesigna.anioejg anioejg, "+
 								" ejgdesigna.idtipoejg idtipoejg, "+
@@ -1744,6 +1744,8 @@ public class ActuacionesDesignasAction extends MasterAction {
 					
 					
 				}
+				
+				/* El codigo siguiente requiere una revision con pruebas pormenorizadas antes de subir
 				if ((nig!=null && !nig.equals("")) || (numeroProcedimiento!=null && !numeroProcedimiento.equals(""))  ){
 					Hashtable hashDesigna = new Hashtable();
 					UtilidadesHash.set(hashDesigna,
@@ -1785,7 +1787,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 						}
 					}
 				}
-				
+				*/
 				
 				
 				
