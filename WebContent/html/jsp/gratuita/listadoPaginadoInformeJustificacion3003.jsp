@@ -2899,8 +2899,10 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		}else{
 			jQuery("#dialogo").dialog(
 				{
-					height: 450,
+					height: 270,
 				   	width: 825,
+		        	max-height: 271px,
+		        	overflow-y: auto,
 					modal: true,
 					resizable: false,
 					
