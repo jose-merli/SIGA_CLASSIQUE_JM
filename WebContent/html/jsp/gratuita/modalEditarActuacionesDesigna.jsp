@@ -1739,9 +1739,7 @@
 		
 		
 		function onchangeacreditacion(){
-			cambiarAcreditacion
 			valueAcreditacion  = document.getElementById("acreditacion").value; 
-			objImgDivActuacion =  jQuery('#div_acreditacion');
 			
 			//3,nig_numprocedimientoñññ0-ESSUSTITUCIONñññ0-ESVICTIMAñññ0
 			isAcreditacionCompleta = 'true';
@@ -1749,10 +1747,6 @@
 			//alert("hay que comprobar que pasa para los que no tienen configurados los modulo(si viene el nignum en el elemnto cero)");
 			
 			if(valueAcreditacion!='' && valueAcreditacion!='undefined' ){
-				
-				var formularioActuacionPte = '';
-				objImagen = '<img id="img_acreditacion"  style="cursor: hand;" border="0" onClick="accionEditarPreActuacion(this,true);"   />';
-				formularioActuacionPte += objImagen;
 				
 				lineasCamposAdicionales = valueAcreditacion.split(",")[1].split("-");
 				nig_numproced = lineasCamposAdicionales[0];
@@ -1782,14 +1776,12 @@
 					 }
 				<%}%>
 				
-				
-				//existecampoRequerido = nig_numprocedRequired;
-				
-				
-				
-				
 				mostrarIconos = 'false';
 				if(lineasCamposAdicionales.length>1){
+					var formularioActuacionPte = '';
+					objImagen = '<img id="img_acreditacion"  style="cursor: hand;" border="0" onClick="accionEditarPreActuacion(this,true);"   />';
+					formularioActuacionPte += objImagen;
+					
 					for (var i = 1; i < lineasCamposAdicionales.length; i++) {
 						lineaCamposAdicionales = lineasCamposAdicionales[i];
 						
@@ -1832,20 +1824,22 @@
 						}
 				
 					}
-				}
-			
-				if(existecampoRequerido=='1' && isAcreditacionCompleta=='false'){
-					formularioActuacionPte += '<input type="hidden" id="insertaract" value="0" />';
-					objImgDivActuacion.html(formularioActuacionPte);
-					if(mostrarIconos=='true')
-						muestraIconoActuacion(false);
 					
-				}else{
-					formularioActuacionPte += '<input type="hidden" id="insertaract" value="1" />';
-					jQuery(objImgDivActuacion).html(formularioActuacionPte);
-					if(mostrarIconos=='true')
-						muestraIconoActuacion(true);
+					objImgDivActuacion =  jQuery('#div_acreditacion');
 					
+					if(existecampoRequerido=='1' && isAcreditacionCompleta=='false'){
+						formularioActuacionPte += '<input type="hidden" id="insertaract" value="0" />';
+						objImgDivActuacion.html(formularioActuacionPte);
+						if(mostrarIconos=='true')
+							muestraIconoActuacion(false);
+						
+					}else{
+						formularioActuacionPte += '<input type="hidden" id="insertaract" value="1" />';
+						jQuery(objImgDivActuacion).html(formularioActuacionPte);
+						if(mostrarIconos=='true')
+							muestraIconoActuacion(true);
+						
+					}
 				}
 			}
 			
