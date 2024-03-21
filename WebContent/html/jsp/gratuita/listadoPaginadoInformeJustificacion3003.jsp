@@ -2458,16 +2458,16 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 
 			<input type="hidden" id="dialogNigNumProcRequired" />
 			<div class="labelText">
-				<label for="dialogFechaActuacion" style="width: 170px; float: left; color: black;"><siga:Idioma
-						key="gratuita.actuacionesAsistencia.literal.fechaActuacion" /><label>(*)</label></label>
+				<label for="dialogFechaActuacion" style="width: 170px; float: left; color: black">
+					<siga:Idioma key="gratuita.actuacionesAsistencia.literal.fechaActuacion" /><label> (*)</label>
+				</label>
 				<siga:Fecha nombreCampo="dialogFechaActuacion" valorInicial="sysdate" styleId="dialogFechaActuacion" anchoTextField="11" />
 			</div>
 
-
 			<div class="labelText">
-
-				<label for="dialogNumProc" style="width: 170px; float: left; color: black"><siga:Idioma
-						key="gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento" /></label><label id="asteriscoNumProc"></label>
+				<label for="dialogNumProc" style="width: 170px; float: left; color: black">
+					<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento" /><label id="asteriscoNumProc"></label>
+				</label>
 				<c:choose>
 					<c:when test="${EJIS_ACTIVO=='1'}">
 						<input type="text" id="dialogNumProc" maxlength="7" size="7" />
@@ -2483,12 +2483,13 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 				</c:choose>
 			</div>
 			<div class="labelText">
-				
-				<label for="dialogNig" style="width: 170px; float: left; color: black"><siga:Idioma key='gratuita.mantAsistencias.literal.NIG' /></label><label
-					id="asteriscoNig"></label> <input type="text" id="dialogNig" size="25" maxlength="19" />
-					</div>
+				<label for="dialogNig" style="width: 170px; float: left; color: black">
+					<siga:Idioma key='gratuita.mantAsistencias.literal.NIG' /><label id="asteriscoNig"></label>
+				</label>
+				<input type="text" id="dialogNig" size="25" maxlength="19" />
+			</div>
 			
-			<div id="div_dialoginicio_proceso" class="labeltext" style="display:none"><label for="dialoginicio_proceso" style=" float: left; color: black"><siga:Idioma key='gratuita.actuacionesDesigna.literal.inicio_proceso' /></label>
+			<div id="div_dialoginicio_proceso" class="labelText" style="display:none"><label for="dialoginicio_proceso" style=" float: left; color: black"><siga:Idioma key='gratuita.actuacionesDesigna.literal.inicio_proceso' /></label>
 			<label id="asteriscoinicio_proceso"></label>
 			<select id="dialoginicio_proceso" class="boxCombo" style="width:50px;">
 					<option></option>
@@ -2498,7 +2499,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 			
 			
 			</div>
-			<div id="div_dialognumero_vistas_adicionales" class="labeltext" style="display:none"><label for="dialognumero_vistas_adicionales" style=" float: left; color: black"><siga:Idioma key='gratuita.actuacionesDesigna.literal.numero_vistas_adicionales' /></label><label id="asterisconumero_vistas_adicionales"></label><input type="text" id="dialognumero_vistas_adicionales" size="10" maxlength="3" /></div>
+			<div id="div_dialognumero_vistas_adicionales" class="labelText" style="display:none"><label for="dialognumero_vistas_adicionales" style=" float: left; color: black"><siga:Idioma key='gratuita.actuacionesDesigna.literal.numero_vistas_adicionales' /></label><label id="asterisconumero_vistas_adicionales"></label><input type="text" id="dialognumero_vistas_adicionales" size="10" maxlength="3" /></div>
 			<div id="div_dialogesvictima_quitado_por_orden_deLP" class="labelText" style="display:none">
 				<label for="dialogesvictima"   style="width: 170px;float:left;color: black"><siga:Idioma key='gratuita.actuacionesDesigna.literal.esvictima' /></label><label id="asteriscoesvictima"></label>
 					<select id="dialogesvictima" class="boxCombo" style="width:50px;">
@@ -2519,13 +2520,13 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 			</div>
 			
 			
-			<div id="div_dialogfecha_resolucion_judicial" class="labeltext" style="display:none"><label for="dialogfecha_resolucion_judicial" style=" float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_resolucion_judicial' /></label><label id="asteriscofecha_resolucion_judicial"></label><p><siga:Fecha nombrecampo="dialogfecha_resolucion_judicial" valorinicial="sysdate" styleid="dialogfecha_resolucion_judicial" anchotextfield="11" />	</div>
-			<div id="div_dialogfecha_resolucion_judicial_oposicion" class="labeltext" style="display:none"><label for="dialogfecha_resolucion_judicial_oposicion" style=" float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_resolucion_judicial_oposicion' /></label><label id="asteriscofecha_resolucion_judicial_oposicion"></label><p><siga:Fecha nombrecampo="dialogfecha_resolucion_judicial_oposicion" valorinicial="sysdate" styleid="dialogfecha_resolucion_judicial_oposicion" anchotextfield="11" />	</div>
-			<div id="div_dialogfecha_escritura" class="labeltext" style="display:none"><label for="dialogfecha_escritura" style=" float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_escritura' /></label><label id="asteriscofecha_escritura"></label><p><siga:Fecha nombrecampo="dialogfecha_escritura" valorinicial="sysdate" styleid="dialogfecha_escritura" anchotextfield="11" />	</div>
-			<div id="div_dialogfecha_resolucion_sentencia_firme" class="labeltext" style="display:none"><label for="dialogfecha_resolucion_sentencia_firme" style=" float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_resolucion_sentencia_firme' /></label><label id="asteriscofecha_resolucion_sentencia_firme"></label><p><siga:Fecha nombrecampo="dialogfecha_resolucion_sentencia_firme" valorinicial="sysdate" styleid="dialogfecha_resolucion_sentencia_firme" anchotextfield="11" />	</div>
-			<div id="div_dialogfecha_vista" class="labeltext" style="display:none"><label for="dialogfecha_vista" style=" width: 170px; float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_vista' /></label><label id="asteriscofecha_vista"></label><siga:Fecha nombrecampo="dialogfecha_vista" valorinicial="sysdate" styleid="dialogfecha_vista" anchotextfield="11" />	</div>
-			<div id="div_dialogfecha_requerimiento_judicial" class="labeltext" style="display:none"><label for="dialogfecha_requerimiento_judicial" style=" float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_requerimiento_judicial' /></label><label id="asteriscofecha_requerimiento_judicial"></label><p><siga:Fecha nombrecampo="dialogfecha_requerimiento_judicial" valorinicial="sysdate" styleid="dialogfecha_requerimiento_judicial" anchotextfield="11" />	</div>
-			<div id="div_dialognumero_personados_macrocausa" class="labeltext" style="display:none">
+			<div id="div_dialogfecha_resolucion_judicial" class="labelText" style="display:none"><label for="dialogfecha_resolucion_judicial" style=" float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_resolucion_judicial' /></label><label id="asteriscofecha_resolucion_judicial"></label><p><siga:Fecha nombrecampo="dialogfecha_resolucion_judicial" valorinicial="sysdate" styleid="dialogfecha_resolucion_judicial" anchotextfield="11" />	</div>
+			<div id="div_dialogfecha_resolucion_judicial_oposicion" class="labelText" style="display:none"><label for="dialogfecha_resolucion_judicial_oposicion" style=" float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_resolucion_judicial_oposicion' /></label><label id="asteriscofecha_resolucion_judicial_oposicion"></label><p><siga:Fecha nombrecampo="dialogfecha_resolucion_judicial_oposicion" valorinicial="sysdate" styleid="dialogfecha_resolucion_judicial_oposicion" anchotextfield="11" />	</div>
+			<div id="div_dialogfecha_escritura" class="labelText" style="display:none"><label for="dialogfecha_escritura" style=" float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_escritura' /></label><label id="asteriscofecha_escritura"></label><p><siga:Fecha nombrecampo="dialogfecha_escritura" valorinicial="sysdate" styleid="dialogfecha_escritura" anchotextfield="11" />	</div>
+			<div id="div_dialogfecha_resolucion_sentencia_firme" class="labelText" style="display:none"><label for="dialogfecha_resolucion_sentencia_firme" style=" float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_resolucion_sentencia_firme' /></label><label id="asteriscofecha_resolucion_sentencia_firme"></label><p><siga:Fecha nombrecampo="dialogfecha_resolucion_sentencia_firme" valorinicial="sysdate" styleid="dialogfecha_resolucion_sentencia_firme" anchotextfield="11" />	</div>
+			<div id="div_dialogfecha_vista" class="labelText" style="display:none"><label for="dialogfecha_vista" style=" width: 170px; float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_vista' /></label><label id="asteriscofecha_vista"></label><siga:Fecha nombrecampo="dialogfecha_vista" valorinicial="sysdate" styleid="dialogfecha_vista" anchotextfield="11" />	</div>
+			<div id="div_dialogfecha_requerimiento_judicial" class="labelText" style="display:none"><label for="dialogfecha_requerimiento_judicial" style=" float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_requerimiento_judicial' /></label><label id="asteriscofecha_requerimiento_judicial"></label><p><siga:Fecha nombrecampo="dialogfecha_requerimiento_judicial" valorinicial="sysdate" styleid="dialogfecha_requerimiento_judicial" anchotextfield="11" />	</div>
+			<div id="div_dialognumero_personados_macrocausa" class="labelText" style="display:none">
 			<label for="dialognumero_personados_macrocausa" style=" float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.numero_personados_macrocausa' /></label><label id="asterisconumero_personados_macrocausa"></label><input type="text" id="dialognumero_personados_macrocausa" size="6" maxlength="3" />	</div>
 
 			
@@ -2912,8 +2913,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 			);
 			jQuery("#dialogNigNumProcRequired").val(valNigNumProcRequired);
 			
-			if(valNigNumProcRequired=='1'){	jQuery("#asteriscoNumProc").text("(*)");
-				jQuery("#asteriscoNig").text("(*)");
+			if(valNigNumProcRequired=='1'){	jQuery("#asteriscoNumProc").text(" (*)");
+				jQuery("#asteriscoNig").text(" (*)");
 				
 			}else{
 				jQuery("#asteriscoNumProc").text("");
@@ -2927,7 +2928,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 			//if(valdenominacionsocialRequired=='1'){	jQuery("#asteriscodenominacionsocial").text("(*)");	jQuery("#div_dialogdenominacionsocial").show();	}else if(valdenominacionsocialRequired=='0'){jQuery("#asteriscodenominacionsocial").text("");jQuery("#div_dialogdenominacionsocial").show();}else{jQuery("#asteriscodenominacionsocial").text("");jQuery("#div_dialogdenominacionsocial").hide();	}
 			
 			if(valinicio_procesoRequired=='1'){	
-				jQuery("#asteriscoinicio_proceso").text("(*)");	
+				jQuery("#asteriscoinicio_proceso").text(" (*)");	
 				jQuery("#div_dialoginicio_proceso").show();	
 			}else if(valinicio_procesoRequired=='0'){
 				jQuery("#asteriscoinicio_proceso").text("");
@@ -2938,7 +2939,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 			}
 			
 			if(valnumero_vistas_adicionalesRequired=='1'){
-				jQuery("#asterisconumero_vistas_adicionales").text("(*)");	
+				jQuery("#asterisconumero_vistas_adicionales").text(" (*)");	
 				jQuery("#div_dialognumero_vistas_adicionales").show();	
 			}else if(valnumero_vistas_adicionalesRequired=='0'){
 				jQuery("#asterisconumero_vistas_adicionales").text("");
@@ -2946,7 +2947,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 			}
 
 			if(valfecha_resolucion_judicialRequired=='1'){	
-				jQuery("#asteriscofecha_resolucion_judicial").text("(*)");
+				jQuery("#asteriscofecha_resolucion_judicial").text(" (*)");
 				jQuery("#div_dialogfecha_resolucion_judicial").show();	
 			}else if(valfecha_resolucion_judicialRequired=='0'){
 				jQuery("#asteriscofecha_resolucion_judicial").text("");
@@ -2955,7 +2956,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 				jQuery("#asteriscofecha_resolucion_judicial").text("");
 				jQuery("#div_dialogfecha_resolucion_judicial").hide();	}
 			if(valfecha_resolucion_judicial_oposicionRequired=='1'){
-				jQuery("#asteriscofecha_resolucion_judicial_oposicion").text("(*)");	
+				jQuery("#asteriscofecha_resolucion_judicial_oposicion").text(" (*)");	
 				jQuery("#div_dialogfecha_resolucion_judicial_oposicion").show();	
 			}else if(valfecha_resolucion_judicial_oposicionRequired=='0'){
 				jQuery("#asteriscofecha_resolucion_judicial_oposicion").text("");
@@ -2965,7 +2966,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 				jQuery("#div_dialogfecha_resolucion_judicial_oposicion").hide();
 			}
 			if(valfecha_escrituraRequired=='1'){
-				jQuery("#asteriscofecha_escritura").text("(*)");
+				jQuery("#asteriscofecha_escritura").text(" (*)");
 				jQuery("#div_dialogfecha_escritura").show();	
 			}else if(valfecha_escrituraRequired=='0'){
 				jQuery("#asteriscofecha_escritura").text("");
@@ -2975,7 +2976,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 				jQuery("#div_dialogfecha_escritura").hide();	
 			}
 			if(valfecha_resolucion_sentencia_firmeRequired=='1'){
-				jQuery("#asteriscofecha_resolucion_sentencia_firme").text("(*)");
+				jQuery("#asteriscofecha_resolucion_sentencia_firme").text(" (*)");
 				jQuery("#div_dialogfecha_resolucion_sentencia_firme").show();	
 			}else if(valfecha_resolucion_sentencia_firmeRequired=='0'){
 				jQuery("#asteriscofecha_resolucion_sentencia_firme").text("");
@@ -2984,12 +2985,12 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 				jQuery("#asteriscofecha_resolucion_sentencia_firme").text("");
 				jQuery("#div_dialogfecha_resolucion_sentencia_firme").hide();	
 			}
-			if(valfecha_vistaRequired=='1'){	jQuery("#asteriscofecha_vista").text("(*)");	jQuery("#div_dialogfecha_vista").show();	}else if(valfecha_vistaRequired=='0'){jQuery("#asteriscofecha_vista").text("");jQuery("#div_dialogfecha_vista").show();}else{jQuery("#asteriscofecha_vista").text("");jQuery("#div_dialogfecha_vista").hide();	}
-			if(valfecha_requerimiento_judicialRequired=='1'){	jQuery("#asteriscofecha_requerimiento_judicial").text("(*)");	jQuery("#div_dialogfecha_requerimiento_judicial").show();	}else if(valfecha_requerimiento_judicialRequired=='0'){jQuery("#asteriscofecha_requerimiento_judicial").text("");jQuery("#div_dialogfecha_requerimiento_judicial").show();}else{jQuery("#asteriscofecha_requerimiento_judicial").text("");jQuery("#div_dialogfecha_requerimiento_judicial").hide();	}
-			if(valnumero_personados_macrocausaRequired=='1'){	jQuery("#asterisconumero_personados_macrocausa").text("(*)");	jQuery("#div_dialognumero_personados_macrocausa").show();	}else if(valnumero_personados_macrocausaRequired=='0'){jQuery("#asterisconumero_personados_macrocausa").text("");jQuery("#div_dialognumero_personados_macrocausa").show();}else{jQuery("#asterisconumero_personados_macrocausa").text("");jQuery("#div_dialognumero_personados_macrocausa").hide();	}
+			if(valfecha_vistaRequired=='1'){	jQuery("#asteriscofecha_vista").text(" (*)");	jQuery("#div_dialogfecha_vista").show();	}else if(valfecha_vistaRequired=='0'){jQuery("#asteriscofecha_vista").text("");jQuery("#div_dialogfecha_vista").show();}else{jQuery("#asteriscofecha_vista").text("");jQuery("#div_dialogfecha_vista").hide();	}
+			if(valfecha_requerimiento_judicialRequired=='1'){	jQuery("#asteriscofecha_requerimiento_judicial").text(" (*)");	jQuery("#div_dialogfecha_requerimiento_judicial").show();	}else if(valfecha_requerimiento_judicialRequired=='0'){jQuery("#asteriscofecha_requerimiento_judicial").text("");jQuery("#div_dialogfecha_requerimiento_judicial").show();}else{jQuery("#asteriscofecha_requerimiento_judicial").text("");jQuery("#div_dialogfecha_requerimiento_judicial").hide();	}
+			if(valnumero_personados_macrocausaRequired=='1'){	jQuery("#asterisconumero_personados_macrocausa").text(" (*)");	jQuery("#div_dialognumero_personados_macrocausa").show();	}else if(valnumero_personados_macrocausaRequired=='0'){jQuery("#asterisconumero_personados_macrocausa").text("");jQuery("#div_dialognumero_personados_macrocausa").show();}else{jQuery("#asterisconumero_personados_macrocausa").text("");jQuery("#div_dialognumero_personados_macrocausa").hide();	}
 
 			if(valesvictimaRequired=='1'){	
-				jQuery("#asteriscoesvictima").text("(*)");
+				jQuery("#asteriscoesvictima").text(" (*)");
 				jQuery("#div_dialogesvictima").show();	
 			}else if(valesvictimaRequired=='0'){
 				jQuery("#asteriscoesvictima").text("");
@@ -2999,8 +3000,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 				jQuery("#div_dialogesvictima").hide();	
 			}
 			
-			if(valessustitucionRequired=='1'){	jQuery("#asteriscoessustitucion").text("(*)");	jQuery("#div_dialogessustitucion").show();	}else if(valessustitucionRequired=='0'){jQuery("#asteriscoessustitucion").text("");jQuery("#div_dialogessustitucion").show();}else{jQuery("#asteriscoessustitucion").text("");jQuery("#div_dialogessustitucion").hide();	}
-			if(valtipo_autoRequired=='1'){	jQuery("#asteriscotipo_auto").text("(*)");	jQuery("#div_dialogtipo_auto").show();	}else if(valtipo_autoRequired=='0'){jQuery("#asteriscotipo_auto").text("");jQuery("#div_dialogtipo_auto").show();}else{jQuery("#asteriscotipo_auto").text("");jQuery("#div_dialogtipo_auto").hide();	}
+			if(valessustitucionRequired=='1'){	jQuery("#asteriscoessustitucion").text(" (*)");	jQuery("#div_dialogessustitucion").show();	}else if(valessustitucionRequired=='0'){jQuery("#asteriscoessustitucion").text("");jQuery("#div_dialogessustitucion").show();}else{jQuery("#asteriscoessustitucion").text("");jQuery("#div_dialogessustitucion").hide();	}
+			if(valtipo_autoRequired=='1'){	jQuery("#asteriscotipo_auto").text(" (*)");	jQuery("#div_dialogtipo_auto").show();	}else if(valtipo_autoRequired=='0'){jQuery("#asteriscotipo_auto").text("");jQuery("#div_dialogtipo_auto").show();}else{jQuery("#asteriscotipo_auto").text("");jQuery("#div_dialogtipo_auto").hide();	}
 
 			jQuery(".ui-widget-overlay").css("opacity","0");
 			
