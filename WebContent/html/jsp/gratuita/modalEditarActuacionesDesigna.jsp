@@ -1387,7 +1387,10 @@
 			<div id="div_dialogfecha_resolucion_judicial" class="labeltext" style="display:none"><label for="dialogfecha_resolucion_judicial" style=" float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_resolucion_judicial' /></label><label id="asteriscofecha_resolucion_judicial"></label><p><siga:Fecha nombrecampo="dialogfecha_resolucion_judicial" styleid="dialogfecha_resolucion_judicial" anchotextfield="11" />	</div>
 			<div id="div_dialogfecha_resolucion_judicial_oposicion" class="labeltext" style="display:none"><label for="dialogfecha_resolucion_judicial_oposicion" style=" float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_resolucion_judicial_oposicion' /></label><label id="asteriscofecha_resolucion_judicial_oposicion"></label><p><siga:Fecha nombrecampo="dialogfecha_resolucion_judicial_oposicion" valorinicial="${datosAdicionales.fechaResolucionJudicialOposicion}" styleid="dialogfecha_resolucion_judicial_oposicion" anchotextfield="11" />	</div>
 			<div id="div_dialogfecha_escritura" class="labeltext" style="display:none"><label for="dialogfecha_escritura" style=" float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_escritura' /></label><label id="asteriscofecha_escritura"></label><p><siga:Fecha nombrecampo="dialogfecha_escritura"  styleid="dialogfecha_escritura" anchotextfield="11" />	</div>
-			<div id="div_dialogfecha_resolucion_sentencia_firme" class="labeltext" style="display:none"><label for="dialogfecha_resolucion_sentencia_firme" style=" float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_resolucion_sentencia_firme' /></label><label id="asteriscofecha_resolucion_sentencia_firme"></label><p><siga:Fecha nombrecampo="dialogfecha_resolucion_sentencia_firme" valorinicial="${datosAdicionales.fechaResolucionSentenciaFirme}" styleid="dialogfecha_resolucion_sentencia_firme" anchotextfield="11" />	</div>
+			<div id="div_dialogfecha_resolucion_sentencia_firme" class="labeltext" style="display:none">
+				<label for="dialogfecha_resolucion_sentencia_firme" style=" float: left; color: black;">
+				<siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_resolucion_sentencia_firme' /></label>
+				<label id="asteriscofecha_resolucion_sentencia_firme"></label><p><siga:Fecha nombrecampo="dialogfecha_resolucion_sentencia_firme" valorinicial="${datosAdicionales.fechaResolucionSentenciaFirme}" styleid="dialogfecha_resolucion_sentencia_firme" anchotextfield="11" />	</div>
 			<div id="div_dialogfecha_vista" class="labeltext" style="display:none"><label for="dialogfecha_vista" style=" width: 170px; float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_vista' /></label><label id="asteriscofecha_vista"></label><siga:Fecha nombrecampo="dialogfecha_vista"   valorinicial="${datosAdicionales.fechaVista}" styleid="dialogfecha_vista" anchotextfield="11" />	</div>
 			<div id="div_dialogfecha_requerimiento_judicial" class="labeltext" style="display:none"><label for="dialogfecha_requerimiento_judicial" style=" float: left; color: black;"><siga:Idioma key='gratuita.actuacionesDesigna.literal.fecha_requerimiento_judicial' /></label><label id="asteriscofecha_requerimiento_judicial"></label><p><siga:Fecha nombrecampo="dialogfecha_requerimiento_judicial"  styleid="dialogfecha_requerimiento_judicial" anchotextfield="11" />	</div>
 			
@@ -1730,7 +1733,7 @@
 		
 		tagSelect_acreditacion.on("change",function(){
 			
-				if(document.getElementById("acreditacion").value!='')
+				//if(document.getElementById("acreditacion").value!='')
 					return onchangeacreditacion();
 				
 				
@@ -1739,13 +1742,13 @@
 		
 		
 		function onchangeacreditacion(){
+			objImgDivActuacion =  jQuery('#div_acreditacion');
 			valueAcreditacion  = document.getElementById("acreditacion").value; 
 			
 			//3,nig_numprocedimientoñññ0-ESSUSTITUCIONñññ0-ESVICTIMAñññ0
 			isAcreditacionCompleta = 'true';
 			existecampoRequerido = 0;
 			//alert("hay que comprobar que pasa para los que no tienen configurados los modulo(si viene el nignum en el elemnto cero)");
-			
 			if(valueAcreditacion!='' && valueAcreditacion!='undefined' ){
 				
 				lineasCamposAdicionales = valueAcreditacion.split(",")[1].split("-");
@@ -1791,14 +1794,14 @@
 							campo = campos[0];
 							requerido = campos[1];
 							
-							
 							if(existecampoRequerido=='0')
 								existecampoRequerido = requerido;
 							
 							
 							mostrarIconos = 'true';
 							
-							auxCampoOld = campo+'actold_';
+							//auxCampoOld = campo+'actold_';
+							auxCampoOld = 'dialog'+campo;
 							formularioActuacionPte += '<input type="hidden" id="';
 							formularioActuacionPte += campo;
 							formularioActuacionPte += 'act';
@@ -1825,7 +1828,7 @@
 				
 					}
 					
-					objImgDivActuacion =  jQuery('#div_acreditacion');
+					
 					
 					if(existecampoRequerido=='1' && isAcreditacionCompleta=='false'){
 						formularioActuacionPte += '<input type="hidden" id="insertaract" value="0" />';
@@ -1840,7 +1843,12 @@
 							muestraIconoActuacion(true);
 						
 					}
+					// alertStop("formularioActuacionPte"+formularioActuacionPte);
 				}
+				objImgDivActuacion.show();
+			}else{
+				objImgDivActuacion.hide();
+				
 			}
 			
 			
@@ -1871,21 +1879,55 @@
 			openDialog('dialogo');
 			
 		}
+		function accionCancelar(){
+			//jQuery("#dialoginicio_proceso").attr('value','${datosAdicionales.fechaResolucionSentenciaFirme}');
+			//jQuery("#dialogfecha_resolucion_judicial").attr('value','${datosAdicionales.fechaResolucionSentenciaFirme}');
+			//jQuery("#dialogfecha_escritura").attr('value','${datosAdicionales.fechaResolucionSentenciaFirme}');
+			//jQuery("#dialogfecha_requerimiento_judicial").attr('value','${datosAdicionales.fechaResolucionSentenciaFirme}');
+			jQuery("#dialognumero_vistas_adicionales").attr('value','${datosAdicionales.numeroVistasAdicionales}');
+			jQuery("#dialogfecha_resolucion_judicial_oposicion").attr('value','${datosAdicionales.fechaResolucionJudicialOposicion}');
+			
+			jQuery("#dialogfecha_resolucion_sentencia_firme").attr('value','${datosAdicionales.fechaResolucionSentenciaFirme}');
+			jQuery("#dialogfecha_vista").attr('value','${datosAdicionales.fechaVista}');
+			jQuery("#dialognumero_personados_macrocausa").attr('value','${datosAdicionales.numeroPersonadosMacrocausa}');
+			
+			
+			jQuery('#dialogesvictima option[value="${datosAdicionales.esVictima}"]').attr('selected','selected');
+			jQuery('#dialogessustitucion option[value="${datosAdicionales.esSustitucion}"]').attr('selected','selected');
+			jQuery('#dialogtipo_auto option[value="${datosAdicionales.tipoAuto}"]').attr('selected','selected');
+			
+			
+			
+			closeDialog('dialogo'); 
+			
+		}
+		
 		function openDialog(objImgDivActuacion){
 			
-			//cadenaAcreditacion = objImgDivActuacion.attr("id").split("div_")[1]
+			jQuery("#dialogo").dialog(
+					{
+						height: 450,
+					   	width: 825,
+						modal: true,
+						resizable: false,
+						
+						buttons: {
+						    	  "Guardar": { id: 'Guardar', text: '<siga:Idioma key="general.boton.submit"/>', click: function(){ accionInsercion(); }},
+						          "Cerrar": { id: 'Cerrar', text: '<siga:Idioma key="general.boton.cancel"/>', click: function(){accionCancelar();}}
+						}
+					}
+				);
 			
+			
+			
+			
+			//cadenaAcreditacion = objImgDivActuacion.attr("id").split("div_")[1]
 			valinicio_procesoRequired='';
 			if(jQuery("#inicio_proceso")){
 				valinicio_proceso = jQuery("#inicio_proceso").val();
 				valinicio_procesoRequired = jQuery("#inicio_procesoRequired").val();
 			}
-			valnumero_vistas_adicionalesRequired='';
-			if(jQuery("#numero_vistas_adicionales")){
-				valnumero_vistas_adicionales = jQuery("#numero_vistas_adicionales").val();
-				valnumero_vistas_adicionalesRequired = jQuery("#numero_vistas_adicionalesRequired").val();
-			}
-
+			valnumero_vistas_adicionalesRequired='';if(jQuery("#numero_vistas_adicionales")){valnumero_vistas_adicionales = jQuery("#numero_vistas_adicionales").val();valnumero_vistas_adicionalesRequired = jQuery("#numero_vistas_adicionalesRequired").val();}
 			valfecha_resolucion_judicialRequired='';if(jQuery("#fecha_resolucion_judicial")){valfecha_resolucion_judicial = jQuery("#fecha_resolucion_judicial").val();valfecha_resolucion_judicialRequired = jQuery("#fecha_resolucion_judicialRequired").val();}
 			valfecha_resolucion_judicial_oposicionRequired='';if(jQuery("#fecha_resolucion_judicial_oposicion")){valfecha_resolucion_judicial_oposicion = jQuery("#fecha_resolucion_judicial_oposicion").val();valfecha_resolucion_judicial_oposicionRequired = jQuery("#fecha_resolucion_judicial_oposicionRequired").val();}
 			valfecha_escrituraRequired='';if(jQuery("#fecha_escritura")){valfecha_escritura = jQuery("#fecha_escritura").val();valfecha_escrituraRequired = jQuery("#fecha_escrituraRequired").val();}
@@ -1904,139 +1946,126 @@
 		
 			
 			
-			
-			if(valinicio_proceso && valinicio_proceso!=''){
-				jQuery("#dialogo").dialog("open");
-				
-				//if(jQuery("#denominacionsocial")){jQuery("#dialogdenominacionsocial").val(valdenominacionsocial);jQuery("#dialogdenominacionsocialRequired").val(valdenominacionsocialRequired);	}
-				if(jQuery("#inicio_proceso")){
-					jQuery("#dialoginicio_proceso").val(valinicio_proceso);
-					jQuery("#dialoginicio_procesoRequired").val(valinicio_procesoRequired);	
-				}
-				if(jQuery("#numero_vistas_adicionales")){
-					jQuery("#dialognumero_vistas_adicionales").val(valnumero_vistas_adicionales);
-					jQuery("#dialognumero_vistas_adicionalesRequired").val(valnumero_vistas_adicionalesRequired);
-				} 
-
-				if(jQuery("#fecha_resolucion_judicial")){jQuery("#dialogfecha_resolucion_judicial").val(valfecha_resolucion_judicial);jQuery("#dialogfecha_resolucion_judicialRequired").val(valfecha_resolucion_judicialRequired);	}
-				if(jQuery("#fecha_resolucion_judicial_oposicion")){jQuery("#dialogfecha_resolucion_judicial_oposicion").val(valfecha_resolucion_judicial_oposicion);jQuery("#dialogfecha_resolucion_judicial_oposicionRequired").val(valfecha_resolucion_judicial_oposicionRequired);	}
-				if(jQuery("#fecha_escritura")){jQuery("#dialogfecha_escritura").val(valfecha_escritura);jQuery("#dialogfecha_escrituraRequired").val(valfecha_escrituraRequired);	}
-				if(jQuery("#fecha_resolucion_sentencia_firme")){jQuery("#dialogfecha_resolucion_sentencia_firme").val(valfecha_resolucion_sentencia_firme);jQuery("#dialogfecha_resolucion_sentencia_firmeRequired").val(valfecha_resolucion_sentencia_firmeRequired);	}
-				if(jQuery("#fecha_vista")){jQuery("#dialogfecha_vista").val(valfecha_vista);jQuery("#dialogfecha_vistaRequired").val(valfecha_vistaRequired);	}
-				if(jQuery("#fecha_requerimiento_judicial")){jQuery("#dialogfecha_requerimiento_judicial").val(valfecha_requerimiento_judicial);jQuery("#dialogfecha_requerimiento_judicialRequired").val(valfecha_requerimiento_judicialRequired);	}
-				if(jQuery("#numero_personados_macrocausa")){jQuery("#dialognumero_personados_macrocausa").val(valnumero_personados_macrocausa);jQuery("#dialognumero_personados_macrocausaRequired").val(valnumero_personados_macrocausaRequired);	}
-
-				if(jQuery("#esvictima")){
-					jQuery("#dialogesvictima").val(valesvictima);
-					jQuery("#dialogesvictimaRequired").val(valesvictimaRequired);	
-				}
-				if(jQuery("#essustitucion")){jQuery("#dialogessustitucion").val(valessustitucion);jQuery("#dialogessustitucionRequired").val(valessustitucionRequired);	}
-				if(jQuery("#tipo_auto")){jQuery("#dialogtipo_auto").val(valtipo_auto);jQuery("#dialogtipo_autoRequired").val(valtipo_autoRequired);	}
-				
-				
-				
-				
+			if(valinicio_procesoRequired=='1'){	
+				jQuery("#asteriscoinicio_proceso").text("(*)");	
+				jQuery("#div_dialoginicio_proceso").show();	
+			}else if(valinicio_procesoRequired=='0'){
+				jQuery("#asteriscoinicio_proceso").text("");
+				jQuery("#div_dialoginicio_proceso").show();
 			}else{
-				jQuery("#dialogo").dialog(
-					{
-						height: 450,
-					   	width: 825,
-						modal: true,
-						resizable: false,
-						
-						buttons: {
-						    	  "Guardar": { id: 'Guardar', text: '<siga:Idioma key="general.boton.guardar"/>', click: function(){ accionInsercion(); }},
-						          "Cerrar": { id: 'Cerrar', text: '<siga:Idioma key="general.boton.close"/>', click: function(){closeDialog("dialogo");}}
-						}
-					}
-				);
-				
-				
-				
-					
-				//if(valdenominacionsocialRequired=='1'){	jQuery("#asteriscodenominacionsocial").text("(*)");	jQuery("#div_dialogdenominacionsocial").show();	}else if(valdenominacionsocialRequired=='0'){jQuery("#asteriscodenominacionsocial").text("");jQuery("#div_dialogdenominacionsocial").show();}else{jQuery("#asteriscodenominacionsocial").text("");jQuery("#div_dialogdenominacionsocial").hide();	}
-				
-				if(valinicio_procesoRequired=='1'){	
-					jQuery("#asteriscoinicio_proceso").text("(*)");	
-					jQuery("#div_dialoginicio_proceso").show();	
-				}else if(valinicio_procesoRequired=='0'){
-					jQuery("#asteriscoinicio_proceso").text("");
-					jQuery("#div_dialoginicio_proceso").show();
-				}else{
-					jQuery("#asteriscoinicio_proceso").text("");
-					jQuery("#div_dialoginicio_proceso").hide();	
-				}
-				
-				if(valnumero_vistas_adicionalesRequired=='1'){
-					jQuery("#asterisconumero_vistas_adicionales").text("(*)");	
-					jQuery("#div_dialognumero_vistas_adicionales").show();	
-				}else if(valnumero_vistas_adicionalesRequired=='0'){
-					jQuery("#asterisconumero_vistas_adicionales").text("");
-					jQuery("#div_dialognumero_vistas_adicionales").show();
-				}
-
-				if(valfecha_resolucion_judicialRequired=='1'){	
-					jQuery("#asteriscofecha_resolucion_judicial").text("(*)");
-					jQuery("#div_dialogfecha_resolucion_judicial").show();	
-				}else if(valfecha_resolucion_judicialRequired=='0'){
-					jQuery("#asteriscofecha_resolucion_judicial").text("");
-					jQuery("#div_dialogfecha_resolucion_judicial").show();
-				}else{
-					jQuery("#asteriscofecha_resolucion_judicial").text("");
-					jQuery("#div_dialogfecha_resolucion_judicial").hide();	}
-				if(valfecha_resolucion_judicial_oposicionRequired=='1'){
-					jQuery("#asteriscofecha_resolucion_judicial_oposicion").text("(*)");	
-					jQuery("#div_dialogfecha_resolucion_judicial_oposicion").show();	
-				}else if(valfecha_resolucion_judicial_oposicionRequired=='0'){
-					jQuery("#asteriscofecha_resolucion_judicial_oposicion").text("");
-					jQuery("#div_dialogfecha_resolucion_judicial_oposicion").show();
-				}else{
-					jQuery("#asteriscofecha_resolucion_judicial_oposicion").text("");
-					jQuery("#div_dialogfecha_resolucion_judicial_oposicion").hide();
-				}
-				if(valfecha_escrituraRequired=='1'){
-					jQuery("#asteriscofecha_escritura").text("(*)");
-					jQuery("#div_dialogfecha_escritura").show();	
-				}else if(valfecha_escrituraRequired=='0'){
-					jQuery("#asteriscofecha_escritura").text("");
-					jQuery("#div_dialogfecha_escritura").show();
-				}else{
-					jQuery("#asteriscofecha_escritura").text("");
-					jQuery("#div_dialogfecha_escritura").hide();	
-				}
-				if(valfecha_resolucion_sentencia_firmeRequired=='1'){
-					jQuery("#asteriscofecha_resolucion_sentencia_firme").text("(*)");
-					jQuery("#div_dialogfecha_resolucion_sentencia_firme").show();	
-				}else if(valfecha_resolucion_sentencia_firmeRequired=='0'){
-					jQuery("#asteriscofecha_resolucion_sentencia_firme").text("");
-					jQuery("#div_dialogfecha_resolucion_sentencia_firme").show();
-				}else{
-					jQuery("#asteriscofecha_resolucion_sentencia_firme").text("");
-					jQuery("#div_dialogfecha_resolucion_sentencia_firme").hide();	
-				}
-				if(valfecha_vistaRequired=='1'){	jQuery("#asteriscofecha_vista").text("(*)");	jQuery("#div_dialogfecha_vista").show();	}else if(valfecha_vistaRequired=='0'){jQuery("#asteriscofecha_vista").text("");jQuery("#div_dialogfecha_vista").show();}else{jQuery("#asteriscofecha_vista").text("");jQuery("#div_dialogfecha_vista").hide();	}
-				if(valfecha_requerimiento_judicialRequired=='1'){	jQuery("#asteriscofecha_requerimiento_judicial").text("(*)");	jQuery("#div_dialogfecha_requerimiento_judicial").show();	}else if(valfecha_requerimiento_judicialRequired=='0'){jQuery("#asteriscofecha_requerimiento_judicial").text("");jQuery("#div_dialogfecha_requerimiento_judicial").show();}else{jQuery("#asteriscofecha_requerimiento_judicial").text("");jQuery("#div_dialogfecha_requerimiento_judicial").hide();	}
-				if(valnumero_personados_macrocausaRequired=='1'){	jQuery("#asterisconumero_personados_macrocausa").text("(*)");	jQuery("#div_dialognumero_personados_macrocausa").show();	}else if(valnumero_personados_macrocausaRequired=='0'){jQuery("#asterisconumero_personados_macrocausa").text("");jQuery("#div_dialognumero_personados_macrocausa").show();}else{jQuery("#asterisconumero_personados_macrocausa").text("");jQuery("#div_dialognumero_personados_macrocausa").hide();	}
-
-				if(valesvictimaRequired=='1'){	
-					jQuery("#asteriscoesvictima").text("(*)");
-					jQuery("#div_dialogesvictima").show();	
-				}else if(valesvictimaRequired=='0'){
-					jQuery("#asteriscoesvictima").text("");
-					jQuery("#div_dialogesvictima").show();
-				}else{
-					jQuery("#asteriscoesvictima").text("");
-					jQuery("#div_dialogesvictima").hide();	
-				}
-				
-				if(valessustitucionRequired=='1'){	jQuery("#asteriscoessustitucion").text("(*)");	jQuery("#div_dialogessustitucion").show();	}else if(valessustitucionRequired=='0'){jQuery("#asteriscoessustitucion").text("");jQuery("#div_dialogessustitucion").show();}else{jQuery("#asteriscoessustitucion").text("");jQuery("#div_dialogessustitucion").hide();	}
-				if(valtipo_autoRequired=='1'){	jQuery("#asteriscotipo_auto").text("(*)");	jQuery("#div_dialogtipo_auto").show();	}else if(valtipo_autoRequired=='0'){jQuery("#asteriscotipo_auto").text("");jQuery("#div_dialogtipo_auto").show();}else{jQuery("#asteriscotipo_auto").text("");jQuery("#div_dialogtipo_auto").hide();	}
-
-				
-				jQuery(".ui-widget-overlay").css("opacity","0");
-				
-				
+				jQuery("#asteriscoinicio_proceso").text("");
+				jQuery("#div_dialoginicio_proceso").hide();	
 			}
+			
+			if(valnumero_vistas_adicionalesRequired=='1'){
+				jQuery("#asterisconumero_vistas_adicionales").text("(*)");	
+				jQuery("#div_dialognumero_vistas_adicionales").show();	
+			}else if(valnumero_vistas_adicionalesRequired=='0'){
+				jQuery("#asterisconumero_vistas_adicionales").text("");
+				jQuery("#div_dialognumero_vistas_adicionales").show();
+			}
+
+			if(valfecha_resolucion_judicialRequired=='1'){	
+				jQuery("#asteriscofecha_resolucion_judicial").text("(*)");
+				jQuery("#div_dialogfecha_resolucion_judicial").show();	
+			}else if(valfecha_resolucion_judicialRequired=='0'){
+				jQuery("#asteriscofecha_resolucion_judicial").text("");
+				jQuery("#div_dialogfecha_resolucion_judicial").show();
+			}else{
+				jQuery("#asteriscofecha_resolucion_judicial").text("");
+				jQuery("#div_dialogfecha_resolucion_judicial").hide();	}
+			if(valfecha_resolucion_judicial_oposicionRequired=='1'){
+				jQuery("#asteriscofecha_resolucion_judicial_oposicion").text("(*)");	
+				jQuery("#div_dialogfecha_resolucion_judicial_oposicion").show();	
+			}else if(valfecha_resolucion_judicial_oposicionRequired=='0'){
+				jQuery("#asteriscofecha_resolucion_judicial_oposicion").text("");
+				jQuery("#div_dialogfecha_resolucion_judicial_oposicion").show();
+			}else{
+				jQuery("#asteriscofecha_resolucion_judicial_oposicion").text("");
+				jQuery("#div_dialogfecha_resolucion_judicial_oposicion").hide();
+			}
+			if(valfecha_escrituraRequired=='1'){
+				jQuery("#asteriscofecha_escritura").text("(*)");
+				jQuery("#div_dialogfecha_escritura").show();	
+			}else if(valfecha_escrituraRequired=='0'){
+				jQuery("#asteriscofecha_escritura").text("");
+				jQuery("#div_dialogfecha_escritura").show();
+			}else{
+				jQuery("#asteriscofecha_escritura").text("");
+				jQuery("#div_dialogfecha_escritura").hide();	
+			}
+			if(valfecha_resolucion_sentencia_firmeRequired=='1'){
+				jQuery("#asteriscofecha_resolucion_sentencia_firme").text("(*)");
+				jQuery("#div_dialogfecha_resolucion_sentencia_firme").show();	
+			}else if(valfecha_resolucion_sentencia_firmeRequired=='0'){
+				jQuery("#asteriscofecha_resolucion_sentencia_firme").text("");
+				jQuery("#div_dialogfecha_resolucion_sentencia_firme").show();
+			}else{
+				jQuery("#asteriscofecha_resolucion_sentencia_firme").text("");
+				jQuery("#div_dialogfecha_resolucion_sentencia_firme").hide();	
+			}
+			if(valfecha_vistaRequired=='1'){	jQuery("#asteriscofecha_vista").text("(*)");	jQuery("#div_dialogfecha_vista").show();	}else if(valfecha_vistaRequired=='0'){jQuery("#asteriscofecha_vista").text("");jQuery("#div_dialogfecha_vista").show();}else{jQuery("#asteriscofecha_vista").text("");jQuery("#div_dialogfecha_vista").hide();	}
+			if(valfecha_requerimiento_judicialRequired=='1'){	jQuery("#asteriscofecha_requerimiento_judicial").text("(*)");	jQuery("#div_dialogfecha_requerimiento_judicial").show();	}else if(valfecha_requerimiento_judicialRequired=='0'){jQuery("#asteriscofecha_requerimiento_judicial").text("");jQuery("#div_dialogfecha_requerimiento_judicial").show();}else{jQuery("#asteriscofecha_requerimiento_judicial").text("");jQuery("#div_dialogfecha_requerimiento_judicial").hide();	}
+			if(valnumero_personados_macrocausaRequired=='1'){	jQuery("#asterisconumero_personados_macrocausa").text("(*)");	jQuery("#div_dialognumero_personados_macrocausa").show();	}else if(valnumero_personados_macrocausaRequired=='0'){jQuery("#asterisconumero_personados_macrocausa").text("");jQuery("#div_dialognumero_personados_macrocausa").show();}else{jQuery("#asterisconumero_personados_macrocausa").text("");jQuery("#div_dialognumero_personados_macrocausa").hide();	}
+
+			if(valesvictimaRequired=='1'){	
+				jQuery("#asteriscoesvictima").text("(*)");
+				jQuery("#div_dialogesvictima").show();	
+			}else if(valesvictimaRequired=='0'){
+				jQuery("#asteriscoesvictima").text("");
+				jQuery("#div_dialogesvictima").show();
+			}else{
+				jQuery("#asteriscoesvictima").text("");
+				jQuery("#div_dialogesvictima").hide();	
+			}
+			
+			if(valessustitucionRequired=='1'){	jQuery("#asteriscoessustitucion").text("(*)");	jQuery("#div_dialogessustitucion").show();	}else if(valessustitucionRequired=='0'){jQuery("#asteriscoessustitucion").text("");jQuery("#div_dialogessustitucion").show();}else{jQuery("#asteriscoessustitucion").text("");jQuery("#div_dialogessustitucion").hide();	}
+			if(valtipo_autoRequired=='1'){	jQuery("#asteriscotipo_auto").text("(*)");	jQuery("#div_dialogtipo_auto").show();	}else if(valtipo_autoRequired=='0'){jQuery("#asteriscotipo_auto").text("");jQuery("#div_dialogtipo_auto").show();}else{jQuery("#asteriscotipo_auto").text("");jQuery("#div_dialogtipo_auto").hide();	}
+
+				
+		
+		
+			
+			
+/*			
+			if(jQuery("#inicio_proceso")){
+				jQuery("#dialoginicio_proceso").val(valinicio_proceso);
+				jQuery("#dialoginicio_procesoRequired").val(valinicio_procesoRequired);	
+			}
+			if(jQuery("#numero_vistas_adicionales")){
+				jQuery("#dialognumero_vistas_adicionales").val(valnumero_vistas_adicionales);
+				jQuery("#dialognumero_vistas_adicionalesRequired").val(valnumero_vistas_adicionalesRequired);
+			} 
+
+			if(jQuery("#fecha_resolucion_judicial")){jQuery("#dialogfecha_resolucion_judicial").val(valfecha_resolucion_judicial);jQuery("#dialogfecha_resolucion_judicialRequired").val(valfecha_resolucion_judicialRequired);	}
+			if(jQuery("#fecha_resolucion_judicial_oposicion")){jQuery("#dialogfecha_resolucion_judicial_oposicion").val(valfecha_resolucion_judicial_oposicion);jQuery("#dialogfecha_resolucion_judicial_oposicionRequired").val(valfecha_resolucion_judicial_oposicionRequired);	}
+			if(jQuery("#fecha_escritura")){jQuery("#dialogfecha_escritura").val(valfecha_escritura);jQuery("#dialogfecha_escrituraRequired").val(valfecha_escrituraRequired);	}
+			if(jQuery("#fecha_resolucion_sentencia_firme")){jQuery("#dialogfecha_resolucion_sentencia_firme").val(valfecha_resolucion_sentencia_firme);jQuery("#dialogfecha_resolucion_sentencia_firmeRequired").val(valfecha_resolucion_sentencia_firmeRequired);	}
+			if(jQuery("#fecha_vista")){jQuery("#dialogfecha_vista").val(valfecha_vista);jQuery("#dialogfecha_vistaRequired").val(valfecha_vistaRequired);	}
+			if(jQuery("#fecha_requerimiento_judicial")){jQuery("#dialogfecha_requerimiento_judicial").val(valfecha_requerimiento_judicial);jQuery("#dialogfecha_requerimiento_judicialRequired").val(valfecha_requerimiento_judicialRequired);	}
+			if(jQuery("#numero_personados_macrocausa")){jQuery("#dialognumero_personados_macrocausa").val(valnumero_personados_macrocausa);jQuery("#dialognumero_personados_macrocausaRequired").val(valnumero_personados_macrocausaRequired);	}
+
+			if(jQuery("#esvictima")){
+				jQuery("#dialogesvictima").val(valesvictima);
+				jQuery("#dialogesvictimaRequired").val(valesvictimaRequired);	
+			}
+			if(jQuery("#essustitucion")){jQuery("#dialogessustitucion").val(valessustitucion);jQuery("#dialogessustitucionRequired").val(valessustitucionRequired);	}
+			if(jQuery("#tipo_auto")){jQuery("#dialogtipo_auto").val(valtipo_auto);jQuery("#dialogtipo_autoRequired").val(valtipo_autoRequired);	}
+			
+			
+			*/
+			
+		
+			
+			
+			
+				
+			//jQuery("#dialogo").dialog("open");
+			
+			jQuery(".ui-widget-overlay").css("opacity","0");
+				
+				
+			
 		}
 		
 		function accionInsercion(){
@@ -2141,6 +2170,9 @@
 			
 			
 		}
+		
+		
+		
 		
 		
 		function validaProcedimiento( strValue ) {
