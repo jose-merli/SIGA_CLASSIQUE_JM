@@ -2906,8 +2906,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 					resizable: true,
 					
 					buttons: {
-					    	  "Guardar": { id: 'Guardar', text: '<siga:Idioma key="general.boton.guardar"/>', click: function(){ accionInsercion(objImgDivActuacion); }},
-					          "Cerrar": { id: 'Cerrar', text: '<siga:Idioma key="general.boton.close"/>', click: function(){closeDialog("dialogo");}}
+					    	  "Guardar": { id: 'Guardar', text: '<siga:Idioma key="general.boton.submit"/>', click: function(){ accionInsercion(objImgDivActuacion); }},
+					          "Cerrar": { id: 'Cerrar', text: '<siga:Idioma key="general.boton.cancel"/>', click: function(){closeDialog("dialogo");}}
 					}
 				}
 			);
