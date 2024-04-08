@@ -1906,10 +1906,10 @@
 			
 			jQuery("#dialogo").dialog(
 					{
-						height: 450,
+						height: 300,
 					   	width: 825,
 						modal: true,
-						resizable: false,
+						resizable: true,
 						
 						buttons: {
 						    	  "Guardar": { id: 'Guardar', text: '<siga:Idioma key="general.boton.submit"/>', click: function(){ accionInsercion(); }},

@@ -2645,10 +2645,10 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		}else{
 			jQuery("#dialogo").dialog(
 				{
-					height: 350,
+					height: 300,
 				   	width: 525,
 					modal: true,
-					resizable: false,
+					resizable: true,
 					
 					buttons: {
 					    	  "Guardar": { id: 'Guardar', text: '<siga:Idioma key="general.boton.guardar"/>', click: function(){ accionInsercion(objImgDivActuacion); }},
