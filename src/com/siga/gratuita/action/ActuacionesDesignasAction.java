@@ -941,7 +941,10 @@ public class ActuacionesDesignasAction extends MasterAction {
 				hash.put(ScsActuacionDesignaBean.C_TALONARIO, talonario);
 		
 			}
-						
+					
+			
+			
+			
 			
 			
 			// Obtengo el idJuzgado y la idInstitucion del Juzgado:
@@ -1165,10 +1168,11 @@ public class ActuacionesDesignasAction extends MasterAction {
 			if(datosJustificacion!=null && !datosJustificacion.trim().equals("")) {
 				
 				String[]  arrayRowsJustificacion   =  datosJustificacion.split(",");
+				scsDatosAdicionalesHashtable = new Hashtable();
 				for (int j = 0; j < arrayRowsJustificacion.length; j++) {
 					String  datosAdicionales   =  arrayRowsJustificacion[j];
 				
-					scsDatosAdicionalesHashtable = new Hashtable();
+					
 					String[] datosAdicionalesArray = datosAdicionales.split("=");
 					String campo = datosAdicionalesArray[0].toUpperCase(); 
 					if(datosAdicionalesArray.length==1) {
@@ -1440,7 +1444,8 @@ public class ActuacionesDesignasAction extends MasterAction {
 						if(!valor.equals("undefined")) {
 							if(campo.startsWith("FECHA_")) scsDatosAdicionalesHashtable.put(campo,valor!=null?GstDate.getApplicationFormatDate("", valor):"" );
 							else scsDatosAdicionalesHashtable.put(campo, valor!=null?valor:"");
-						}
+						}else
+							scsDatosAdicionalesHashtable.put(campo, "");
 					}
 				}
 			}
