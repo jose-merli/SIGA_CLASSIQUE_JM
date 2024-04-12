@@ -2068,7 +2068,15 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 					
 					mensaje = getMensajeRespuesta(respuesta, request, simular);		
 				}else{
-					mensaje = validaRemesaTxt(mapping, formulario, request, response);	
+					if (simular) {
+						mensaje = validaRemesaTxt(mapping, formulario, request, response);	
+					} else {
+						PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
+						RESPUESTA_ENVIO_REMESA respuesta = pcajgInsertaColaService.enviaDocumentacionAlcala(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+								, UtilidadesString.getMensajeIdioma(getUserBean(request), "Enviando documentación del expediente"));
+						mensaje = getMensajeRespuesta(respuesta, request, simular);
+					}
+						
 				}
 				
 				

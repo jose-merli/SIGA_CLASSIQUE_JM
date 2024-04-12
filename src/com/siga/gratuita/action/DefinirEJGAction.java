@@ -541,8 +541,8 @@ public class DefinirEJGAction extends MasterAction
 	 			request.setAttribute("elementoActivo","10");
 	 		}else if(usr.isComision()){
 	 			//Miramos si existe algun estado de impugnacion no nulo, mostraremos la pestaña de impugnacion
-	 			ScsEstadoEJGAdm scsEstadoEJGAdm = new ScsEstadoEJGAdm(usr);
-	 			if(scsEstadoEJGAdm.isImpugnado(obj))
+//	 			ScsEstadoEJGAdm scsEstadoEJGAdm = new ScsEstadoEJGAdm(usr);
+//	 			if(scsEstadoEJGAdm.isImpugnado(obj))
 	 				request.setAttribute("elementoActivo","7");
 	 			
 	 		}

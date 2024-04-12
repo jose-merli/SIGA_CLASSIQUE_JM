@@ -4,6 +4,9 @@ package com.siga.beans;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
@@ -369,7 +372,7 @@ public class ScsEstadoEJGAdm extends MasterBeanAdministrador
 		
 		return v;
 	}
-	public boolean isImpugnado(ScsEJGBean ejg) throws ClsExceptions, SIGAException{
+	public Vector getEstadoEjg(ScsEJGBean ejg,Short idEstadoJG) throws ClsExceptions, SIGAException{
 		
 		Vector v = new Vector();
 		Hashtable claves = new Hashtable();
@@ -378,21 +381,49 @@ public class ScsEstadoEJGAdm extends MasterBeanAdministrador
 		claves.put (new Integer (2), ejg.getIdTipoEJG());
 		claves.put (new Integer (3), ejg.getAnio());
 		claves.put (new Integer (4), ejg.getNumero());
+		claves.put (new Integer (5), ejg.getNumero());
 		
 		StringBuilder query = new StringBuilder();
-		query.append("SELECT estado.IDESTADOEJG ");
-		query.append("  FROM SCS_ESTADOEJG  ESTADO ");
-		query.append(" WHERE estado.IDESTADOEJG = 11 ");
+		query.append("SELECT estado.*, estadoejg.visiblecomision ");
+		query.append("  FROM SCS_ESTADOEJG estado, SCS_MAESTROESTADOSEJG estadoejg ");
+		query.append(" WHERE estado.IDESTADOEJG = estadoejg.IDESTADOEJG ");
 		query.append("   AND estado.IDINSTITUCION =:1");
 		query.append("   AND estado.IDTIPOEJG =:2");
 		query.append("   AND estado.ANIO =:3");
 		query.append("   AND estado.NUMERO =:4");
+		query.append("   AND estado.IDESTADOJG =:5");
+		query.append("   AND estado.FECHABAJA IS NULL ");
+		query.append(" ORDER BY trunc(ESTADO.FECHAINICIO) asc, ESTADO.IDESTADOPOREJG asc");
+		v = this.selectGenericoBind(query.toString(), claves);
+		
+		return v;
+	}
+	
+	public boolean existeEstado(ScsEJGBean ejg,ESTADOS_EJG  estado) throws ClsExceptions, SIGAException{
+		
+		Vector v = new Vector();
+		Hashtable claves = new Hashtable();
+		
+		claves.put (new Integer (1), ejg.getIdInstitucion());
+		claves.put (new Integer (2), ejg.getIdTipoEJG());
+		claves.put (new Integer (3), ejg.getAnio());
+		claves.put (new Integer (4), ejg.getNumero());
+		claves.put (new Integer (5), estado.getCodigo());
+		
+		StringBuilder query = new StringBuilder();
+		query.append("SELECT estado.IDESTADOEJG ");
+		query.append("  FROM SCS_ESTADOEJG  ESTADO ");
+		query.append(" WHERE  estado.IDINSTITUCION =:1");
+		query.append("   AND estado.IDTIPOEJG =:2");
+		query.append("   AND estado.ANIO =:3");
+		query.append("   AND estado.NUMERO =:4");
+		query.append("   AND estado.IDESTADOEJG = :5 ");
 		query.append("   AND estado.FECHABAJA IS NULL ");
 		
 		v = this.selectGenericoBind(query.toString(), claves);
 		
 		
-		return v==null || v.size()>0;
+		return v!=null && v.size()>0;
 	}
 	
 	

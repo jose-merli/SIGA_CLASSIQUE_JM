@@ -238,9 +238,10 @@
 		
 	}else if (idEstado == 3) {
 		buttons="g";//guardar
+		
 		if (cajgConfig == 5) {
 			if(!path.equals("/JGR_E-Comunicaciones_InfEconomico") )
-				buttons+=",d,mri";
+				buttons+=",d,mri,ws";
 		}else if (cajgConfig == 10) {//DESCARGAR XML DE CANARIAS
 			buttons+=",d";//descarga envio
 		}

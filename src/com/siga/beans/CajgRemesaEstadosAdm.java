@@ -123,7 +123,7 @@ public class CajgRemesaEstadosAdm extends MasterBeanAdministrador {
 			select += " AND r."+CajgRemesaEstadosBean.C_IDREMESA+"="+idRemesa;
 			select += " AND r."+CajgRemesaEstadosBean.C_IDESTADO+"=t."+CajgTipoEstadoRemesaBean.C_IDESTADO+"";
 			
-			select += "  order by "+CajgRemesaEstadosBean.C_IDESTADO+",FECHAREMESA";
+			select += "  order by r."+CajgRemesaEstadosBean.C_FECHAMODIFICACION+","+CajgRemesaEstadosBean.C_IDESTADO+",FECHAREMESA";
 			//Consulta:
 			datos = this.selectGenerico(select);			
 		} 

@@ -17,6 +17,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.services.scs.EjgService;
@@ -33,6 +34,7 @@ import com.siga.beans.AdmInformeAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
+import com.siga.beans.ScsEstadoEJGAdm;
 import com.siga.beans.ScsPersonaJGBean;
 import com.siga.comun.VoUiService;
 import com.siga.general.MasterAction;
@@ -463,9 +465,14 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 				if (v3 != null && v3.size() > 0) {
 					ScsEJGBean b = (ScsEJGBean) v3.get(0);
 					definirDocumentacionEJGForm.setNumEjg(b.getNumEJG());
-					if(documentacionEjgVo.getIdInstitucion().shortValue()==2055 || documentacionEjgVo.getIdInstitucion().shortValue()==2003) {
+					if(documentacionEjgVo.getIdInstitucion().shortValue()==2055) {
 						if( b.getNumeroCAJG()!=null && !b.getNumeroCAJG().equalsIgnoreCase(""))
 							request.setAttribute("idExpedienteExt", b.getNumeroCAJG());
+					}else if ( documentacionEjgVo.getIdInstitucion().shortValue()==2003) {
+						ScsEstadoEJGAdm scsEstadoEJGAdm = new ScsEstadoEJGAdm(usr);
+			 			if(scsEstadoEJGAdm.existeEstado(b,ESTADOS_EJG.REMITIDO_COMISION)) {
+			 				request.setAttribute("idExpedienteExt",b.getAnioCAJG()+"_"+b.getNumeroCAJG());
+			 			}
 					}else if(b.getIdExpedienteExt()!=null)
 						request.setAttribute("idExpedienteExt", b.getIdExpedienteExt());
 						
