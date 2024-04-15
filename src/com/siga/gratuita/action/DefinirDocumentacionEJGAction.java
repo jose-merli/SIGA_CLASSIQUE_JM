@@ -18,8 +18,11 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
+import org.redabogacia.sigaservices.app.AppConstants.OPERACION;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
+import org.redabogacia.sigaservices.app.autogen.model.EcomOperacion;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+import org.redabogacia.sigaservices.app.services.ecom.EcomOperacionService;
 import org.redabogacia.sigaservices.app.services.scs.EjgService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -469,10 +472,14 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 						if( b.getNumeroCAJG()!=null && !b.getNumeroCAJG().equalsIgnoreCase(""))
 							request.setAttribute("idExpedienteExt", b.getNumeroCAJG());
 					}else if ( documentacionEjgVo.getIdInstitucion().shortValue()==2003) {
-						ScsEstadoEJGAdm scsEstadoEJGAdm = new ScsEstadoEJGAdm(usr);
-			 			if(scsEstadoEJGAdm.existeEstado(b,ESTADOS_EJG.REMITIDO_COMISION)) {
-			 				request.setAttribute("idExpedienteExt",b.getAnioCAJG()+"_"+b.getNumeroCAJG());
-			 			}
+						EcomOperacionService ecomOperacionService = (EcomOperacionService) getBusinessManager().getService(EcomOperacionService.class);
+						EcomOperacion envioDocumentacionOperacion = ecomOperacionService.selectByPrimaryKey(OPERACION.ALCALA_ENVIO_DOCUMENTACION.getId());
+						if(envioDocumentacionOperacion.getActivo()!=null && envioDocumentacionOperacion.getActivo().toString().equals(AppConstants.DB_TRUE)){
+							ScsEstadoEJGAdm scsEstadoEJGAdm = new ScsEstadoEJGAdm(usr);
+				 			if(scsEstadoEJGAdm.existeEstado(b,ESTADOS_EJG.REMITIDO_COMISION)) {
+				 				request.setAttribute("idExpedienteExt",b.getAnioCAJG()+"_"+b.getNumeroCAJG());
+				 			}
+						}
 					}else if(b.getIdExpedienteExt()!=null)
 						request.setAttribute("idExpedienteExt", b.getIdExpedienteExt());
 						
