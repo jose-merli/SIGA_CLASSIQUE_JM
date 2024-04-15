@@ -1135,7 +1135,6 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 //		String[] datosAdicionelesReturn;
 //		SCSACTUACIONDESIGNAñññINICIO_PROCESOñññAñññ1-SCSACTUACIONDESIGNAñññFECHA_RESOLUCION_JUDICIALñññAñññ1
 		
-		System.out.println("camposAdicionales:"+camposAdicionales);
 		if(camposAdicionales==null)
 			return "";
 		String[] camposAdicionalesReturn = camposAdicionales.split("-");
