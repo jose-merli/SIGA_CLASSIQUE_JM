@@ -17,6 +17,7 @@
 		<service interface="com.siga.facturacionSJCS.service.FacturacionSJCSService"	implementation="com.siga.facturacionSJCS.service.impl.AtosFacturacionSJCSServiceImpl"/>
 		
 		
+		
 	</context>
 	
 	<context id="letrados">
@@ -157,7 +158,7 @@
 		<service interface="org.redabogacia.sigaservices.app.services.scs.GestionAragonService"	implementation="org.redabogacia.sigaservices.app.services.scs.impl.GestionAragonServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.caj.CajgRemesaResolucionService" implementation="org.redabogacia.sigaservices.app.services.caj.impl.CajgRemesaResolucionServiceImpl"/>
 		
-		
+		<service interface="org.redabogacia.sigaservices.app.services.ecom.EcomOperacionService"	implementation="org.redabogacia.sigaservices.app.services.ecom.impl.EcomOperacionServiceImpl"/>
 		
 		
 		
