@@ -850,6 +850,26 @@ public class ActuacionesDesignasAction extends MasterAction {
 			
 			
 			Hashtable hash = prepararInsert (miform.getDatos());
+			hash.put(ScsActuacionAsistenciaBean.C_IDINSTITUCION,(String)usr.getLocation());
+
+			ScsDesignaAdm designaAdm = new ScsDesignaAdm(this.getUserBean(request));
+			ScsDesignaBean designaBean = null;
+
+			Vector vD = designaAdm.selectByPK(hash);
+			if (vD != null && vD.size() == 1) {
+				SimpleDateFormat sd = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+				designaBean = (ScsDesignaBean) vD.get(0);
+				Date dDesgina = sd.parse(designaBean.getFechaEntrada());
+
+				SimpleDateFormat sd2 = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+				Date dActuacion = sd2.parse(miform.getFechaActuacion());
+				if (dActuacion.compareTo(dDesgina) < 0) {
+					return exito("messages.error.acreditacionFechaNoValida", request);
+				}
+
+			}
+			
+			
 			String factConvenio=  "0";
 			if(miform.getConvenio()!=null && !miform.getConvenio().equals(""))
 				factConvenio = miform.getConvenio();
@@ -858,7 +878,6 @@ public class ActuacionesDesignasAction extends MasterAction {
 			hash.put(ScsActuacionAsistenciaBean.C_USUMODIFICACION,usr.getUserName());
 			hash.put(ScsActuacionAsistenciaBean.C_FECHACREACION,"SYSDATE");
 			hash.put(ScsActuacionAsistenciaBean.C_USUCREACION,usr.getUserName());
-			hash.put(ScsActuacionAsistenciaBean.C_IDINSTITUCION,(String)usr.getLocation());
 			
 			
 
@@ -1066,33 +1085,30 @@ public class ActuacionesDesignasAction extends MasterAction {
 				hash.put(ScsActuacionDesignaBean.C_NIG, "");
 			}				
 			
-		    // Comprobamos si la fecha de la actuacion es posterior a la de la designa
-	        SimpleDateFormat sd2 = new SimpleDateFormat (ClsConstants.DATE_FORMAT_SHORT_SPANISH);
-	        Date dActuacion = sd2.parse(miform.getFechaActuacion());			            ;
-	        ScsDesignaBean sdb = null;
-	        try {
-			    ScsDesignaAdm designaAdm = new ScsDesignaAdm (this.getUserBean(request));
-			    Vector vD = designaAdm.selectByPK(hash);
-			    if ((vD != null) && (vD.size() == 1)) {
-			        SimpleDateFormat sd = new SimpleDateFormat (ClsConstants.DATE_FORMAT_JAVA);
-			        sdb = (ScsDesignaBean)vD.get(0);
-			        hash.put("scsDesignaBean",sdb);
-			        Date dDesgina = sd.parse(sdb.getFechaEntrada());
-			        
-			        if (dActuacion.compareTo(dDesgina) < 0) {
-			            return exito("messages.error.acreditacionFechaNoValida",request);			            
-			        }
-			        
-			        //Se rellena el NIG si no estuviera completo en datos generales
-			        if(sdb.getNIG() == null || sdb.getNIG().equals("")){     				
-			        	if (nig!=null && !nig.equals("")){
-			        		sdb.setNIG(nig);
-			        		designaAdm.updateDirect(sdb);
-			        	}
-			        }
-			    }
-		    }			    
-	        catch (Exception e) { }
+			boolean isModificarDesigna = false;
+			if(designaBean.getNIG() == null || designaBean.getNIG().equals("")){     				
+				if (miform.getNig()!=null && !miform.getNig().equals("")){
+					designaBean.setNIG(miform.getNig());
+					isModificarDesigna = true;
+
+				}
+			}
+			if(designaBean.getNumProcedimiento() == null || designaBean.getNumProcedimiento().equals("")){     				
+				if (miform.getNumeroProcedimiento()!=null && !miform.getNumeroProcedimiento().equals("")){
+					designaBean.setNumProcedimiento(miform.getNumeroProcedimiento());
+					if(miform.getAnioProcedimiento()!=null && !miform.getAnioProcedimiento().equals("")) {
+						designaBean.setAnioProcedimiento(Integer.valueOf(miform.getAnioProcedimiento()));
+					}
+					isModificarDesigna = true;
+				}
+			}
+			if(isModificarDesigna) {
+				designaAdm.updateDirect(designaBean);
+				
+			}
+			
+			
+			
 			
 			
 			
@@ -1113,7 +1129,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			//Obtener el colegiado designdo activo en la fecha de la actuacion
 			//en lugar del colegiado designado actualmente	
 			ScsDesignasLetradoAdm sdla = new ScsDesignasLetradoAdm(usr);
-			Long idPersonaActuacion = sdla.obtenerColegiadoDesignadoEnFecha(sdb,miform.getFechaActuacion());
+			Long idPersonaActuacion = sdla.obtenerColegiadoDesignadoEnFecha(designaBean,miform.getFechaActuacion());
 			if (idPersonaActuacion == null)
 				return exito("messages.error.designacion.sinLetradoAsignado", request); 
 			hash.put(ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO, idPersonaActuacion);
@@ -1209,6 +1225,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			if (multiplesAcreditaciones || this.comprobarAcreditacion(nuevoEstado, false, hash, request, bAplicarRestriccionesActuaciones)) {
 				tx.begin();
 //				if(usr.isLetrado()){
+					hash.put("scsDesignaBean", designaBean);
 					hash.put("fks", fksActuacionMap);
 					actuacionDesignaAdm.insertHistorico(idPersonaActuacion, hash,getListCamposOcultarHistorico(),ClsConstants.TIPO_CAMBIO_HISTORICO_DESIGNACIONALTAACTUACION);
 //				}else
@@ -1337,286 +1354,281 @@ public class ActuacionesDesignasAction extends MasterAction {
 		boolean ok = false;
 		String forward = null;
 
-
-
-		usr = (UsrBean)ses.getAttribute("USRBEAN");
-		tx = usr.getTransaction();
-
-		actuacionModificada.put(ScsActuacionDesignaBean.C_NUMEROASUNTO,(String)actuacionModificada.get("NACTUACION"));
-		actuacionModificada.put(ScsActuacionDesignaBean.C_FECHA,GstDate.getApplicationFormatDate("",(String)actuacionModificada.get("FECHAACTUACION")));
-		String fechaJus = "";
-		fechaJus = (String)actuacionModificada.get("FECHAJUSTIFICACION");
-		if(fechaJus!=null && !fechaJus.equals(""))
-			actuacionModificada.put(ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,GstDate.getApplicationFormatDate("",fechaJus));
-		actuacionModificada.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO,(String)actuacionModificada.get("PROCEDIMIENTO"));
-		actuacionModificada.put(ScsActuacionDesignaBean.C_IDINSTITUCION,(String)usr.getLocation());
-		actuacionModificada.put(ScsActuacionDesignaBean.C_ANULACION,(((String)actuacionModificada.get("ANULACION")!=null)&&((String)actuacionModificada.get("ANULACION")).equalsIgnoreCase("on"))?"1":"0");
-		//Por defecto 0 ya que se elimina de la interfaz:
-		actuacionModificada.put(ScsActuacionDesignaBean.C_ACUERDOEXTRAJUDICIAL,"0");
-
-		actuacionModificada.put(ScsActuacionDesignaBean.C_IDFACTURACION, miform.getIdfacturacion());
-		actuacionModificada.put(ScsActuacionDesignaBean.C_FACTURADO, miform.getFacturado());
-
-
-		// Obtengo el idPrision y la idInstitucion del Prision:
-		Long idPrision=null;
-		Integer idInstitucionPrision=null;
-		String prision = miform.getPrision();
-		if (prision!=null && !prision.equals("")){
-			idPrision = new Long(prision.substring(0,prision.indexOf(",")));
-			idInstitucionPrision = new Integer(prision.substring(prision.indexOf(",")+1));
-			actuacionModificada.put(ScsActuacionDesignaBean.C_IDPRISION, idPrision);
-			actuacionModificada.put(ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION, idInstitucionPrision);
-		} else {
-			actuacionModificada.put(ScsActuacionDesignaBean.C_IDPRISION, "");
-			actuacionModificada.put(ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION, "");
-		}
-		// Obtenemos la Pretension seleccionada
-		String idPretension = miform.getPretension();
-		if (idPretension!=null && !idPretension.equals("")){
-
-
-			if (idPretension.startsWith("{")){
-				HashMap<String, String> hmIdJuzgadoObtenido = null;
-				try {
-					hmIdJuzgadoObtenido = new ObjectMapper().readValue(idPretension, HashMap.class);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				idPretension = hmIdJuzgadoObtenido.get("idpretension");
-			}
-			actuacionModificada.put(ScsActuacionDesignaBean.C_IDPRETENSION, idPretension);
-
-		} else {
-			actuacionModificada.put(ScsActuacionDesignaBean.C_IDPRETENSION, "");
-
-		}
-
-		String talonario = miform.getTalonario();
-		if (talonario!=null && !talonario.equals("")){
-			actuacionModificada.put(ScsActuacionDesignaBean.C_TALONARIO, talonario);
-
-		} else {
-			actuacionModificada.put(ScsActuacionDesignaBean.C_TALONARIO, "");
-
-		}
-
-		String talon = miform.getTalon();
-		if (talon!=null && !talon.equals("")){
-			actuacionModificada.put(ScsActuacionDesignaBean.C_TALON, talon);
-
-		} else {
-			actuacionModificada.put(ScsActuacionDesignaBean.C_TALON, "");
-
-		}
-
-
-		String idMotivoCambio = miform.getIdMotivoCambio();
-		if (idMotivoCambio!=null && !idMotivoCambio.trim().equals("")){
-			actuacionModificada.put(ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO, idMotivoCambio);
-
-		} else {
-			actuacionModificada.put(ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO, "");
-
-		}
-
-		Hashtable scsDatosAdicionalesHashtable = null;
-		String  datosJustificacion   =  miform.getDatosJustificacion();
-		
-		if(datosJustificacion!=null && !datosJustificacion.trim().equals("")) {
-			
-			String[]  arrayRowsJustificacion   =  datosJustificacion.split(",");
-			scsDatosAdicionalesHashtable = new Hashtable();
-			for (int j = 0; j < arrayRowsJustificacion.length; j++) {
-				String  datosAdicionales   =  arrayRowsJustificacion[j];
-				if(datosAdicionales!=null && !datosAdicionales.trim().equals("")) {
-					
-					String[] datosAdicionalesArray = datosAdicionales.split("=");
-					String campo = datosAdicionalesArray[0].toUpperCase(); 
-//						System.out.println("campo:"+campo);
-					if(datosAdicionalesArray.length==1) {
-						if(campo.startsWith("FECHA_")) scsDatosAdicionalesHashtable.put(campo,"" );
-						else scsDatosAdicionalesHashtable.put(campo,"");
-					}else {
-						
-						String valor = datosAdicionalesArray[1];
-						if(!valor.equals("undefined")) {
-							if(campo.startsWith("FECHA_")) scsDatosAdicionalesHashtable.put(campo,valor!=null?GstDate.getApplicationFormatDate("", valor):"" );
-							else scsDatosAdicionalesHashtable.put(campo, valor!=null?valor:"");
-						}else
-							scsDatosAdicionalesHashtable.put(campo, "");
-					}
-				}
-			}
-		}
-
-		if(scsDatosAdicionalesHashtable!=null) {
-			UtilidadesHash.set(scsDatosAdicionalesHashtable,ScsDesignaDatosAdicionalesBean.C_ANIO,(String) actuacionModificada.get(
-					ScsDesignaDatosAdicionalesBean.C_ANIO));
-			UtilidadesHash.set(scsDatosAdicionalesHashtable,ScsDesignaDatosAdicionalesBean.C_IDINSTITUCION,(String) actuacionModificada.get(
-					ScsDesignaDatosAdicionalesBean.C_IDINSTITUCION));
-			UtilidadesHash.set(scsDatosAdicionalesHashtable,ScsDesignaDatosAdicionalesBean.C_IDTURNO,(String) actuacionModificada.get(
-					ScsDesignaDatosAdicionalesBean.C_IDTURNO));
-			UtilidadesHash.set(scsDatosAdicionalesHashtable,ScsDesignaDatosAdicionalesBean.C_NUMERO,(String) actuacionModificada.get(
-					ScsDesignaDatosAdicionalesBean.C_NUMERO));
-			UtilidadesHash.set(scsDatosAdicionalesHashtable,ScsDesignaDatosAdicionalesBean.C_NUMEROASUNTO,(String) actuacionModificada.get(
-					ScsDesignaDatosAdicionalesBean.C_NUMEROASUNTO));
-
-
-		}
-
-
-		// Obtengo el idJuzgado y la idInstitucion del Juzgado:
-		Long idJuzgado=null;
-		Integer idInstitucionJuzgado=null;
-		String sJuzgado=  miform.getJuzgado();
-		if (sJuzgado!=null && !sJuzgado.equals("")){
-
-
-			if (sJuzgado.startsWith("{")){
-				// ES UN JSON
-				HashMap<String, String> hmIdJuzgadoObtenido = null;
-				try {
-					hmIdJuzgadoObtenido = new ObjectMapper().readValue(sJuzgado, HashMap.class);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				idJuzgado = new Long(hmIdJuzgadoObtenido.get("idjuzgado"));
-				idInstitucionJuzgado = new Integer(hmIdJuzgadoObtenido.get("idinstitucion"));
-			}else{
-				String[] juzgado = miform.getJuzgado().split(",");
-				idJuzgado = new Long(juzgado[0]);
-				idInstitucionJuzgado = new Integer(juzgado[1]);
-			}
-
-			actuacionModificada.put(ScsActuacionDesignaBean.C_IDJUZGADO, idJuzgado);
-			actuacionModificada.put(ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO, idInstitucionJuzgado);
-
-		} else {
-			actuacionModificada.put(ScsActuacionDesignaBean.C_IDJUZGADO, "");
-			actuacionModificada.put(ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO, "");
-		}
-
-		// Obtengo el idProcedimiento y la idInstitucion del Procedimiento:
-		Integer idProcedimiento=null, idInstitucionProcedimiento=null;
-		String procedimiento = miform.getProcedimiento();
-
-
-		if (procedimiento!=null && !procedimiento.equals("")){
-			if (procedimiento.startsWith("{")){
-				// ES UN JSON
-				HashMap<String, String> hmIdJuzgadoObtenido = null;
-				try {
-					hmIdJuzgadoObtenido = new ObjectMapper().readValue(procedimiento, HashMap.class);
-
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				idProcedimiento = new Integer(hmIdJuzgadoObtenido.get("idprocedimiento"));
-				idInstitucionProcedimiento= new Integer(hmIdJuzgadoObtenido.get("idinstitucion"));
-			}else{
-				idProcedimiento = new Integer(procedimiento.substring(0,procedimiento.indexOf(",")));
-				idInstitucionProcedimiento = new Integer(procedimiento.substring(procedimiento.indexOf(",")+1));
-			}
-
-			actuacionModificada.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO, idProcedimiento);
-			actuacionModificada.put(ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO, idInstitucionProcedimiento);
-		} else {
-			actuacionModificada.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO, "");
-			actuacionModificada.put(ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO, "");
-		}
-
-		// Obtengo el idAcreditacion y la idInstitucion del Acreditacion:
-		Integer idAcreditacion = null;					
-		String acreditacion = miform.getAcreditacion();
-		boolean isObligatorioNigNumProcedimiento = false; 
-		if (acreditacion!=null && !acreditacion.equals("")){
-			//Ahora en el combo de acreditacion viene separado por , la obligatoriedad de nigcif que esta en la tabla scs_acreditacionprocedimiento 
-			String[] acreditacionStrings = acreditacion.split(",");
-			idAcreditacion = new Integer(acreditacionStrings[0]);	
-			isObligatorioNigNumProcedimiento = acreditacionStrings.length>1 && acreditacionStrings[1].equals("1");
-			actuacionModificada.put(ScsActuacionDesignaBean.C_IDACREDITACION, idAcreditacion);				
-		} else {
-			actuacionModificada.put(ScsActuacionDesignaBean.C_IDACREDITACION, "");				
-		}
-
-		String numeroProcedimiento= miform.getNumeroProcedimiento();
-		if (numeroProcedimiento!=null && !numeroProcedimiento.equals("")){
-			actuacionModificada.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, numeroProcedimiento);
-		}else{
-			if(isObligatorioNigNumProcedimiento){
-				return exito(UtilidadesString.getMensajeIdioma(usr, "errors.required",new String[]{"gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento"}),request);
-			}
-			actuacionModificada.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, "");
-		}
-		String anioProcedimiento= miform.getAnioProcedimiento();
-		if (anioProcedimiento!=null && !anioProcedimiento.equals("")){
-			actuacionModificada.put(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, anioProcedimiento);
-		}else{
-			GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
-			String ejisActivo = paramAdm.getValor(usr.getLocation (), "ECOM", "EJIS_ACTIVO", "0");
-			if(isObligatorioNigNumProcedimiento && ejisActivo!=null && ejisActivo.equalsIgnoreCase(AppConstants.DB_TRUE) ){
-				return exito(UtilidadesString.getMensajeIdioma(usr, "errors.required",new String[]{"gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento"}),request);
-			}
-			actuacionModificada.put(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, "");
-		}
-
-
-		String nig= miform.getNig();
-		if (nig!=null && !nig.equals("")){
-			actuacionModificada.put(ScsActuacionDesignaBean.C_NIG, nig);
-		}else{
-			if(isObligatorioNigNumProcedimiento){
-				return exito(UtilidadesString.getMensajeIdioma(usr, "errors.required",new String[]{"gratuita.mantAsistencias.literal.NIG"}),request);
-			}
-			actuacionModificada.put(ScsActuacionDesignaBean.C_NIG, "");
-		}
+		ScsDesignaAdm designaAdm = new ScsDesignaAdm (this.getUserBean(request));
+		ScsDesignaBean designaBean = null;
 		try {
-			ScsDesignaAdm designaAdm = new ScsDesignaAdm (this.getUserBean(request));
-			ScsDesignaBean sdb = null;
-			try {
-
-				Vector vD = designaAdm.selectByPK(actuacionAntigua);
-				if ((vD != null) && (vD.size() == 1)) {
-					SimpleDateFormat sd = new SimpleDateFormat (ClsConstants.DATE_FORMAT_JAVA);
-					sdb = (ScsDesignaBean)vD.get(0);
-					Date dDesgina = sd.parse(sdb.getFechaEntrada());
-
-					SimpleDateFormat sd2 = new SimpleDateFormat (ClsConstants.DATE_FORMAT_SHORT_SPANISH);
-					Date dActuacion = sd2.parse(miform.getFechaActuacion());			            ;
-
-					if (dActuacion.compareTo(dDesgina) < 0) {
-						return exito("messages.error.acreditacionFechaNoValida",request);			            
-					}
-
-
+			Vector vD = designaAdm.selectByPK(actuacionAntigua);
+			if ((vD != null) && (vD.size() == 1)) {
+				SimpleDateFormat sd = new SimpleDateFormat (ClsConstants.DATE_FORMAT_JAVA);
+				designaBean = (ScsDesignaBean)vD.get(0);
+				Date dDesgina = sd.parse(designaBean.getFechaEntrada());
+	
+				SimpleDateFormat sd2 = new SimpleDateFormat (ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+				Date dActuacion = sd2.parse(miform.getFechaActuacion());			            ;
+	
+				if (dActuacion.compareTo(dDesgina) < 0) {
+					return exito("messages.error.acreditacionFechaNoValida",request);			            
 				}
-			}			    
-			catch (Exception e) {
-
+	
+	
 			}
+		
+	
+			usr = (UsrBean)ses.getAttribute("USRBEAN");
+			tx = usr.getTransaction();
+	
+			actuacionModificada.put(ScsActuacionDesignaBean.C_NUMEROASUNTO,(String)actuacionModificada.get("NACTUACION"));
+			actuacionModificada.put(ScsActuacionDesignaBean.C_FECHA,GstDate.getApplicationFormatDate("",(String)actuacionModificada.get("FECHAACTUACION")));
+			String fechaJus = "";
+			fechaJus = (String)actuacionModificada.get("FECHAJUSTIFICACION");
+			if(fechaJus!=null && !fechaJus.equals(""))
+				actuacionModificada.put(ScsActuacionDesignaBean.C_FECHAJUSTIFICACION,GstDate.getApplicationFormatDate("",fechaJus));
+			actuacionModificada.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO,(String)actuacionModificada.get("PROCEDIMIENTO"));
+			actuacionModificada.put(ScsActuacionDesignaBean.C_IDINSTITUCION,(String)usr.getLocation());
+			actuacionModificada.put(ScsActuacionDesignaBean.C_ANULACION,(((String)actuacionModificada.get("ANULACION")!=null)&&((String)actuacionModificada.get("ANULACION")).equalsIgnoreCase("on"))?"1":"0");
+			//Por defecto 0 ya que se elimina de la interfaz:
+			actuacionModificada.put(ScsActuacionDesignaBean.C_ACUERDOEXTRAJUDICIAL,"0");
+	
+			actuacionModificada.put(ScsActuacionDesignaBean.C_IDFACTURACION, miform.getIdfacturacion());
+			actuacionModificada.put(ScsActuacionDesignaBean.C_FACTURADO, miform.getFacturado());
+	
+	
+			// Obtengo el idPrision y la idInstitucion del Prision:
+			Long idPrision=null;
+			Integer idInstitucionPrision=null;
+			String prision = miform.getPrision();
+			if (prision!=null && !prision.equals("")){
+				idPrision = new Long(prision.substring(0,prision.indexOf(",")));
+				idInstitucionPrision = new Integer(prision.substring(prision.indexOf(",")+1));
+				actuacionModificada.put(ScsActuacionDesignaBean.C_IDPRISION, idPrision);
+				actuacionModificada.put(ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION, idInstitucionPrision);
+			} else {
+				actuacionModificada.put(ScsActuacionDesignaBean.C_IDPRISION, "");
+				actuacionModificada.put(ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION, "");
+			}
+			// Obtenemos la Pretension seleccionada
+			String idPretension = miform.getPretension();
+			if (idPretension!=null && !idPretension.equals("")){
+	
+	
+				if (idPretension.startsWith("{")){
+					HashMap<String, String> hmIdJuzgadoObtenido = null;
+					try {
+						hmIdJuzgadoObtenido = new ObjectMapper().readValue(idPretension, HashMap.class);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					idPretension = hmIdJuzgadoObtenido.get("idpretension");
+				}
+				actuacionModificada.put(ScsActuacionDesignaBean.C_IDPRETENSION, idPretension);
+	
+			} else {
+				actuacionModificada.put(ScsActuacionDesignaBean.C_IDPRETENSION, "");
+	
+			}
+	
+			String talonario = miform.getTalonario();
+			if (talonario!=null && !talonario.equals("")){
+				actuacionModificada.put(ScsActuacionDesignaBean.C_TALONARIO, talonario);
+	
+			} else {
+				actuacionModificada.put(ScsActuacionDesignaBean.C_TALONARIO, "");
+	
+			}
+	
+			String talon = miform.getTalon();
+			if (talon!=null && !talon.equals("")){
+				actuacionModificada.put(ScsActuacionDesignaBean.C_TALON, talon);
+	
+			} else {
+				actuacionModificada.put(ScsActuacionDesignaBean.C_TALON, "");
+	
+			}
+	
+	
+			String idMotivoCambio = miform.getIdMotivoCambio();
+			if (idMotivoCambio!=null && !idMotivoCambio.trim().equals("")){
+				actuacionModificada.put(ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO, idMotivoCambio);
+	
+			} else {
+				actuacionModificada.put(ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO, "");
+	
+			}
+	
+			Hashtable scsDatosAdicionalesHashtable = null;
+			String  datosJustificacion   =  miform.getDatosJustificacion();
+			
+			if(datosJustificacion!=null && !datosJustificacion.trim().equals("")) {
+				
+				String[]  arrayRowsJustificacion   =  datosJustificacion.split(",");
+				scsDatosAdicionalesHashtable = new Hashtable();
+				for (int j = 0; j < arrayRowsJustificacion.length; j++) {
+					String  datosAdicionales   =  arrayRowsJustificacion[j];
+					if(datosAdicionales!=null && !datosAdicionales.trim().equals("")) {
+						
+						String[] datosAdicionalesArray = datosAdicionales.split("=");
+						String campo = datosAdicionalesArray[0].toUpperCase(); 
+	//						System.out.println("campo:"+campo);
+						if(datosAdicionalesArray.length==1) {
+							if(campo.startsWith("FECHA_")) scsDatosAdicionalesHashtable.put(campo,"" );
+							else scsDatosAdicionalesHashtable.put(campo,"");
+						}else {
+							
+							String valor = datosAdicionalesArray[1];
+							if(!valor.equals("undefined")) {
+								if(campo.startsWith("FECHA_")) scsDatosAdicionalesHashtable.put(campo,valor!=null?GstDate.getApplicationFormatDate("", valor):"" );
+								else scsDatosAdicionalesHashtable.put(campo, valor!=null?valor:"");
+							}else
+								scsDatosAdicionalesHashtable.put(campo, "");
+						}
+					}
+				}
+			}
+	
+			if(scsDatosAdicionalesHashtable!=null) {
+				UtilidadesHash.set(scsDatosAdicionalesHashtable,ScsDesignaDatosAdicionalesBean.C_ANIO,(String) actuacionModificada.get(
+						ScsDesignaDatosAdicionalesBean.C_ANIO));
+				UtilidadesHash.set(scsDatosAdicionalesHashtable,ScsDesignaDatosAdicionalesBean.C_IDINSTITUCION,(String) actuacionModificada.get(
+						ScsDesignaDatosAdicionalesBean.C_IDINSTITUCION));
+				UtilidadesHash.set(scsDatosAdicionalesHashtable,ScsDesignaDatosAdicionalesBean.C_IDTURNO,(String) actuacionModificada.get(
+						ScsDesignaDatosAdicionalesBean.C_IDTURNO));
+				UtilidadesHash.set(scsDatosAdicionalesHashtable,ScsDesignaDatosAdicionalesBean.C_NUMERO,(String) actuacionModificada.get(
+						ScsDesignaDatosAdicionalesBean.C_NUMERO));
+				UtilidadesHash.set(scsDatosAdicionalesHashtable,ScsDesignaDatosAdicionalesBean.C_NUMEROASUNTO,(String) actuacionModificada.get(
+						ScsDesignaDatosAdicionalesBean.C_NUMEROASUNTO));
+	
+	
+			}
+	
+	
+			// Obtengo el idJuzgado y la idInstitucion del Juzgado:
+			Long idJuzgado=null;
+			Integer idInstitucionJuzgado=null;
+			String sJuzgado=  miform.getJuzgado();
+			if (sJuzgado!=null && !sJuzgado.equals("")){
+	
+	
+				if (sJuzgado.startsWith("{")){
+					// ES UN JSON
+					HashMap<String, String> hmIdJuzgadoObtenido = null;
+					try {
+						hmIdJuzgadoObtenido = new ObjectMapper().readValue(sJuzgado, HashMap.class);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					idJuzgado = new Long(hmIdJuzgadoObtenido.get("idjuzgado"));
+					idInstitucionJuzgado = new Integer(hmIdJuzgadoObtenido.get("idinstitucion"));
+				}else{
+					String[] juzgado = miform.getJuzgado().split(",");
+					idJuzgado = new Long(juzgado[0]);
+					idInstitucionJuzgado = new Integer(juzgado[1]);
+				}
+	
+				actuacionModificada.put(ScsActuacionDesignaBean.C_IDJUZGADO, idJuzgado);
+				actuacionModificada.put(ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO, idInstitucionJuzgado);
+	
+			} else {
+				actuacionModificada.put(ScsActuacionDesignaBean.C_IDJUZGADO, "");
+				actuacionModificada.put(ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO, "");
+			}
+	
+			// Obtengo el idProcedimiento y la idInstitucion del Procedimiento:
+			Integer idProcedimiento=null, idInstitucionProcedimiento=null;
+			String procedimiento = miform.getProcedimiento();
+	
+	
+			if (procedimiento!=null && !procedimiento.equals("")){
+				if (procedimiento.startsWith("{")){
+					// ES UN JSON
+					HashMap<String, String> hmIdJuzgadoObtenido = null;
+					try {
+						hmIdJuzgadoObtenido = new ObjectMapper().readValue(procedimiento, HashMap.class);
+	
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					idProcedimiento = new Integer(hmIdJuzgadoObtenido.get("idprocedimiento"));
+					idInstitucionProcedimiento= new Integer(hmIdJuzgadoObtenido.get("idinstitucion"));
+				}else{
+					idProcedimiento = new Integer(procedimiento.substring(0,procedimiento.indexOf(",")));
+					idInstitucionProcedimiento = new Integer(procedimiento.substring(procedimiento.indexOf(",")+1));
+				}
+	
+				actuacionModificada.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO, idProcedimiento);
+				actuacionModificada.put(ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO, idInstitucionProcedimiento);
+			} else {
+				actuacionModificada.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO, "");
+				actuacionModificada.put(ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO, "");
+			}
+	
+			// Obtengo el idAcreditacion y la idInstitucion del Acreditacion:
+			Integer idAcreditacion = null;					
+			String acreditacion = miform.getAcreditacion();
+			boolean isObligatorioNigNumProcedimiento = false; 
+			if (acreditacion!=null && !acreditacion.equals("")){
+				//Ahora en el combo de acreditacion viene separado por , la obligatoriedad de nigcif que esta en la tabla scs_acreditacionprocedimiento 
+				String[] acreditacionStrings = acreditacion.split(",");
+				idAcreditacion = new Integer(acreditacionStrings[0]);	
+				isObligatorioNigNumProcedimiento = acreditacionStrings.length>1 && acreditacionStrings[1].equals("1");
+				actuacionModificada.put(ScsActuacionDesignaBean.C_IDACREDITACION, idAcreditacion);				
+			} else {
+				actuacionModificada.put(ScsActuacionDesignaBean.C_IDACREDITACION, "");				
+			}
+	
+			String numeroProcedimiento= miform.getNumeroProcedimiento();
+			if (numeroProcedimiento!=null && !numeroProcedimiento.equals("")){
+				actuacionModificada.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, numeroProcedimiento);
+			}else{
+				if(isObligatorioNigNumProcedimiento){
+					return exito(UtilidadesString.getMensajeIdioma(usr, "errors.required",new String[]{"gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento"}),request);
+				}
+				actuacionModificada.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, "");
+			}
+			String anioProcedimiento= miform.getAnioProcedimiento();
+			if (anioProcedimiento!=null && !anioProcedimiento.equals("")){
+				actuacionModificada.put(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, anioProcedimiento);
+			}else{
+				GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+				String ejisActivo = paramAdm.getValor(usr.getLocation (), "ECOM", "EJIS_ACTIVO", "0");
+				if(isObligatorioNigNumProcedimiento && ejisActivo!=null && ejisActivo.equalsIgnoreCase(AppConstants.DB_TRUE) ){
+					return exito(UtilidadesString.getMensajeIdioma(usr, "errors.required",new String[]{"gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento"}),request);
+				}
+				actuacionModificada.put(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, "");
+			}
+	
+	
+			String nig= miform.getNig();
+			if (nig!=null && !nig.equals("")){
+				actuacionModificada.put(ScsActuacionDesignaBean.C_NIG, nig);
+			}else{
+				if(isObligatorioNigNumProcedimiento){
+					return exito(UtilidadesString.getMensajeIdioma(usr, "errors.required",new String[]{"gratuita.mantAsistencias.literal.NIG"}),request);
+				}
+				actuacionModificada.put(ScsActuacionDesignaBean.C_NIG, "");
+			}
+			
 			boolean isModificarDesigna = false;
 			
-			if(sdb.getNIG() == null || sdb.getNIG().equals("")){     				
+			if(designaBean.getNIG() == null || designaBean.getNIG().equals("")){     				
 				if (miform.getNig()!=null && !miform.getNig().equals("")){
-					sdb.setNIG(miform.getNig());
+					designaBean.setNIG(miform.getNig());
 					isModificarDesigna = true;
 
 				}
 			}
-			if(sdb.getNumProcedimiento() == null || sdb.getNumProcedimiento().equals("")){     				
+			if(designaBean.getNumProcedimiento() == null || designaBean.getNumProcedimiento().equals("")){     				
 				if (miform.getNumeroProcedimiento()!=null && !miform.getNumeroProcedimiento().equals("")){
-					sdb.setNumProcedimiento(miform.getNumeroProcedimiento());
+					designaBean.setNumProcedimiento(miform.getNumeroProcedimiento());
 					if(miform.getAnioProcedimiento()!=null && !miform.getAnioProcedimiento().equals("")) {
-						sdb.setAnioProcedimiento(Integer.valueOf(miform.getAnioProcedimiento()));
+						designaBean.setAnioProcedimiento(Integer.valueOf(miform.getAnioProcedimiento()));
 					}
 					isModificarDesigna = true;
 				}
 			}
 			if(isModificarDesigna) {
-				designaAdm.updateDirect(sdb);
+				designaAdm.updateDirect(designaBean);
 				
 			}
 			if (miform.getActuacionValidada() != null) {
@@ -1634,7 +1646,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			//Obtener el colegiado designdo activo en la fecha de la actuacion
 			//en lugar del colegiado designado actualmente	
 			ScsDesignasLetradoAdm sdla = new ScsDesignasLetradoAdm(usr);
-			Long idPersonaActuacion = sdla.obtenerColegiadoDesignadoEnFecha(sdb,miform.getFechaActuacion());
+			Long idPersonaActuacion = sdla.obtenerColegiadoDesignadoEnFecha(designaBean,miform.getFechaActuacion());
 			if (idPersonaActuacion == null)
 				return exito("messages.error.designacion.sinLetradoAsignado", request); 
 			actuacionModificada.put(ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO, idPersonaActuacion);
