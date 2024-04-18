@@ -526,24 +526,15 @@ public class ActuacionesDesignasAction extends MasterAction {
 	
 			miform.setEjgs(ejgList);
 
-			Hashtable hashDesigna =  (Hashtable)(actDesignaAdm.getConsultaDesigna(hashDatosDesigna, request)).get(0);
-			
-			
-			//Se muestra todas las Actuaciones de la designa.
+			//Se busca la actualiza actual(se filtra por hashDatosDesigna.get("VISIBLE") que es el numero de asunto)
 		    Vector vAct = actDesignaAdm.getConsultaActuacion(hashDatosDesigna, usr);
 		    Hashtable hashActuacion = new Hashtable();
 		    if(vAct.size()>0){
 		    	hashActuacion = (Hashtable)(vAct).get(0);
 		    }
-		    
-		    //Mostrar Las Actuaciones antiguas.
-		   Hashtable actuacionAntigua =(Hashtable)(actDesignaAdm.getDesignaActuaciones(hashDatosDesigna, request)).get(0);
-		   
 		   	GenParametrosAdm adm = new GenParametrosAdm (this.getUserBean(request));
-		   	
 		   	String filtroJuzgadoModuloEspecial = adm.getValor(idInstitucion,"SCS",ClsConstants.GEN_PARAM_FILTRAR_JUZGADO_MODULO_ESPECIAL, "0");
 			request.setAttribute("filtroJuzgadoModuloEspecial", filtroJuzgadoModuloEspecial);
-		   	
 		   	
 			String filtrarModulos = adm.getValor(idInstitucion,"SCS",ClsConstants.GEN_PARAM_FILTRAR_MODULOS_PORFECHA, "");
 			request.setAttribute("filtrarModulos", filtrarModulos);
@@ -557,16 +548,15 @@ public class ActuacionesDesignasAction extends MasterAction {
 			String ejisActivo = adm.getValor(idInstitucion, "ECOM", "EJIS_ACTIVO", "0");
 			request.setAttribute("EJIS_ACTIVO", ejisActivo);
 			
-			request.setAttribute("hashDesigna",hashDesigna);
+			request.setAttribute("hashDesigna",hashDatosDesigna);
 			request.setAttribute("hashActuacionActual",hashActuacion);
-			ses.setAttribute("hashActuacionAntigua",actuacionAntigua);
 			
 			
 			String factConvenio=  "0";
 			if(hashActuacion.get(ScsActuacionDesignaBean.C_FACTCONVENIO)!=null)
 				factConvenio = (String)hashActuacion.get(ScsActuacionDesignaBean.C_FACTCONVENIO);
-			else if(hashDesigna.get(ScsDesignaBean.C_FACTCONVENIO)!=null)
-				factConvenio = (String)hashDesigna.get(ScsDesignaBean.C_FACTCONVENIO);
+			else if(hashDatosDesigna.get(ScsDesignaBean.C_FACTCONVENIO)!=null)
+				factConvenio = (String)hashDatosDesigna.get(ScsDesignaBean.C_FACTCONVENIO);
 			
 			miform.setConvenio(factConvenio);
 			
@@ -765,7 +755,42 @@ public class ActuacionesDesignasAction extends MasterAction {
 
 			
 			miform.setEjgs(ejgs);
-
+			//conulstamos las actuaciones ordenadas por numeroasunto desc y cogemos laprimera
+			Vector vAct = actuacionDesignaAdm.getConsultaActuacion(designaActual, usr);
+		    Hashtable hashActuacion = new Hashtable();
+		    if(vAct.size()>0){
+		    	hashActuacion = (Hashtable)(vAct).get(0);
+		    	ScsDesignaDatosAdicionalesAdm adicionalesAdm = new ScsDesignaDatosAdicionalesAdm(this.getUserBean(request));
+				Vector datosAdicionalesVector =  adicionalesAdm.selectByPK(hashActuacion);
+				if(datosAdicionalesVector!= null && datosAdicionalesVector.size()>0) {
+					SimpleDateFormat format = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+					SimpleDateFormat datefoFormat = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+					ScsDesignaDatosAdicionalesBean datosAdicionales =  (ScsDesignaDatosAdicionalesBean)datosAdicionalesVector.get(0);
+					if(datosAdicionales.getFechaResolucionJudicialOposicion()!=null && !datosAdicionales.getFechaResolucionJudicialOposicion().equals("")) {
+						datosAdicionales.setFechaResolucionJudicialOposicion(format.format(datefoFormat.parse(datosAdicionales.getFechaResolucionJudicialOposicion())));
+						
+					}
+					if(datosAdicionales.getFechaResolucionSentenciaFirme()!=null && !datosAdicionales.getFechaResolucionSentenciaFirme().equals("")) {
+						datosAdicionales.setFechaResolucionSentenciaFirme(format.format(datefoFormat.parse(datosAdicionales.getFechaResolucionSentenciaFirme())));
+						
+					}
+					if(datosAdicionales.getFechaVista()!=null && !datosAdicionales.getFechaVista().equals("")) {
+						datosAdicionales.setFechaVista(format.format(datefoFormat.parse(datosAdicionales.getFechaVista())));
+						
+					}
+					
+					
+					request.setAttribute("datosAdicionales",datosAdicionales);				
+				}else request.setAttribute("datosAdicionales",new ScsDesignaDatosAdicionalesBean());
+		    	
+		    }else {
+		    	request.setAttribute("datosAdicionales",new ScsDesignaDatosAdicionalesBean());
+		    }
+		    	
+			
+		    
+		    
+			
 			designaActual = actuacionDesignaAdm.prepararInsert(designaActual);
 			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 			GenParametrosAdm adm = new GenParametrosAdm (this.getUserBean(request));
@@ -784,7 +809,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 				factConvenio = (String)designaActual.get(ScsDesignaBean.C_FACTCONVENIO);
 			miform.setConvenio(factConvenio);
 			
-			request.setAttribute("datosAdicionales",new ScsDesignaDatosAdicionalesBean());
+			
 			
 		} catch(Exception e){
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});

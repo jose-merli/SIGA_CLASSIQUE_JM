@@ -580,16 +580,19 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 								" and pro.idprocedimiento = act.IDPROCEDIMIENTO"+  
 								" and tur.idinstitucion = act.idinstitucion"+
 								" and tur.idturno = act.idturno"+
-								" and acred.idacreditacion = act.idacreditacion"+
-								" and act.numeroasunto = "+entrada.get("VISIBLE")+
-								" and act."+ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO+"=juzgado."+ScsJuzgadoBean.C_IDINSTITUCION+
+								" and acred.idacreditacion = act.idacreditacion";
+								if(entrada.get("VISIBLE")!=null) {
+									consultaActuacion += " and act.numeroasunto = "+entrada.get("VISIBLE");
+								}
+								consultaActuacion +=" and act."+ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO+"=juzgado."+ScsJuzgadoBean.C_IDINSTITUCION+
 								" and act."+ScsActuacionDesignaBean.C_IDJUZGADO+"=juzgado."+ScsJuzgadoBean.C_IDJUZGADO +
 								" and act.idpersonacolegiado = per.idpersona" +    
 								" and col.idpersona = per.idpersona" +
 								" and col.idinstitucion = act.idinstitucion "+
 								" and ap.idinstitucion(+) = act.idinstitucion "+ 
 								" and ap.idacreditacion(+) = act.idacreditacion "+ 
-								" and ap.idprocedimiento(+) = act.idprocedimiento ";
+								" and ap.idprocedimiento(+) = act.idprocedimiento "+
+								" order by act.numeroasunto desc";
 
 		try {	
 			ScsActuacionDesignaAdm designaAdm = new ScsActuacionDesignaAdm (usr);		
