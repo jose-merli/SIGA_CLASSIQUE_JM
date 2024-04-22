@@ -550,6 +550,8 @@ public class ActuacionesDesignasAction extends MasterAction {
 			
 			request.setAttribute("hashDesigna",hashDatosDesigna);
 			request.setAttribute("hashActuacionActual",hashActuacion);
+			ses.setAttribute("hashActuacionAntigua",hashActuacion);
+
 			
 			
 			String factConvenio=  "0";
