@@ -1856,12 +1856,18 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta += " AND P.IDPETICION >= " + idPeticionMinimoConDatos;//eSTO LO PONEMOS YA QUE EN ESE REGISTRO ES DONDE HA EMPEZADO A FUNCIONAR LOS DATOS COMPLETOS
 			consulta += " AND X.XML IS NOT NULL  )";
 //			O QUE TENGA ALGUN FICHERO QUE ENVIAR
-			consulta += " OR EXISTS "; 
-			consulta += " (SELECT 1 FROM SCS_DOCUMENTACIONEJG DE  , SCS_DOCUMENTOEJG DOC";
-			consulta += " WHERE DE.IDINSTITUCION = DOC.IDINSTITUCION	AND DE.IDDOCUMENTO = DOC.IDDOCUMENTOEJG"; 
-			consulta += " AND DE.IDTIPODOCUMENTO  = DOC.IDTIPODOCUMENTOEJG AND DOC.CODIGOEXT  IS NOT NULL	AND DE.IDINSTITUCION  = EJG.IDINSTITUCION ";
-			consulta += " AND DE.ANIO = EJG.ANIO AND DE.IDTIPOEJG =EJG.IDTIPOEJG	AND DE.NUMERO  = EJG.NUMERO	AND DE.IDFICHERO IS NOT NULL";
-			consulta += " AND EJG.NUMERO_CAJG IS NOT NULL AND EJG.ANIOCAJG IS NOT NULL)	) ";
+			consulta += " AND EXISTS ";
+			consulta += "(SELECT	1	FROM	SCS_ESTADOEJG ES ";
+			consulta += "WHERE	ES.IDINSTITUCION = EJG.IDINSTITUCION ";
+			consulta += "AND ES.ANIO = EJG.ANIO ";
+			consulta += "AND ES.IDTIPOEJG = EJG.IDTIPOEJG ";
+			consulta += "AND ES.NUMERO = EJG.NUMERO ";
+			consulta += "AND ES.IDESTADOEJG = 9 ";
+			consulta += "AND ES.FECHABAJA IS NULL) ";
+			
+			
+			
+			consulta += " 	) ";
 			
 			
 			//Sacamos los  ejgs que hyan sido remitidos a comision perro que no tienen un estado posterior devuelto al colegio
