@@ -28,12 +28,15 @@
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.siga.beans.ScsCabeceraGuardiasBean"%>
 <%@ page import="com.siga.beans.ScsGuardiasTurnoAdm"%>
+<%@ page import="com.siga.Utilidades.Paginador"%>
 
 <!-- JSP -->
 <% 	
+	String app=request.getContextPath();
 	HttpSession ses=request.getSession(true);
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
 	String profile[]=usr.getProfile();
+	String idioma=usr.getLanguage().toUpperCase();
 
 	//Datos de la pantalla anterior
 	String idinstitucionpestanha="", idpersonapestanha="", modopestanha="";
@@ -55,7 +58,7 @@
 	
 		if (hm.get("datos")!=null && !hm.get("datos").equals("")) {
 			resultado = (Vector)hm.get("datos");
-			PaginadorBind paginador = (PaginadorBind)hm.get("paginador");
+			Paginador paginador = (Paginador)hm.get("paginador");
 			paginaSeleccionada = String.valueOf(paginador.getPaginaActual());	
 			totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());	
 			registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina()); 
@@ -80,6 +83,7 @@
 	String numeroPestanha = (String)request.getAttribute("NUMEROCOLEGPESTAÑA");
 	String estadoColegial= (String)request.getAttribute("ESTADOCOLEGIAL");
 	String validarVolante= (String)request.getAttribute(ClsConstants.GEN_PARAM_VALIDAR_VOLANTE);
+	String action=app+"//JGR_PestanaCalendarioGuardias.do?noReset=true&nColegiado="+numeroPestanha;
 
 	//Almaceno en el request los parametros de la pestanha:
 	request.setAttribute("NOMBRECOLEGPESTAÑA",nombrePestanha);
