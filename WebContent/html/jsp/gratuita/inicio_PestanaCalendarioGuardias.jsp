@@ -28,7 +28,8 @@
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.siga.beans.ScsCabeceraGuardiasBean"%>
 <%@ page import="com.siga.beans.ScsGuardiasTurnoAdm"%>
-<%@ page import="com.siga.Utilidades.Paginador"%>
+<%@ page import="com.siga.Utilidades.paginadores.Paginador"%>
+<%@ page import="com.atos.utils.Row"%>
 
 <!-- JSP -->
 <% 	
@@ -217,7 +218,8 @@
 			String facturado;
 			String numActuacionesValidadas;
 			while ((recordNumber) <= registros.size()) {	 	
-				Hashtable hash = (Hashtable)registros.get(recordNumber-1);
+				Row fila = (Row)resultado.elementAt(recordNumber-1);
+				Hashtable hash = (Hashtable) fila.getRow();
 					
 				//Campos ocultos por cada fila del Confirmador:
 				//1- IDCALENDARIOGUARDIAS
@@ -565,6 +567,9 @@
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 	<!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 
+<%
+	if ( hm.get("datos")!=null && !hm.get("datos").equals("")) {
+%>
 	<siga:Paginador totalRegistros="<%=totalRegistros%>"
 		registrosPorPagina="<%=registrosPorPagina%>"
 		paginaSeleccionada="<%=paginaSeleccionada%>" idioma="<%=idioma%>"
@@ -572,6 +577,8 @@
 		divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:30px; left: 0px"
 		distanciaPaginas="" action="<%=action%>" />
 <%
+	}
+
 	String botones = "";
 	if (!busquedaVolver.equals("volverNo")) { 
 		botones = ""; 

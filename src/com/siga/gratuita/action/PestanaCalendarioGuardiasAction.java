@@ -248,7 +248,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			orden = miForm.getOrden()==null?"FECHA":miForm.getOrden();
 			
 			//Busqueda con paginador
-			borrarPaginador(request, paginadorPenstania);
+			//borrarPaginador(request, paginadorPenstania);
 			request.setAttribute(ClsConstants.PARAM_PAGINACION,paginadorPenstania);
 			HashMap databackup=getPaginador(request, paginadorPenstania);
 			if (databackup!=null){ 
@@ -269,9 +269,6 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 
 			}else{	
 				databackup=new HashMap();
-				ScsAsistenciasAdm asistencias = new ScsAsistenciasAdm(this.getUserBean(request));
-				//vResultado=(Vector)asistencias.ejecutaSelect(sql);
-				//request.setAttribute("resultado",vResultado);
 
 				//idPersona = request.getParameter("idPersonaPestanha");
 				Paginador paginador = new Paginador(admPermuta.buscarSolicitantesPermuta(idInstitucion,idPersona,orden,usr));	
