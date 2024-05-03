@@ -1,6 +1,7 @@
 package com.siga.gratuita.action;
 
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
@@ -20,6 +21,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.Utilidades.paginadores.Paginador;
 import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.CenClienteAdm;
@@ -210,50 +212,81 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 		String estado = "";
 		CenColegiadoBean datosColegiales;		
 		
-			try {
-				//Si vengo del menu de censo miro los datos colegiales para mostrar por pantalla:
-				if (request.getSession().getAttribute("entrada")!=null && request.getSession().getAttribute("entrada").equals("2")) {
-					// Preparo para obtener la informacion del colegiado:
-					CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
-					CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
-					
-					try {
-						Long idPers = new Long(request.getParameter("idPersonaPestanha"));
-						Integer idInstPers = new Integer(request.getParameter("idInstitucionPestanha"));
-						CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));
-			
-						// Obtengo la informacion del colegiado:
-						nombre = personaAdm.obtenerNombreApellidos(String.valueOf(idPers));
-						datosColegiales = colegiadoAdm.getDatosColegiales(idPers,idInstPers);
-						numero = colegiadoAdm.getIdentificadorColegiado(datosColegiales);
-						estado = clienteAdm.getEstadoColegial(String.valueOf(idPers), String.valueOf(idInstPers));
-					} catch (Exception e1){
-						nombre = miForm.getNombreColegiadoPestanha();
-						numero = miForm.getNumeroColegiadoPestanha();
-						estado = clienteAdm.getEstadoColegial(miForm.getIdPersona(), miForm.getIdInstitucion());
-					}
+		try {
+			//Si vengo del menu de censo miro los datos colegiales para mostrar por pantalla:
+			if (request.getSession().getAttribute("entrada")!=null && request.getSession().getAttribute("entrada").equals("2")) {
+				// Preparo para obtener la informacion del colegiado:
+				CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
+				CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
+				
+				try {
+					Long idPers = new Long(request.getParameter("idPersonaPestanha"));
+					Integer idInstPers = new Integer(request.getParameter("idInstitucionPestanha"));
+					CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));
+		
+					// Obtengo la informacion del colegiado:
+					nombre = personaAdm.obtenerNombreApellidos(String.valueOf(idPers));
+					datosColegiales = colegiadoAdm.getDatosColegiales(idPers,idInstPers);
+					numero = colegiadoAdm.getIdentificadorColegiado(datosColegiales);
+					estado = clienteAdm.getEstadoColegial(String.valueOf(idPers), String.valueOf(idInstPers));
+				} catch (Exception e1){
+					nombre = miForm.getNombreColegiadoPestanha();
+					numero = miForm.getNumeroColegiadoPestanha();
+					estado = clienteAdm.getEstadoColegial(miForm.getIdPersona(), miForm.getIdInstitucion());
 				}
-				// Almaceno la informacion del colegiado (almaceno "" si no tengo la informacion):
-				request.setAttribute("NOMBRECOLEGPESTAÑA", nombre);
-				request.setAttribute("NUMEROCOLEGPESTAÑA", numero);
-				request.setAttribute("ESTADOCOLEGIAL", estado);
-				
-				usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			}
+			// Almaceno la informacion del colegiado (almaceno "" si no tengo la informacion):
+			request.setAttribute("NOMBRECOLEGPESTAÑA", nombre);
+			request.setAttribute("NUMEROCOLEGPESTAÑA", numero);
+			request.setAttribute("ESTADOCOLEGIAL", estado);
+			
+			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 
-				//Recupero los datos de la pestanha:				
-				idInstitucion = usr.getLocation();
-				idPersona = (String)request.getSession().getAttribute("idPersonaTurno");
-				orden = miForm.getOrden()==null?"FECHA":miForm.getOrden();
-				
-				//------------------
-				//DATOS SOLICITANTE
-				//------------------
-				//Hago la busqueda de los datos necesarios de esa guardia, los guardo en la hash mando en request:
-				
-				
-				
-				registros.clear();
-				
+			//Recupero los datos de la pestanha:				
+			idInstitucion = usr.getLocation();
+			idPersona = (String)request.getSession().getAttribute("idPersonaTurno");
+			orden = miForm.getOrden()==null?"FECHA":miForm.getOrden();
+			
+			//Busqueda con paginador
+			borrarPaginador(request, paginadorPenstania);
+			request.setAttribute(ClsConstants.PARAM_PAGINACION,paginadorPenstania);
+			HashMap databackup=getPaginador(request, paginadorPenstania);
+			if (databackup!=null){ 
+
+				Paginador paginador = (Paginador)databackup.get("paginador");
+				Vector datos=new Vector();
+				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+				String pagina = (String)request.getParameter("pagina");
+				if (paginador!=null){	
+					if (pagina!=null){
+						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
+					}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
+					}
+				}	
+				databackup.put("paginador",paginador);
+				databackup.put("datos",datos);
+
+			}else{	
+				databackup=new HashMap();
+				ScsAsistenciasAdm asistencias = new ScsAsistenciasAdm(this.getUserBean(request));
+				//vResultado=(Vector)asistencias.ejecutaSelect(sql);
+				//request.setAttribute("resultado",vResultado);
+
+				//idPersona = request.getParameter("idPersonaPestanha");
+				Paginador paginador = new Paginador(admPermuta.buscarSolicitantesPermuta(idInstitucion,idPersona,orden,usr));	
+				//Paginador paginador = new Paginador(sql);				
+				int totalRegistros = paginador.getNumeroTotalRegistros();
+				if (totalRegistros==0){					
+					paginador =null;
+				}
+				databackup.put("paginador",paginador);
+				if (paginador!=null){ 
+					Vector datos = paginador.obtenerPagina(1);
+					databackup.put("datos",datos);
+					setPaginador(request, paginadorPenstania, databackup);
+				} 	
+
 				//Miramos si los colegiados tienen permiso para confirmar cabecera de guardias
 				GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
 				//Haria falta meter los parametros en con ClsConstants
@@ -262,22 +295,19 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				// Miramos tambien el parametro VALIDA_VOLANTE
 				String validarVolante = paramAdm.getValor (usr.getLocation (), "SCS", ClsConstants.GEN_PARAM_VALIDAR_VOLANTE, "");
 				request.setAttribute(ClsConstants.GEN_PARAM_VALIDAR_VOLANTE, validarVolante);
-				
-				registros = admPermuta.selectGenerico(admPermuta.buscarSolicitantesPermuta(idInstitucion,idPersona,orden,usr));
-				//Almaceno en el request el vector con los datos de la tabla:
-				request.setAttribute("resultados",registros);
-				
 				//Datos comunes de la Pestanha:
 				request.setAttribute("IDINSTITUCION",idInstitucion);
 				request.setAttribute("IDPERSONA",idPersona);	
-				
-				
-			}
-			catch (Exception e) {
-				throwExcp("messages.select.error",e,null);
-			}		
 
-			return "inicio";
+			}
+		}catch (SIGAException e1) {
+			// Excepcion procedente de obtenerPagina cuando se han borrado datos
+			 borrarPaginador(request, paginadorPenstania);
+			 return exitoRefresco("error.messages.obtenerPagina",request);
+		}catch (Exception e){
+			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
+		} 
+		return "inicio";
 	}
 	
 	/**

@@ -41,8 +41,39 @@
 	idpersonapestanha = (String)request.getAttribute("IDPERSONA");	
 	modopestanha = request.getSession().getAttribute("modoPestanha")==null?"EDITAR":(String)request.getSession().getAttribute("modoPestanha");
 	
-	Vector obj = new Vector();
-	obj = (Vector)request.getAttribute("resultados");
+	/** PAGINADOR ***/
+	Vector resultado=null;
+	String paginaSeleccionada ="";
+	
+	String totalRegistros ="";
+	
+	String registrosPorPagina = "";
+	HashMap hm=new HashMap();
+	String atributoPaginador = (String)request.getAttribute(ClsConstants.PARAM_PAGINACION);
+	if (ses.getAttribute(atributoPaginador)!=null){
+		hm = (HashMap)ses.getAttribute(atributoPaginador);
+	
+		if (hm.get("datos")!=null && !hm.get("datos").equals("")) {
+			resultado = (Vector)hm.get("datos");
+			PaginadorBind paginador = (PaginadorBind)hm.get("paginador");
+			paginaSeleccionada = String.valueOf(paginador.getPaginaActual());	
+			totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());	
+			registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina()); 
+	
+		} else {
+			resultado =new Vector();
+			paginaSeleccionada = "0";	
+			totalRegistros = "0";	
+			registrosPorPagina = "0";
+		}
+		
+	} else {
+		resultado =new Vector();
+		paginaSeleccionada = "0";	
+		totalRegistros = "0";	
+		registrosPorPagina = "0";
+	}	 
+	Vector registros = resultado;
 	
 	//Datos del Colegiado si procede:
 	String nombrePestanha = (String)request.getAttribute("NOMBRECOLEGPESTAÑA");
@@ -174,15 +205,15 @@
 		columnSizes="<%=tamanioCol%>">
 						
 <%
-		if ((obj!= null) && (obj.size()>0)) { 
+		if ((registros!= null) && (registros.size()>0)) { 
 			int recordNumber=1;
 			String fechaInicio="", fechaFin="", idcalendarioguardias="", idturno="", idguardia="", reserva="";
 			String turno="", guardia="", tipodias="", estado="", nomFacturacion="";
 			String validado ;
 			String facturado;
 			String numActuacionesValidadas;
-			while ((recordNumber) <= obj.size()) {	 	
-				Hashtable hash = (Hashtable)obj.get(recordNumber-1);
+			while ((recordNumber) <= registros.size()) {	 	
+				Hashtable hash = (Hashtable)registros.get(recordNumber-1);
 					
 				//Campos ocultos por cada fila del Confirmador:
 				//1- IDCALENDARIOGUARDIAS
@@ -530,6 +561,12 @@
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 	<!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 
+	<siga:Paginador totalRegistros="<%=totalRegistros%>"
+		registrosPorPagina="<%=registrosPorPagina%>"
+		paginaSeleccionada="<%=paginaSeleccionada%>" idioma="<%=idioma%>"
+		modo="buscarPor" clase="paginator"
+		divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:30px; left: 0px"
+		distanciaPaginas="" action="<%=action%>" />
 <%
 	String botones = "";
 	if (!busquedaVolver.equals("volverNo")) { 
