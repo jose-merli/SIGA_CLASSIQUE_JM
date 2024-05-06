@@ -2352,7 +2352,7 @@
             <forward name="inicio" path="/html/jsp/gratuita/dialogoInformeIRPF.jsp"/>
         </action>
 
-		<action path="/JGR_PestanaCalendarioGuardias" type="com.siga.gratuita.action.PestanaCalendarioGuardiasAction" name="PermutasForm" scope="request">
+		<action path="/JGR_PestanaCalendarioGuardias" type="com.siga.gratuita.action.PestanaCalendarioGuardiasAction" name="PermutasForm" scope="session">
 			<forward name="inicio" path="/html/jsp/gratuita/inicio_PestanaCalendarioGuardias.jsp"/>
 			<forward name="modalCambiar" path="/html/jsp/gratuita/modalCambiar_PestanaCalendarioGuardias.jsp"/>
 			<forward name="modalConfirmar" path="/html/jsp/gratuita/modalConfirmar_PestanaCalendarioGuardias.jsp"/>
