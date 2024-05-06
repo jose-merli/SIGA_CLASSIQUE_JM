@@ -248,7 +248,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			orden = miForm.getOrden()==null?"FECHA":miForm.getOrden();
 			
 			//Busqueda con paginador
-			//borrarPaginador(request, paginadorPenstania);
+			borrarPaginador(request, paginadorPenstania);
 			request.setAttribute(ClsConstants.PARAM_PAGINACION,paginadorPenstania);
 			HashMap databackup=getPaginador(request, paginadorPenstania);
 			if (databackup!=null){ 
