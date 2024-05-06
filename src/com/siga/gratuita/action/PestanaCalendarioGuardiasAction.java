@@ -67,14 +67,13 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 		try{
 			if((miForm == null)||(miForm.getModo()==null)||(miForm.getModo().equals(""))){
 				return mapping.findForward(this.abrir(mapping, miForm, request, response));
-			}
-			else if(miForm.getModo().equalsIgnoreCase("sustituir"))
-			{
+			} else if(miForm.getModo().equalsIgnoreCase("sustituir")) {
 				return mapping.findForward(sustituir(mapping, miForm, request, response));
-			}
-			else if(miForm.getModo().equalsIgnoreCase("insertarSustitucion"))
-			{
+			} else if(miForm.getModo().equalsIgnoreCase("insertarSustitucion"))	{
 				return mapping.findForward(insertarSustitucion(mapping, miForm, request, response));
+			} else if (miForm.getModo().equalsIgnoreCase("buscarInit")){
+				borrarPaginador(request, paginadorPenstania);
+				return mapping.findForward(this.abrir(mapping, miForm, request, response));	
 			}
 			else return super.executeInternal(mapping, formulario, request, response);
 		} catch (SIGAException e) {
