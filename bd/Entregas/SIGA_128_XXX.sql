@@ -1870,3 +1870,32 @@ BEGIN
     tabname=>'SCS_DESIGNA' ,
     cascade=>TRUE) ;
 END;
+--https://redabogacia.atlassian.net/browse/SIGA-893
+CREATE OR REPLACE TRIGGER USCGAE_INT.ENV_ENVIOS_AIU_IDESTADO
+after insert or update OF IDESTADO on env_envios
+for each row
+when (new.ENVIO is null and new.idestado is not null and (old.idestado is null or (old.idestado is not null and old.idestado <> new.idestado)))
+/*ENVIO is null : solo para Envios creados desde Classique*/
+begin
+  insert into env_historicoestadoenvio (
+    idinstitucion,
+    idenvio,
+    idestado,
+    fechaestado,
+    fechamodificacion,
+    usumodificacion,
+    idhistorico
+  ) values (
+    :new.idinstitucion,
+    :new.idenvio,
+    :new.idestado,
+    sysdate,
+    sysdate,
+    :new.usumodificacion,
+    nvl((select max(idhistorico) from env_historicoestadoenvio where
+      idinstitucion = :new.idinstitucion and idenvio = :new.idenvio), 0)+1
+  );
+end ENV_ENVIOS_AIU_IDESTADO;
+
+drop trigger ENV_ENVIOS_INS;
+drop trigger ENV_ENVIOS_UPD;
