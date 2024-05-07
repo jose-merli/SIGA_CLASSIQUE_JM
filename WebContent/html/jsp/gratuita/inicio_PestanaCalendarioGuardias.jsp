@@ -84,7 +84,7 @@
 	String numeroPestanha = (String)request.getAttribute("NUMEROCOLEGPESTAÑA");
 	String estadoColegial= (String)request.getAttribute("ESTADOCOLEGIAL");
 	String validarVolante= (String)request.getAttribute(ClsConstants.GEN_PARAM_VALIDAR_VOLANTE);
-	String action=app+"//JGR_PestanaCalendarioGuardias.do?noReset=true&nColegiado="+numeroPestanha;
+	String action=app+"/JGR_PestanaCalendarioGuardias.do?noReset=true&nColegiado="+numeroPestanha;
 
 	//Almaceno en el request los parametros de la pestanha:
 	request.setAttribute("NOMBRECOLEGPESTAÑA",nombrePestanha);
@@ -573,7 +573,7 @@
 	<siga:Paginador totalRegistros="<%=totalRegistros%>"
 		registrosPorPagina="<%=registrosPorPagina%>"
 		paginaSeleccionada="<%=paginaSeleccionada%>" idioma="<%=idioma%>"
-		modo="buscarPor" clase="paginator"
+		modo="" clase="paginator"
 		divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:30px; left: 0px"
 		distanciaPaginas="" action="<%=action%>" />
 <%
