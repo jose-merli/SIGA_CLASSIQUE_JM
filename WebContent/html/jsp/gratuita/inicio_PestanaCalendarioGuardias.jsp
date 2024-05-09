@@ -573,7 +573,7 @@
 	<siga:Paginador totalRegistros="<%=totalRegistros%>"
 		registrosPorPagina="<%=registrosPorPagina%>"
 		paginaSeleccionada="<%=paginaSeleccionada%>" idioma="<%=idioma%>"
-		modo="" clase="paginator"
+		modo="buscarInit" clase="paginator"
 		divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:30px; left: 0px"
 		distanciaPaginas="" action="<%=action%>" />
 <%

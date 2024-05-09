@@ -66,13 +66,13 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 		miForm = (MasterForm) formulario;
 		try{
 			if((miForm == null)||(miForm.getModo()==null)||(miForm.getModo().equals(""))){
+				borrarPaginador(request, paginadorPenstania);
 				return mapping.findForward(this.abrir(mapping, miForm, request, response));
 			} else if(miForm.getModo().equalsIgnoreCase("sustituir")) {
 				return mapping.findForward(sustituir(mapping, miForm, request, response));
 			} else if(miForm.getModo().equalsIgnoreCase("insertarSustitucion"))	{
 				return mapping.findForward(insertarSustitucion(mapping, miForm, request, response));
 			} else if (miForm.getModo().equalsIgnoreCase("buscarInit")){
-				borrarPaginador(request, paginadorPenstania);
 				return mapping.findForward(this.abrir(mapping, miForm, request, response));	
 			}
 			else return super.executeInternal(mapping, formulario, request, response);
@@ -231,7 +231,8 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				} catch (Exception e1){
 					nombre = miForm.getNombreColegiadoPestanha();
 					numero = miForm.getNumeroColegiadoPestanha();
-					estado = clienteAdm.getEstadoColegial(miForm.getIdPersona(), miForm.getIdInstitucion());
+					if (miForm.getIdPersona() != null)
+						estado = clienteAdm.getEstadoColegial(miForm.getIdPersona(), miForm.getIdInstitucion());
 				}
 			}
 			// Almaceno la informacion del colegiado (almaceno "" si no tengo la informacion):
