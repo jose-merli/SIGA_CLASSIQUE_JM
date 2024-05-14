@@ -3934,8 +3934,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 						// Se especifica el texto del correo.
 
 						// Se especifica el asunto del correo.
-						mensaje.setSubject(sAsunto, "UTF-8");
-						mensaje.setHeader("Content-Type", "text/html; charset=\"UTF-8\"");
+						mensaje.setSubject(sAsunto, "ISO-8859-1");
+						mensaje.setHeader("Content-Type", "text/html; charset=\"ISO-8859-1\"");
 
 						// Create your new message part
 						// Se especifica que el correo es MultiPart: texto + fichero.
