@@ -205,29 +205,30 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 		
 		Vector registros = new Vector();
 		String idInstitucion="", idPersona="", orden="";
-		UsrBean usr;
+		UsrBean usr = (UsrBean) this.getUserBean(request);
 		String numero = "";
 		String nombre = "";
 		String estado = "";
 		CenColegiadoBean datosColegiales;		
+		CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(usr);
+		CenClienteAdm clienteAdm = new CenClienteAdm(usr);
+		CenPersonaAdm personaAdm = new CenPersonaAdm(usr);
 		
 		try {
 			//Si vengo del menu de censo miro los datos colegiales para mostrar por pantalla:
 			if (request.getSession().getAttribute("entrada")!=null && request.getSession().getAttribute("entrada").equals("2")) {
-				// Preparo para obtener la informacion del colegiado:
-				CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
-				CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
-				
 				try {
-					Long idPers = new Long(request.getParameter("idPersonaPestanha"));
-					Integer idInstPers = new Integer(request.getParameter("idInstitucionPestanha"));
-					CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));
+					// Preparo para obtener la informacion del colegiado:
+					String idPers = request.getParameter("idPersonaPestanha");
+					if (idPers == null || idPers.equalsIgnoreCase("")) idPers = (String)request.getSession().getAttribute("idPersonaTurno");
+					String idInstPers = request.getParameter("idInstitucionPestanha");
+					if (idInstPers == null || idInstPers.equalsIgnoreCase("")) idInstPers = usr.getLocation();
 		
 					// Obtengo la informacion del colegiado:
-					nombre = personaAdm.obtenerNombreApellidos(String.valueOf(idPers));
-					datosColegiales = colegiadoAdm.getDatosColegiales(idPers,idInstPers);
+					nombre = personaAdm.obtenerNombreApellidos(idPers);
+					datosColegiales = colegiadoAdm.getDatosColegiales(new Long(idPers),new Integer(idInstPers));
 					numero = colegiadoAdm.getIdentificadorColegiado(datosColegiales);
-					estado = clienteAdm.getEstadoColegial(String.valueOf(idPers), String.valueOf(idInstPers));
+					estado = clienteAdm.getEstadoColegial(idPers, idInstPers);
 				} catch (Exception e1){
 					nombre = miForm.getNombreColegiadoPestanha();
 					numero = miForm.getNumeroColegiadoPestanha();
@@ -240,8 +241,6 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			request.setAttribute("NUMEROCOLEGPESTAÑA", numero);
 			request.setAttribute("ESTADOCOLEGIAL", estado);
 			
-			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-
 			//Recupero los datos de la pestanha:				
 			idInstitucion = usr.getLocation();
 			idPersona = (String)request.getSession().getAttribute("idPersonaTurno");
