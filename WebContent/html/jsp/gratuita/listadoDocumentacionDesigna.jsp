@@ -43,15 +43,8 @@
 	ArrayList obj = (ArrayList) request.getAttribute("resultado");
 	String modo = (String) ses.getAttribute("Modo");
 	
-		
-	String botonesFila="";
-	
 	String	botones="V,N";
-	if (modo.equalsIgnoreCase("ver")){
-		botonesFila = "C";
-	}else {
-		botonesFila = "C,E,B";
-	}
+	
 
 %>
 
@@ -115,10 +108,25 @@
 		columnSizes="10,20,30,30,10"
 		modal="M">
 <% 
+		String botonesFila="";
+	
+	
+		
+		
 		if (obj!=null && obj.size()>0) {
 	    	int recordNumber=1;
 	    	while (recordNumber-1 < obj.size())	{	
 	    		DocumentacionDesignaVo fila = (DocumentacionDesignaVo) obj.get(recordNumber-1);
+	    		
+	    		if (modo.equalsIgnoreCase("ver")){
+					botonesFila = "C";
+				}else  if(fila.getAnulada().equals("1")||fila.getValidada().equals("1")){
+					botonesFila = "C,E";
+				}else{
+					botonesFila = "C,E,B";
+				}
+	    		
+	    		
 %>				
 				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botonesFila%>" clase="listaNonEdit">
 					<td>

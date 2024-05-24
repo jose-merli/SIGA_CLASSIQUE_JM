@@ -39,6 +39,10 @@
 	<!-- INICIO: CAPA DE REGISTRO CON MEDIDAS EN EL ESTILO -->
 
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+<bean:define id="SCS_PERMISOS_ACTUACIONES_VALIDADAS" name="SCS_PERMISOS_ACTUACIONES_VALIDADAS" scope="request" />
+<input type="hidden" id="permisosActuacionesValidadas" value="${SCS_PERMISOS_ACTUACIONES_VALIDADAS}"/>
+		
+		
 
 <html:javascript formName="DefinirDocumentacionDesignaForm" staticJavascript="false" /> 
 <html:form action="${path}"  method="POST" enctype="multipart/form-data" target="submitArea">
@@ -78,8 +82,8 @@
 		<td >
 			<c:choose>
 				
-				<c:when test="${DefinirDocumentacionDesignaForm.modo=='insertar' && DefinirDocumentacionDesignaForm.idActuacion==''}">
-					<siga:Select id="idActuacion" queryId="getActuacionesDesigna" required="true" width="300" firstLabel="Designacion"  />
+				<c:when test="${DefinirDocumentacionDesignaForm.modo=='insertar'}">
+					<siga:Select id="idActuacion" queryId="getActuacionesDesignaNoAnuladas" selectedIds="${idActuacionSelected}" required="true" width="300" firstLabel="Designacion"  />
 				</c:when>
 				<c:when test="${DefinirDocumentacionDesignaForm.modo=='ver'}">
 					<siga:Select id="idActuacion" queryId="getActuacionesDesigna" params="${paramActuacionesJson}" selectedIds="${idActuacionSelected}" firstLabel="Designacion" required="true"  disabled="true"  width="300"   />
@@ -117,7 +121,8 @@
 
 	<tr>
 		<td class="labelText">
-			<siga:Idioma key='gratuita.documentacionDesigna.observaciones'/>
+			<siga:Idioma key='gratuita.documentacionDesigna.observaciones'/><c:if test="${SCS_PERMISOS_ACTUACIONES_VALIDADAS=='1'}">(*)
+				</c:if>
 			<c:out value="${ClsConstants.ACCESS_FULL}"></c:out>
 		</td>
 		<td >
@@ -196,12 +201,29 @@
 		sub();
 		document.forms['DefinirDocumentacionDesignaForm'].modo.value = document.getElementById("modoEntrada").value;
 		jQuery("#idTipoDocumento").removeAttr("disabled");
+		error = '';
+		
 		if( document.forms['DefinirDocumentacionDesignaForm'].idTipoDocumento.value==''){
-			error = "<siga:Idioma key='errors.required' arg0='sjcs.ejg.documentacion.tipoDocumentacion'/>";
+			error += "<siga:Idioma key='errors.required' arg0='sjcs.ejg.documentacion.tipoDocumentacion'/>";
+			
+		}
+		if( document.getElementById('permisosActuacionesValidadas').value=='1'){
+			if( document.forms['DefinirDocumentacionDesignaForm'].observaciones.value==''){
+				if(error!='')
+					error += '\n';
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.documentacionDesigna.observaciones'/>";
+				
+			}	
+			
+		}
+		if(error!=''){
+			jQuery("#idTipoDocumento").attr("disabled",'disabled');
 			alert(error);
 			fin();
 			return false;
+			
 		}
+		
 		jQuery("#idTipoDocumento").attr("disabled",'disabled');
 		
 		if(!document.forms['DefinirDocumentacionDesignaForm'].idFichero || document.forms['DefinirDocumentacionDesignaForm'].idFichero.value=='' ){

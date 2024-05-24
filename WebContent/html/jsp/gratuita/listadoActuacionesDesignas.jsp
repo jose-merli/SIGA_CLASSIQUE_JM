@@ -340,7 +340,7 @@
 			 	<%
 			 	FilaExtElement[] elems = null;
 			 	elems = new FilaExtElement[2];
-				 	if(!validada && isActivarCartaAcreditacionOficio && !"1".equalsIgnoreCase(anulacion)){
+				 	if(isActivarCartaAcreditacionOficio){
 						elems[0] = new FilaExtElement("enviar", "comunicar", SIGAConstants.ACCESS_READ);
 				 	}
 				 	if(idFacturacion != null && !"".equalsIgnoreCase(idFacturacion) && facturacionCerrada != null && !"".equalsIgnoreCase(facturacionCerrada)){
