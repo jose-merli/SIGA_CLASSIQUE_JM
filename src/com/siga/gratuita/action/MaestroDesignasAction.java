@@ -220,6 +220,14 @@ public class MaestroDesignasAction extends MasterAction {
 				String idModulo = request.getParameter("idModulo");
 				if(idModulo!=null && idModulo.equals("")) 
 					params.put("idprocedimiento", "");
+				else {
+					if(idModulo.contains("idprocedimiento")) {
+						paraJsonObject = new JSONObject(idModulo);
+						params.put("idprocedimiento", (String) paraJsonObject.get("idprocedimiento"));
+
+					} 
+					
+				}
 
 				if(idJuzgado.contains("idpretension")) 
 					params.put("idpretension", (String) paraJsonObject.get("idpretension"));

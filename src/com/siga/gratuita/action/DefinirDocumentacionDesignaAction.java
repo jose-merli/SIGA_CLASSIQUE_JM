@@ -26,6 +26,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsActuacionDesignaAdm;
 import com.siga.beans.ScsDesignaBean;
 import com.siga.comun.VoUiService;
@@ -132,6 +133,9 @@ public class DefinirDocumentacionDesignaAction extends MasterAction {
 			jsonMap.put("numero", miForm.getNumero());
 			request.setAttribute("paramActuacionesJson", UtilidadesString.createJsonString(jsonMap));
 			request.setAttribute("idActuacionSelected",idActuacionSelected);				
+			GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+			String permisosActicionesValidadas = paramAdm.getValor(usr.getLocation (), "SCS", "SCS_PERMISOS_ACTUACIONES_VALIDADAS", "0");
+			request.setAttribute("SCS_PERMISOS_ACTUACIONES_VALIDADAS", permisosActicionesValidadas);
 			
 			miForm.setModo("modificar");
 			request.setAttribute("DefinirDocumentacionDesignaForm",miForm);
@@ -197,8 +201,11 @@ public class DefinirDocumentacionDesignaAction extends MasterAction {
 			jsonMap.put("idturno", miForm.getIdTurno());
 			request.setAttribute("paramActuacionesJson", UtilidadesString.createJsonString(jsonMap));
 						
+			GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+			String permisosActicionesValidadas = paramAdm.getValor(usr.getLocation (), "SCS", "SCS_PERMISOS_ACTUACIONES_VALIDADAS", "0");
+			request.setAttribute("SCS_PERMISOS_ACTUACIONES_VALIDADAS", permisosActicionesValidadas);
 
-			miForm.setModo("abrir");
+			miForm.setModo("ver");
 			request.setAttribute("DefinirDocumentacionDesignaForm",miForm);
 
 			request.setAttribute("accionModo", "ver");
@@ -259,8 +266,9 @@ public class DefinirDocumentacionDesignaAction extends MasterAction {
 				
 			}
 			request.setAttribute("idActuacionSelected",idActuacionSelected);
-			
-			
+			GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+			String permisosActicionesValidadas = paramAdm.getValor(usr.getLocation (), "SCS", "SCS_PERMISOS_ACTUACIONES_VALIDADAS", "0");
+			request.setAttribute("SCS_PERMISOS_ACTUACIONES_VALIDADAS", permisosActicionesValidadas);
 			
 
 			request.setAttribute("idTipoDocumentoSelected",idTipoDocSelected);
@@ -605,8 +613,8 @@ public class DefinirDocumentacionDesignaAction extends MasterAction {
 	    		}else{
 	    			composicionTablaFicheros +="<td>&nbsp;</td>";
 	    		}
-				
-		 		if(UtilidadesHash.getString(actuacion, "IDFACTURACION").isEmpty() && (usr.getUserName().equalsIgnoreCase(String.valueOf(ficheroVo.getUsumodificacion())))){
+	    		String actuacionValidada = UtilidadesHash.getString(actuacion, "VALIDADA")!=null && UtilidadesHash.getString(actuacion, "VALIDADA").equalsIgnoreCase("1")?"1":"0";
+		 		if((UtilidadesHash.getString(actuacion, "IDFACTURACION").isEmpty() && actuacionValidada.equals("0") ) && (usr.getUserName().equalsIgnoreCase(String.valueOf(ficheroVo.getUsumodificacion())))){
 		 			composicionTablaFicheros +="<td ><img id='iconoboton_borrar1' src='/SIGA/html/imagenes/bborrar_off.gif' style='cursor:pointer;'  name='borrar_1' border='0' " +
 			 		"onClick='return borrarFicheroFichaColegial("+DocumentacionAuxiliar.getIdinstitucion()+","+DocumentacionAuxiliar.getIdfichero()+","+DocumentacionAuxiliar.getIddocumentaciondes()+");' onMouseOut='MM_swapImgRestore()' onMouseOver='MM_swapImage('borrar_1','','/SIGA/html/imagenes/bborrar_on.gif',1)'>";
 		 		}else{
@@ -633,6 +641,8 @@ public class DefinirDocumentacionDesignaAction extends MasterAction {
 				response.setHeader("Content-Type", "application/json");
 			    response.setHeader("X-JSON", json.toString());
 				response.getWriter().write(json.toString()); 	
+	     }else {
+	    	 throw new Exception("No hay doumentación asociada");
 	     }
 	}
 	protected String descargarFichero(ActionMapping mapping,	MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
