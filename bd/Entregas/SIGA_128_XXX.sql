@@ -1870,6 +1870,17 @@ BEGIN
     tabname=>'SCS_DESIGNA' ,
     cascade=>TRUE) ;
 END;
+
+--
+
+
+
+
+
+
+
+
+
 --https://redabogacia.atlassian.net/browse/SIGA-893
 CREATE OR REPLACE TRIGGER USCGAE_INT.ENV_ENVIOS_AIU_IDESTADO
 after insert or update OF IDESTADO on env_envios
@@ -1899,3 +1910,19 @@ end ENV_ENVIOS_AIU_IDESTADO;
 
 drop trigger ENV_ENVIOS_INS;
 drop trigger ENV_ENVIOS_UPD;
+
+update gen_recursos set descripcion='Módulo anulado o sin acreditaciones' where idRecurso='gratuita.informeJustificacionMasiva.literal.moduloSinAcreditaciones' and idLenguaje=1;
+update gen_recursos set descripcion='Módulo anulado o sin acreditaciones#CA' where idRecurso='gratuita.informeJustificacionMasiva.literal.moduloSinAcreditaciones' and idLenguaje=2;
+update gen_recursos set descripcion='Módulo anulado o sin acreditaciones#EU' where idRecurso='gratuita.informeJustificacionMasiva.literal.moduloSinAcreditaciones' and idLenguaje=3;
+update gen_recursos set descripcion='Módulo anulado o sin acreditaciones#GL' where idRecurso='gratuita.informeJustificacionMasiva.literal.moduloSinAcreditaciones' and idLenguaje=4;
+
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.actualizacion.actuacion.validada', 'Permiso para impedir mdificacion de la documentacion de las actuaciones de las designas una vez se ha validado la actuacion', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.actualizacion.actuacion.validada', 'Permiso para impedir mdificacion de la documentacion de las actuaciones de las designas una vez se ha validado la actuacion#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.actualizacion.actuacion.validada', 'Permiso para impedir mdificacion de la documentacion de las actuaciones de las designas una vez se ha validado la actuacion#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.actualizacion.actuacion.validada', 'Permiso para impedir mdificacion de la documentacion de las actuaciones de las designas una vez se ha validado la actuacion#GL', 0, '4', sysdate, 0, '19');
+
+
+insert into gen_parametros (modulo, parametro, valor, fechamodificacion, usumodificacion, idinstitucion, idrecurso)
+SELECT 'SCS', 'SCS_PERMISOS_ACTUACIONES_VALIDADAS', '1', sysdate, 0, I.IDINSTITUCION, 'scs.parametro.actualizacion.actuacion.validada'
+FROM CEN_IN
