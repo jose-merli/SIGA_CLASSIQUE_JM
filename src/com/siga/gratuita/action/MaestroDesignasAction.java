@@ -217,6 +217,13 @@ public class MaestroDesignasAction extends MasterAction {
 				
 				
 				
+				
+
+				if(idJuzgado.contains("idpretension")) 
+					params.put("idpretension", (String) paraJsonObject.get("idpretension"));
+				else
+					params.put("idpretension", "");
+				
 				String idModulo = request.getParameter("idModulo");
 				if(idModulo!=null && idModulo.equals("")) 
 					params.put("idprocedimiento", "");
@@ -228,12 +235,6 @@ public class MaestroDesignasAction extends MasterAction {
 					} 
 					
 				}
-
-				if(idJuzgado.contains("idpretension")) 
-					params.put("idpretension", (String) paraJsonObject.get("idpretension"));
-				else
-					params.put("idpretension", "");
-				
 				
 				String idPretension = request.getParameter("idPretension");
 				if(idPretension!=null && idPretension.contains("idpretension")) { 
