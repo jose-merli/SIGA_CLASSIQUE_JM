@@ -1925,4 +1925,4 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 
 insert into gen_parametros (modulo, parametro, valor, fechamodificacion, usumodificacion, idinstitucion, idrecurso)
 SELECT 'SCS', 'SCS_PERMISOS_ACTUACIONES_VALIDADAS', '1', sysdate, 0, I.IDINSTITUCION, 'scs.parametro.actualizacion.actuacion.validada'
-FROM CEN_IN
+FROM CEN_INSTITUCION I WHERE I.CEN_INST_IDINSTITUCION = 3004;
