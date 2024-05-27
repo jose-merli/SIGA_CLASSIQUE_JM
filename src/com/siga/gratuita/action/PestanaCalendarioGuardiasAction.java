@@ -282,7 +282,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 					databackup.put("datos",datos);
 					setPaginador(request, paginadorPenstania, databackup);
 				} 	
-
+			}
 				//Miramos si los colegiados tienen permiso para confirmar cabecera de guardias
 				GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
 				//Haria falta meter los parametros en con ClsConstants
@@ -295,7 +295,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				request.setAttribute("IDINSTITUCION",idInstitucion);
 				request.setAttribute("IDPERSONA",idPersona);	
 
-			}
+			
 		}catch (SIGAException e1) {
 			// Excepcion procedente de obtenerPagina cuando se han borrado datos
 			 borrarPaginador(request, paginadorPenstania);
