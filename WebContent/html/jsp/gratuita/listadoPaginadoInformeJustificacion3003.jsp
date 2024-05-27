@@ -1672,12 +1672,12 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																			<c:choose>
 																				<c:when test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
 																					<input name="checkValidacion"
-																						id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
+																						id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}_camposAdicionales_${acreditacion.camposAdicionales}"
 																						type="checkbox" onclick="onCheckValidacion(this);" disabled="disabled" />
 																				</c:when>
 																				<c:otherwise>
 																					<input name="checkValidacion"
-																						id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}"
+																						id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}_camposAdicionales_${acreditacion.camposAdicionales}"
 																						type="checkbox" onclick="onCheckValidacion(this);" disabled="disabled" />
 																				</c:otherwise>
 																			</c:choose>
@@ -1739,13 +1739,14 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																		<c:otherwise>
 																			<c:choose>
 																				<c:when test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
+																					
 																					<input name="checkValidacion"
-																						id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
+																						id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}_camposAdicionales_${acreditacion.camposAdicionales}"
 																						type="checkbox" onclick="onCheckValidacion(this);" disabled="disabled" />
 																				</c:when>
 																				<c:otherwise>
 																					<input name="checkValidacion"
-																						id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}"
+																						id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}_camposAdicionales_${acreditacion.camposAdicionales}"
 																						type="checkbox" onclick="onCheckValidacion(this);" disabled="disabled" />
 																				</c:otherwise>
 																			</c:choose>
@@ -1988,6 +1989,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 
 												<c:choose>
 													<c:when test="${estadoListActuaciones.first&&estadoMapActuaciones.first}">
+													
+				<!--  columna de numero de categoria -->
 														<c:choose>
 															<c:when test="${actuacion.categoria!=null && actuacion.categoria!=''}">
 																<td title="${actuacion.descripcionProcedimiento}"><c:out value="${actuacion.categoria}" /></td>
@@ -1999,6 +2002,9 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																<td>&nbsp;</td>
 															</c:otherwise>
 														</c:choose>
+														
+				<!--  columna de numero de actuacion y botons de documentacion -->
+														
 														<td>
 															<table BORDER="0">
 																<c:choose>
@@ -2092,6 +2098,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 														</td>
 																																			
 														
+														
+				<!--  columna de descripcion de la actuacion -->
 														<c:choose>
 																<c:when test="${actuacion.anulada =='1'}">
 																	<td style="color:red">
@@ -2122,6 +2130,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																			type="hidden" />
 																	</c:if>
 																	<c:out value="${actuacion.descripcion}" />
+																	</td>
 																</c:when>
 																<c:otherwise>
 																	<td>
@@ -2141,37 +2150,39 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																		id="hiddacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																		type="hidden" />
 																	<c:out value="${actuacion.descripcion}" />
+																</td>
 																</c:otherwise>
-															</c:choose></td>
+															</c:choose>
 
-														<td title="<siga:Idioma	key='gratuita.informeJustificacionMasiva.informacion.validacion'/>"><c:choose>
+														<td title="<siga:Idioma	key='gratuita.informeJustificacionMasiva.informacion.validacion'/>">
+														<c:choose>
 																<c:when test="${actuacion.validada=='1'}">
 																	<input type="checkbox" disabled="disabled" checked="checked" />
 																</c:when>
-																<c:otherwise>
-																	<c:choose>
-																		<c:when test="${designa.baja=='1'}">
-																			<input type="checkbox" disabled="disabled" />
-																		</c:when>
-																		<c:otherwise>
-																			<c:choose>
-																				<c:when test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
-																					<input name="checkValidacion"
+																
+																<c:when test="${designa.baja=='1'}">
+																	<input type="checkbox" disabled="disabled" />
+																</c:when>
+																
+																<c:when test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
+																		<input name="checkValidacion"
 																						id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																						type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled} />
-																				</c:when>
-																				<c:otherwise>
-																					<input name="checkValidacion"
-																						id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
-																						type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled} />
-																				</c:otherwise>
-																			</c:choose>
-																		</c:otherwise>
-																	</c:choose>
+																</c:when>
+																<c:otherwise>
+																	<input name="checkValidacion"
+																			id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
+																			type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled} />
 																</c:otherwise>
-															</c:choose></td>
-														<td><c:choose>
-
+																			
+																
+															</c:choose>
+															
+														</td>
+														
+				<!--  columna de botones de edicion y consulta de actuacion/dessignacion -->
+														<td>
+															<c:choose>
 																<c:when
 																	test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V') && (designa.cambioLetrado=='S' || (actuacion.idFacturacion!=null&&actuacion.idFacturacion!='')||(actuacion.permitirEditActuacionLetrado=='0' && InformeJustificacionMasivaForm.fichaColegial==true ) )}">
 																	<img id="iconoboton_consultar1" src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>" style="cursor: hand;" alt="Consultar"
@@ -2191,10 +2202,13 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																		onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('borrar_1','','<html:rewrite page='/html/imagenes/bborrar_on.gif'/>',1)" />
 																</c:when>
 																<c:otherwise>
-															&nbsp;
-														</c:otherwise>
-															</c:choose></td>
-
+																	&nbsp;
+																</c:otherwise>
+															</c:choose>
+														</td>
+				
+				<!--  columna de check de baja -->
+				
 														<td rowspan="${designa.rowSpan}"><c:choose>
 																<c:when test="${designa.baja=='1'}">
 																	<input type="checkbox" disabled="disabled" checked="checked" />
@@ -2222,6 +2236,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																<tr class="filaTablaImpar">
 															</c:otherwise>
 														</c:choose>
+				<!--  columna de numero de categoria -->														
 														<c:choose>
 															<c:when test="${actuacion.categoria!=null && actuacion.categoria!=''}">
 																<td title="${actuacion.descripcionProcedimiento}"><c:out value="${actuacion.categoria}" /></td>
@@ -2233,7 +2248,9 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																<td>&nbsp;</td>
 															</c:otherwise>
 														</c:choose>
-
+				
+				<!--  columna de numero de actuacion y botones de documentacion -->
+				
 														<td>
 															<table BORDER="0">
 																<c:choose>
@@ -2327,11 +2344,13 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																
 															</table>
 														</td>
-
+						
+						<!--  columna de descripcion de la actuacion -->
 														<c:choose>
 															<c:when test="${actuacion.anulada =='1'}">
 																	<td style="color:red">
 																		<c:out value="${actuacion.descripcion}" />
+																	</td>
 																		
 																	</c:when>
 														
@@ -2359,6 +2378,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																			type="hidden" />
 																	</c:if> 
 																	<c:out value="${actuacion.descripcion}" />
+																	</td>
 																</c:when>
 																<c:otherwise>
 																<td>
@@ -2378,45 +2398,40 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																		id="hiddacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																		type="hidden" />
 																	<c:out value="${actuacion.descripcion}" />
+																	</td>
 																</c:otherwise>
-															</c:choose></td>
+															</c:choose>
 														<td title="<siga:Idioma	key='gratuita.informeJustificacionMasiva.informacion.validacion'/>">
 														
 														<c:choose>
 															<c:when test="${actuacion.anulada =='1'}">
 																	&nbsp;
-																	</c:when>
-																<c:when test="${actuacion.validada=='1'}">
-																	<input type="checkbox" disabled="disabled" checked="checked" />
-																</c:when>
-																<c:otherwise>
-																	<c:choose>
-																		<c:when test="${designa.baja=='1'}">
-																			<input type="checkbox" disabled="disabled" />
-																		</c:when>
-																		<c:otherwise>
-																			<c:choose>
-																				<c:when test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
-																					<input name="checkValidacion"
-																						id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
-																						type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled} />
-																				</c:when>
-																				<c:otherwise>
-																					<input name="checkValidacion"
-																						id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
-																						type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled} />
-																				</c:otherwise>
-																			</c:choose>
-																		</c:otherwise>
-																	</c:choose>
-																</c:otherwise>
-															</c:choose></td>
-														<td><c:choose>
-															<c:when test="${actuacion.anulada =='1'}">
-																	&nbsp;
-																	</c:when>
+															</c:when>
+															<c:when test="${actuacion.validada=='1'}">
+																<input type="checkbox" disabled="disabled" checked="checked" />
+															</c:when>
 															
-
+															<c:when test="${designa.baja=='1'}">
+																<input type="checkbox" disabled="disabled" />
+															</c:when>
+															<c:when test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
+																<input name="checkValidacion"
+																		id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
+																			type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled} />
+															</c:when>
+															<c:otherwise>
+																<input name="checkValidacion"
+																	id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
+																	type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled} />
+															</c:otherwise>
+															
+															</c:choose>
+														</td>
+				<!--  columna de botones de edicion y consulta de actuacion/dessignacion -->
+														<td>
+															<c:choose>
+																
+															
 
 																<c:when
 																	test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V')&&(designa.cambioLetrado=='S' || (actuacion.idFacturacion!=null&&actuacion.idFacturacion!='') ||(actuacion.permitirEditActuacionLetrado=='0' && InformeJustificacionMasivaForm.fichaColegial==true ) )}">
@@ -2439,7 +2454,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																<c:otherwise>
 																			&nbsp;
 																		</c:otherwise>
-															</c:choose></td>
+															</c:choose>
+															</td>
 														</tr>
 													</c:otherwise>
 												</c:choose>

@@ -307,13 +307,16 @@
 					
 
 // RGG 14-03-2006 CAMBIOS para controlar los permisos de los botones de edicion y borrado
-                  
+                  String anulacion = (String)hash.get("ANULACION");
 				    if (deDonde!=null && deDonde.equals("ficha")){
 						// cuando esta en la ficha solamente se puede consultar, sea quien sea
 						botones = "C";
 						
 						if (usr.isLetrado() && !validada && modificable) {
-							botones = "C,E,B";
+				 				if((anulacion!=null)&&(anulacion).equalsIgnoreCase("1")){
+				 					botones = "C,E";	
+				 				}else
+									botones = "C,E,B";
 						}
 					} 
 					else {
@@ -324,17 +327,18 @@
 						} else {
 							if(modificable) {
 								// modificable
-								botones = "C,E,B";
+								
+				 				if((anulacion!=null)&&(anulacion).equalsIgnoreCase("1")){
+				 					botones = "C,E";	
+				 				}else
+									botones = "C,E,B";
 							} else {
 							    botones = "C";						
 							}
 						}
 					}
 
-				 String anulacion = (String)hash.get("ANULACION");
-				 if((anulacion!=null)&&(anulacion).equalsIgnoreCase("1")){
-				 	modo="VER";	
-				 }
+				 
 				
 			 	%>
 			 	<%
@@ -349,7 +353,7 @@
 				 	
 			 	%>
 			 
-				  	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" clase="listaNonEdit" modo="<%=modo%>" elementos="<%=elems%>" >
+				  	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" clase="listaNonEdit"  elementos="<%=elems%>" >
 						<td>
 							<input type="hidden" name="ocultoHidden<%=String.valueOf(recordNumber)%>_1" id="ocultoHidden<%=String.valueOf(recordNumber)%>_1" value="<%=hash.get("NUMEROASUNTO")%>">
 							<input type="hidden" name="ocultoHidden<%=String.valueOf(recordNumber)%>_2" id="ocultoHidden<%=String.valueOf(recordNumber)%>_2" value="<%=hash.get("IDPERSONA")%>">
