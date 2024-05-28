@@ -759,7 +759,7 @@
 			var posTablaBotones = tablaBotones.offsetTop;
 			var posTablaDatos = tablaDatos.offsetTop;
 			
-			jQuery('#divCargos').height(posTablaBotones - posTablaDatos);
+			jQuery('#divCargos').height(posTablaBotones - posTablaDatos - 65);//lo ultimo es para ajustar el error y que los resultados no aparezcan debajo de la barra final
 		}
 	}			
 
