@@ -3128,6 +3128,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 					// luego no lo añadimos ya que no se podrán facturar.
 					// Si no ponemos el catch se mostrará un error por el log y
 					// no se ejecutarán los demás certificados
+					log.error("SIGASolicitudesCertificadosAction.getAjaxSeleccionSerieFacturacionMasiva() - ERROR: " + e.getMessage());
 				}
 				if (pysCompraBean.getIdInstitucion() != null)
 					vectorPysCompraBean.add(pysCompraBean);
