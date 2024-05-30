@@ -2024,65 +2024,136 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																			</td>
 																		</tr>
 																	</c:when>
-																	<c:when	test="${actuacion.validada=='0' || empty actuacion.validada}">
-																		<tr>
-																			<td style="border: none;vertical-align:middle; ">
-																				<c:out value="${actuacion.numero}" />
-																			</td>
-																			<td style="border: none;vertical-align:middle; ">
-																				<c:if test="${comunicacionesAcreditacionDeOficio==true}">
-																					<img id="iconoboton_download1" hspace="0"
-																						src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
-																						alt="Enviar" name="iconoFila" title="Enviar" border="0" 
-																						onClick="downloadInformeActuacionesDesigna(${designa.idInstitucion},${designa.anio},${designa.numero},${designa.idPersona},${designa.idTurno},${actuacion.numero},'${designa.codigoDesigna}',${usrBean.letrado})" 
-																						onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																	<c:when	test="${SCS_PERMISOS_ACTUACIONES_VALIDADAS=='1'}">
+																		<c:choose>
+																			<c:when	test="${actuacion.validada=='0' || empty actuacion.validada}">
+																				<tr>
+																					<td style="border: none;vertical-align:middle; ">
+																						<c:out value="${actuacion.numero}" />
+																					</td>
+																					<td style="border: none;vertical-align:middle; ">
+																						<c:if test="${comunicacionesAcreditacionDeOficio==true}">
+																							<img id="iconoboton_download1" hspace="0"
+																								src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
+																								alt="Enviar" name="iconoFila" title="Enviar" border="0" 
+																								onClick="downloadInformeActuacionesDesigna(${designa.idInstitucion},${designa.anio},${designa.numero},${designa.idPersona},${designa.idTurno},${actuacion.numero},'${designa.codigoDesigna}',${usrBean.letrado})" 
+																								onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																						</c:if>
+																					</td>
+																				</tr>
+																				<c:if test="${subidaJustificacionesActiva}">
+																					<tr>
+																						<td style="border: none;">&nbsp;</td>
+																						<td style="border: none;vertical-align:middle; ">
+																								<img id="iconoboton_nuevaDocuemntacion" src="/SIGA/html/imagenes/bupload.gif" style="cursor: pointer;" alt="Nueva Documentacion"
+																									name="iconoFila" title="Nueva Documentacion" border="0"
+																									onClick="accionNuevaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})"
+																									onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('iconoboton_nuevaDocuemntacion','','/SIGA/html/imagenes/bupload.gif',1)">
+																							
+																						</td>
+																					</tr>
 																				</c:if>
-																			</td>
-																		</tr>
-																		<c:if test="${subidaJustificacionesActiva}">
-																			<tr>
-																				<td style="border: none;">&nbsp;</td>
-																				<td style="border: none;vertical-align:middle; ">
-																						<img id="iconoboton_nuevaDocuemntacion" src="/SIGA/html/imagenes/bupload.gif" style="cursor: pointer;" alt="Nueva Documentacion"
-																							name="iconoFila" title="Nueva Documentacion" border="0"
-																							onClick="accionNuevaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})"
-																							onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('iconoboton_nuevaDocuemntacion','','/SIGA/html/imagenes/bupload.gif',1)">
-																					
-																				</td>
-																			</tr>
-																		</c:if>
-																		<c:if test="${actuacion.documentoJustificacion}">
-																			<tr>
-																				<td style="border: none;">&nbsp;</td>
-																				<td style="border: none;vertical-align:middle; ">
-																					<img id="iconoboton_download1" hspace="0" src="/SIGA/html/imagenes/bdownload_off.gif" style="cursor: pointer;" alt="Descargar"
-																						name="iconoFila" title="Descargar" border="0"
-																						onClick="accionDescargaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})"
-																						onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
-																				</td>
-																			</tr>
-																		</c:if>
-																	
-																	</c:when>
-																	
-																	
-																	<c:when	test="${actuacion.validada=='1'}">
-																		<tr>
-																			<td style="border: none;vertical-align:middle; ">
-																				<c:out value="${actuacion.numero}" />
-																			</td>
-																		
-																			<td style="border: none;vertical-align:middle; ">
 																				<c:if test="${actuacion.documentoJustificacion}">
-																					<img id="iconoboton_download1" hspace="0" src="/SIGA/html/imagenes/bdownload_off.gif" style="cursor: pointer;" alt="Descargar"
-																						name="iconoFila" title="Descargar" border="0"
-																						onClick="accionDescargaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})"
-																						onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
-																		
+																					<tr>
+																						<td style="border: none;">&nbsp;</td>
+																						<td style="border: none;vertical-align:middle; ">
+																							<img id="iconoboton_download1" hspace="0" src="/SIGA/html/imagenes/bdownload_off.gif" style="cursor: pointer;" alt="Descargar"
+																								name="iconoFila" title="Descargar" border="0"
+																								onClick="accionDescargaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})"
+																								onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																						</td>
+																					</tr>
 																				</c:if>
-																			</td>
-																			</tr>
+																			
+																			</c:when>
+																			
+																			<c:otherwise>
+																				<tr>
+																					<td style="border: none;vertical-align:middle; ">
+																						<c:out value="${actuacion.numero}" />
+																					</td>
+																				
+																					<td style="border: none;vertical-align:middle; ">
+																						<c:if test="${actuacion.documentoJustificacion}">
+																							<img id="iconoboton_download1" hspace="0" src="/SIGA/html/imagenes/bdownload_off.gif" style="cursor: pointer;" alt="Descargar"
+																								name="iconoFila" title="Descargar" border="0"
+																								onClick="accionDescargaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})"
+																								onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																				
+																						</c:if>
+																					</td>
+																					</tr>
+																			
+																			</c:otherwise>
+																	
+																		</c:choose>
 																	</c:when>
+																	<c:otherwise>
+																		<c:choose>
+																		
+																			<c:when	test="${empty actuacion.idFacturacion || actuacion.idFacturacion=='' }">
+																				<tr>
+																					<td style="border: none;vertical-align:middle; ">
+																						<c:out value="${actuacion.numero}" />
+																					</td>
+																					<td style="border: none;vertical-align:middle; ">
+																						<c:if test="${comunicacionesAcreditacionDeOficio==true}">
+																							<img id="iconoboton_download1" hspace="0"
+																								src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
+																								alt="Enviar" name="iconoFila" title="Enviar" border="0" 
+																								onClick="downloadInformeActuacionesDesigna(${designa.idInstitucion},${designa.anio},${designa.numero},${designa.idPersona},${designa.idTurno},${actuacion.numero},'${designa.codigoDesigna}',${usrBean.letrado})" 
+																								onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																						</c:if>
+																					</td>
+																				</tr>
+																				<c:if test="${subidaJustificacionesActiva}">
+																					<tr>
+																						<td style="border: none;">&nbsp;</td>
+																						<td style="border: none;vertical-align:middle; ">
+																								<img id="iconoboton_nuevaDocuemntacion" src="/SIGA/html/imagenes/bupload.gif" style="cursor: pointer;" alt="Nueva Documentacion"
+																									name="iconoFila" title="Nueva Documentacion" border="0"
+																									onClick="accionNuevaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})"
+																									onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('iconoboton_nuevaDocuemntacion','','/SIGA/html/imagenes/bupload.gif',1)">
+																							
+																						</td>
+																					</tr>
+																				</c:if>
+																				<c:if test="${actuacion.documentoJustificacion}">
+																					<tr>
+																						<td style="border: none;">&nbsp;</td>
+																						<td style="border: none;vertical-align:middle; ">
+																							<img id="iconoboton_download1" hspace="0" src="/SIGA/html/imagenes/bdownload_off.gif" style="cursor: pointer;" alt="Descargar"
+																								name="iconoFila" title="Descargar" border="0"
+																								onClick="accionDescargaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})"
+																								onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																						</td>
+																					</tr>
+																				</c:if>
+																			
+																			</c:when>
+																			
+																			<c:otherwise>
+																				<tr>
+																					<td style="border: none;vertical-align:middle; ">
+																						<c:out value="${actuacion.numero}" />
+																					</td>
+																				
+																					<td style="border: none;vertical-align:middle; ">
+																						<c:if test="${actuacion.documentoJustificacion}">
+																							<img id="iconoboton_download1" hspace="0" src="/SIGA/html/imagenes/bdownload_off.gif" style="cursor: pointer;" alt="Descargar"
+																								name="iconoFila" title="Descargar" border="0"
+																								onClick="accionDescargaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})"
+																								onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																				
+																						</c:if>
+																					</td>
+																					</tr>
+																			
+																			</c:otherwise>
+																	
+																		</c:choose>
+																	
+																	</c:otherwise>
 																</c:choose>
 																<tr>
 																	<td style="border: none;">
@@ -2270,65 +2341,136 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																			</td>
 																		</tr>
 																	</c:when>
-																	<c:when	test="${actuacion.validada=='0' || empty actuacion.validada}">
-																		<tr>
-																			<td style="border: none;vertical-align:middle; ">
-																				<c:out value="${actuacion.numero}" />
-																			</td>
-																			<td style="border: none;vertical-align:middle; ">
-																				<c:if test="${comunicacionesAcreditacionDeOficio==true}">
-																					<img id="iconoboton_download1" hspace="0"
-																						src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
-																						alt="Enviar" name="iconoFila" title="Enviar" border="0" 
-																						onClick="downloadInformeActuacionesDesigna(${designa.idInstitucion},${designa.anio},${designa.numero},${designa.idPersona},${designa.idTurno},${actuacion.numero},'${designa.codigoDesigna}',${usrBean.letrado})" 
-																						onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																	<c:when	test="${SCS_PERMISOS_ACTUACIONES_VALIDADAS=='1'}">
+																		<c:choose>
+																			<c:when	test="${actuacion.validada=='0' || empty actuacion.validada}">
+																				<tr>
+																					<td style="border: none;vertical-align:middle; ">
+																						<c:out value="${actuacion.numero}" />
+																					</td>
+																					<td style="border: none;vertical-align:middle; ">
+																						<c:if test="${comunicacionesAcreditacionDeOficio==true}">
+																							<img id="iconoboton_download1" hspace="0"
+																								src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
+																								alt="Enviar" name="iconoFila" title="Enviar" border="0" 
+																								onClick="downloadInformeActuacionesDesigna(${designa.idInstitucion},${designa.anio},${designa.numero},${designa.idPersona},${designa.idTurno},${actuacion.numero},'${designa.codigoDesigna}',${usrBean.letrado})" 
+																								onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																						</c:if>
+																					</td>
+																				</tr>
+																				<c:if test="${subidaJustificacionesActiva}">
+																					<tr>
+																						<td style="border: none;">&nbsp;</td>
+																						<td style="border: none;vertical-align:middle; ">
+																								<img id="iconoboton_nuevaDocuemntacion" src="/SIGA/html/imagenes/bupload.gif" style="cursor: pointer;" alt="Nueva Documentacion"
+																									name="iconoFila" title="Nueva Documentacion" border="0"
+																									onClick="accionNuevaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})"
+																									onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('iconoboton_nuevaDocuemntacion','','/SIGA/html/imagenes/bupload.gif',1)">
+																							
+																						</td>
+																					</tr>
 																				</c:if>
-																			</td>
-																		</tr>
-																		<c:if test="${subidaJustificacionesActiva}">
-																			<tr>
-																				<td style="border: none;">&nbsp;</td>
-																				<td style="border: none;vertical-align:middle; ">
-																						<img id="iconoboton_nuevaDocuemntacion" src="/SIGA/html/imagenes/bupload.gif" style="cursor: pointer;" alt="Nueva Documentacion"
-																							name="iconoFila" title="Nueva Documentacion" border="0"
-																							onClick="accionNuevaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})"
-																							onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('iconoboton_nuevaDocuemntacion','','/SIGA/html/imagenes/bupload.gif',1)">
-																					
-																				</td>
-																			</tr>
-																		</c:if>
-																		<c:if test="${actuacion.documentoJustificacion}">
-																			<tr>
-																				<td style="border: none;">&nbsp;</td>
-																				<td style="border: none;vertical-align:middle; ">
-																					<img id="iconoboton_download1" hspace="0" src="/SIGA/html/imagenes/bdownload_off.gif" style="cursor: pointer;" alt="Descargar"
-																						name="iconoFila" title="Descargar" border="0"
-																						onClick="accionDescargaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})"
-																						onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
-																				</td>
-																			</tr>
-																		</c:if>
-																	
-																	</c:when>
-																	<c:when	test="${actuacion.validada=='1'}">
-																		<tr>
-																			<td style="border: none;vertical-align:middle; ">
-																				<c:out value="${actuacion.numero}" />
-																			</td>
-																		
-																			<td style="border: none;vertical-align:middle; ">
 																				<c:if test="${actuacion.documentoJustificacion}">
-																					<img id="iconoboton_download1" hspace="0" src="/SIGA/html/imagenes/bdownload_off.gif" style="cursor: pointer;" alt="Descargar"
-																						name="iconoFila" title="Descargar" border="0"
-																						onClick="accionDescargaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})"
-																						onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
-																		
+																					<tr>
+																						<td style="border: none;">&nbsp;</td>
+																						<td style="border: none;vertical-align:middle; ">
+																							<img id="iconoboton_download1" hspace="0" src="/SIGA/html/imagenes/bdownload_off.gif" style="cursor: pointer;" alt="Descargar"
+																								name="iconoFila" title="Descargar" border="0"
+																								onClick="accionDescargaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})"
+																								onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																						</td>
+																					</tr>
 																				</c:if>
-																			</td>
-																			</tr>
+																			
+																			</c:when>
+																			
+																			<c:otherwise>
+																				<tr>
+																					<td style="border: none;vertical-align:middle; ">
+																						<c:out value="${actuacion.numero}" />
+																					</td>
+																				
+																					<td style="border: none;vertical-align:middle; ">
+																						<c:if test="${actuacion.documentoJustificacion}">
+																							<img id="iconoboton_download1" hspace="0" src="/SIGA/html/imagenes/bdownload_off.gif" style="cursor: pointer;" alt="Descargar"
+																								name="iconoFila" title="Descargar" border="0"
+																								onClick="accionDescargaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})"
+																								onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																				
+																						</c:if>
+																					</td>
+																					</tr>
+																			
+																			</c:otherwise>
 																	
-																	
+																		</c:choose>
 																	</c:when>
+																	<c:otherwise>
+																		<c:choose>
+																		
+																			<c:when	test="${empty actuacion.idFacturacion || actuacion.idFacturacion=='' }">
+																				<tr>
+																					<td style="border: none;vertical-align:middle; ">
+																						<c:out value="${actuacion.numero}" />
+																					</td>
+																					<td style="border: none;vertical-align:middle; ">
+																						<c:if test="${comunicacionesAcreditacionDeOficio==true}">
+																							<img id="iconoboton_download1" hspace="0"
+																								src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
+																								alt="Enviar" name="iconoFila" title="Enviar" border="0" 
+																								onClick="downloadInformeActuacionesDesigna(${designa.idInstitucion},${designa.anio},${designa.numero},${designa.idPersona},${designa.idTurno},${actuacion.numero},'${designa.codigoDesigna}',${usrBean.letrado})" 
+																								onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																						</c:if>
+																					</td>
+																				</tr>
+																				<c:if test="${subidaJustificacionesActiva}">
+																					<tr>
+																						<td style="border: none;">&nbsp;</td>
+																						<td style="border: none;vertical-align:middle; ">
+																								<img id="iconoboton_nuevaDocuemntacion" src="/SIGA/html/imagenes/bupload.gif" style="cursor: pointer;" alt="Nueva Documentacion"
+																									name="iconoFila" title="Nueva Documentacion" border="0"
+																									onClick="accionNuevaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})"
+																									onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('iconoboton_nuevaDocuemntacion','','/SIGA/html/imagenes/bupload.gif',1)">
+																							
+																						</td>
+																					</tr>
+																				</c:if>
+																				<c:if test="${actuacion.documentoJustificacion}">
+																					<tr>
+																						<td style="border: none;">&nbsp;</td>
+																						<td style="border: none;vertical-align:middle; ">
+																							<img id="iconoboton_download1" hspace="0" src="/SIGA/html/imagenes/bdownload_off.gif" style="cursor: pointer;" alt="Descargar"
+																								name="iconoFila" title="Descargar" border="0"
+																								onClick="accionDescargaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})"
+																								onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																						</td>
+																					</tr>
+																				</c:if>
+																			
+																			</c:when>
+																			
+																			<c:otherwise>
+																				<tr>
+																					<td style="border: none;vertical-align:middle; ">
+																						<c:out value="${actuacion.numero}" />
+																					</td>
+																				
+																					<td style="border: none;vertical-align:middle; ">
+																						<c:if test="${actuacion.documentoJustificacion}">
+																							<img id="iconoboton_download1" hspace="0" src="/SIGA/html/imagenes/bdownload_off.gif" style="cursor: pointer;" alt="Descargar"
+																								name="iconoFila" title="Descargar" border="0"
+																								onClick="accionDescargaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})"
+																								onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																				
+																						</c:if>
+																					</td>
+																					</tr>
+																			
+																			</c:otherwise>
+																	
+																		</c:choose>
+																	
+																	</c:otherwise>
 																	
 																
 																</c:choose>

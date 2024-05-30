@@ -916,6 +916,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		boolean isActivarSubidaJustificacion = activarSubidaJustificacion!=null && activarSubidaJustificacion.equals(ClsConstants.DB_TRUE);
 		request.setAttribute("subidaJustificacionesActiva", isActivarSubidaJustificacion);
 		
+		String permisosActicionesValidadas = paramAdm.getValor(usrBean.getLocation (), "SCS", "SCS_PERMISOS_ACTUACIONES_VALIDADAS", "0");
+		request.setAttribute("SCS_PERMISOS_ACTUACIONES_VALIDADAS", permisosActicionesValidadas);
 		
 		
 		informeBeans=admInformeAdm.obtenerInformesTipo(usrBean.getLocation(),EnvioInformesGenericos.comunicacionesDesigna,null, "C");
