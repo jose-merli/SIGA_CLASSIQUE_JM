@@ -126,7 +126,7 @@
 		}
 		
 		paramsJuzgadoJSON = "{\"idjuzgado\":\"-1\"}";
-    	comboJuzgados = "getJuzgadosJurisdiccion";
+    	
     	comboModulos = "getProcedimientosEnVigencia";
     	comboModulosParentQueryIds = "idjuzgado,fechadesdevigor,fechahastavigor";
     	comboPretensionesEjis= "getPretensionesEjisModulosFiltros";
@@ -230,16 +230,6 @@
 			idPretension = beanDesigna.getIdPretension().toString();
 			pretensionesSel.add(0,idPretension);
 		}
-		idJuzgadoSeleccionado = "{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}"; 
-		juzgadoSel.add(0,idJuzgadoSeleccionado);
-		paramsJuzgadoJSON = "{\"idjuzgado\":\""+idJuzgado+"\"";
-		paramsJuzgadoJSON += ",\"idturno\":\""+idTurno+"\"";
-		paramsJuzgadoJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
-		paramsJuzgadoJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"}";
-		
-		idProcedimientoParamsJSON += ",\"idjuzgado\":\""+idJuzgado+"\"";
-		idProcedimientoParamsJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
-		idProcedimientoParamsJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"}";
 		
 
 		// TRATAMIENTO DE LA FECHA DE ANULACIÓN
@@ -322,7 +312,7 @@
 	//Combo Pretensiones
 	String idPretensionParamsJSON = "";
 	String comboPretensiones = "getPretensiones";
-	String comboPretensionesParentQueryIds = null;
+	
 	if(filtroJuzgadoModuloEspecial!=null && filtroJuzgadoModuloEspecial.equals("1")){
 		comboModulos =   "getProcedimientosEnVigenciaAlcala";
 		comboPretensiones = "getPretensionesAlcala";
@@ -345,7 +335,7 @@
 		idPretensionParamsJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
 		idPretensionParamsJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"";
 		idPretensionParamsJSON += ",\"idprocedimiento\":\""+idProcedimiento+"\"}";
-		comboPretensionesParentQueryIds = "idjuzgado,fechadesdevigor,fechahastavigor";
+		
 		String pretensionSel = "{\"idpretension\":\""+idPretension+"\"";
 		pretensionSel+= ",\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}";
 		idPretension = pretensionSel;
@@ -360,7 +350,17 @@
 		
 		
 	}else{
-	
+		idJuzgadoSeleccionado = "{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}"; 
+		juzgadoSel.add(0,idJuzgadoSeleccionado);
+		paramsJuzgadoJSON = "{\"idjuzgado\":\""+idJuzgado+"\"";
+		paramsJuzgadoJSON += ",\"idturno\":\""+idTurno+"\"";
+		paramsJuzgadoJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
+		paramsJuzgadoJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"}";
+		
+		idProcedimientoParamsJSON += ",\"idjuzgado\":\""+idJuzgado+"\"";
+		idProcedimientoParamsJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
+		idProcedimientoParamsJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"}";
+		
 		if(beanDesigna.getIdPretension()!=null){
 			idPretensionParamsJSON = "{\"idpretension\":\""+beanDesigna.getIdPretension().toString()+"\"";
 		} else {
@@ -371,26 +371,23 @@
 		
 		
 		
-		if (ejisActivo>0 || pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_CANTABRIA||pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA){
+		
 			comboPretensiones = comboPretensionesEjis;
 			String sIdJuzgado = "-1";
 			if (beanDesigna.getIdJuzgado() != null){
 				sIdJuzgado = beanDesigna.getIdJuzgado().toString();
 			}
-			comboPretensionesParentQueryIds = "idpretension,idjuzgado";
+			
 			idPretensionParamsJSON += ",\"idjuzgado\":\""+sIdJuzgado+"\"}";
-		} else {
-			comboPretensionesParentQueryIds = "";
-			idPretensionParamsJSON += "}";
-		}
+		
 	}
 //accion juzgado. 0 carga procedimientos, 1 carga pretension 2 carga pretensiones y luego modulos
 String accionJuzgado = "0";
-if (ejisActivo>0 || pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_CANTABRIA||pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA){		 														
-	accionJuzgado = "1";
-} else if(filtroJuzgadoModuloEspecial!=null && filtroJuzgadoModuloEspecial.equals("1")){														
+if(filtroJuzgadoModuloEspecial!=null && filtroJuzgadoModuloEspecial.equals("1")){														
 	accionJuzgado = "2";									
 
+}else{
+	accionJuzgado = "1";
 } 
 %>
 <!-- HEAD -->
@@ -1044,22 +1041,7 @@ if (ejisActivo>0 || pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_CANTABRI
 										<td colspan="6"><!-- Busqueda automatica de juzgados--> 						
 											<siga:ConjCampos leyenda="gratuita.mantenimientoTablasMaestra.literal.juzgado">
 												<table>							
-													<%if (ejisActivo>0 || pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_CANTABRIA||pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA){%>		 														
-															<tr>
-																<% if (!modo.equalsIgnoreCase("ver")) { %>
-																	<td class="labelText">
-																		<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.codigoext" />
-																		<% if (obligatoriojuzgado){ %>
-																			<%= asterisco %>
-																		<%}%>
-																	</td>
-																
-																<% } %>
-																	<td colspan="2" nowrap="nowrap">
-																		<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado,idturno" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true"  searchkey="CODIGOEXT2"  onLoadCallback="return alert('ope');"  searchBoxMaxLength="10" searchBoxWidth="8" width="500"   readonly="<%=modoVerReadOnly%>"/>
-																	</td> 
-															</tr>
-													<% } else if(filtroJuzgadoModuloEspecial!=null && filtroJuzgadoModuloEspecial.equals("1")){ %>														
+													<% if(filtroJuzgadoModuloEspecial!=null && filtroJuzgadoModuloEspecial.equals("1")){ %>														
 															<tr>
 																<% if (!modo.equalsIgnoreCase("ver")) { %>
 																	<td class="labelText">
@@ -1073,8 +1055,7 @@ if (ejisActivo>0 || pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_CANTABRI
 																<td rowspan="2" nowrap="nowrap">
 																	<siga:Select id="juzgado" queryId="getJuzgadosJurisdiccionAlcala" queryParamId="idjuzgado,idturno,idpretension,idprocedimiento" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" onLoadCallback="return alert('ope');"  searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500"  readonly="<%=modoVerReadOnly%>"/>
 																</td> 
-															</tr>									
-													
+															</tr>
 													<% } else { %>														
 															<tr>
 																<% if (!modo.equalsIgnoreCase("ver")) { %>
@@ -1087,7 +1068,7 @@ if (ejisActivo>0 || pcajgActivo==CajgConfiguracion.TIPO_CAJG_WEBSERVICE_CANTABRI
 																<% } %> 
 																
 																<td rowspan="2" nowrap="nowrap">
-																	<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado,idturno" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" onLoadCallback="return alert('ope');" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500"  readonly="<%=modoVerReadOnly%>"/>
+																	<siga:Select id="juzgado" queryId="getJuzgadosJurisdiccion" queryParamId="idjuzgado,idturno" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true"  searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500"  readonly="<%=modoVerReadOnly%>"/>
 																</td> 
 															</tr>									
 													<% } %>		
