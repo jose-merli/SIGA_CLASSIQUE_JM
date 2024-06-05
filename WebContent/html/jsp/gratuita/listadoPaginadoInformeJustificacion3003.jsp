@@ -325,69 +325,9 @@ function accionGuardar (isLetrado)
 		if(checkValidacion.checked){
 			var cadenaValidacion = checkValidacion.id;
 			
-			var cadenaAcreditacion = 'acre_'+cadenaValidacion.split("vali_")[1];
-			//Si no existe el check de acreditacion es porque estaba dado de alta luego lo validamos,
-			//si existe ya lo valida lo de arriba
-			if(!document.getElementById(cadenaAcreditacion)){
-				isAcreditacionCompleta = 'true';
+		
+			
 				
-				
-
-
-				allCamposAdicionales = cadenaValidacion.split("_nigNumProc_");
-				nigNumProcRequired = allCamposAdicionales[1].substring(0,1);
-				camposAdicionales = allCamposAdicionales[1].split("_camposAdicionales_")[1];
-				
-				
-				
-				
-				if(nigNumProcRequired){
-						
-					identificador = cadenaValidacion.split("vali_")[1];
-					if(document.getElementById("numprocactold_"+identificador)){
-						if(document.getElementById("numprocactold_"+identificador).value=='')
-							isAcreditacionCompleta = 'false';
-						
-					}
-					if(document.getElementById("anioprocactold_"+identificador)){
-						if(document.getElementById("anioprocactold_"+identificador).value=='')
-							isAcreditacionCompleta = 'false';
-						
-					}
-					if(document.getElementById("nigactold_"+identificador)){
-						if(document.getElementById("nigactold_"+identificador).value=='')
-							isAcreditacionCompleta = 'false';
-						
-					}
-				}
-				
-				
-				lineasCamposAdicionales = camposAdicionales.split("_");
-				
-				for (var i = 0; i < lineasCamposAdicionales.length; i++) {
-					lineaCamposAdicionales = lineasCamposAdicionales[i];
-					campos = lineaCamposAdicionales.split('-');
-					campo = campos[0];
-					requerido = campos[1];
-					if(existecampoRequerido=='0')
-						existecampoRequerido = requerido;
-					auxCampoOld = campo+'actold_';
-					
-					if(document.getElementById(""+auxCampoOld+cadenaValidacion)){
-						if(document.getElementById(""+auxCampoOld+cadenaValidacion).value=='')
-							isAcreditacionCompleta = 'false';
-						
-					}
-					
-				}
-				
-				
-				
-				
-				
-				if(isAcreditacionCompleta=='false'){
-					existenActuacionesIncompletas = 'true';
-				}else{
 				
 		
 					var idsAcreditacion = cadenaValidacion.split("_");
@@ -421,9 +361,9 @@ function accionGuardar (isLetrado)
 										fechaDesigna + "," +
 										validado + "," +
 										actuacionRestriccionesActiva + "#";
-				}
+				
 			
-			}
+			
 		}
 	}
 	
