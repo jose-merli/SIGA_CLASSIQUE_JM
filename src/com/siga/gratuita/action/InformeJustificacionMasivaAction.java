@@ -264,9 +264,18 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		StringBuffer msgAviso = new StringBuffer();
 		UsrBean user = (UsrBean) request.getSession().getAttribute(
 				"USRBEAN");
-		int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(user.getLocation()));
-		String obsJustificacion = UtilidadesString.getMensajeIdioma(user, "gratuita.informeJustificacionMasiva.observaciones.justificacion");
-		String obsActuacion = UtilidadesString.getMensajeIdioma(user, "gratuita.informeJustificacionMasiva.observaciones.actuacion");
+//		int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(user.getLocation()));
+		GenParametrosAdm paramAdm = new GenParametrosAdm (user);
+		String permisosActicionesValidadas = paramAdm.getValor(user.getLocation (), "SCS", "SCS_PERMISOS_ACTUACIONES_VALIDADAS", "0");
+		request.setAttribute("SCS_PERMISOS_ACTUACIONES_VALIDADAS", permisosActicionesValidadas);
+		String obsJustificacion ="";
+		String obsActuacion ="";
+		if(permisosActicionesValidadas==null || permisosActicionesValidadas.equalsIgnoreCase(AppConstants.DB_FALSE)) {
+			obsJustificacion = UtilidadesString.getMensajeIdioma(user, "gratuita.informeJustificacionMasiva.observaciones.justificacion");
+			obsActuacion = UtilidadesString.getMensajeIdioma(user, "gratuita.informeJustificacionMasiva.observaciones.actuacion");	
+		}
+		
+		
 	    ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		final String idAcreditacionPenal = rp3.returnProperty("codigo.general.scsacreditacion.jurisdiccion.penal");
 		List<String> designasList = new ArrayList<String>();

@@ -1966,8 +1966,21 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																								onClick="downloadInformeActuacionesDesigna(${designa.idInstitucion},${designa.anio},${designa.numero},${designa.idPersona},${designa.idTurno},${actuacion.numero},'${designa.codigoDesigna}',${usrBean.letrado})" 
 																								onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
 																				</c:if>
+																				
 																			</td>
 																		</tr>
+																		<c:if test="${actuacion.documentoJustificacion}">
+																			<tr>
+																				<td style="border: none;">&nbsp;</td>
+																				<td style="border: none;vertical-align:middle; ">
+																					<img id="iconoboton_download1" hspace="0" src="/SIGA/html/imagenes/bdownload_off.gif" style="cursor: pointer;" alt="Descargar"
+																						name="iconoFila" title="Descargar" border="0"
+																						onClick="accionDescargaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})"
+																						onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																				</td>
+																			</tr>
+																		</c:if>
+																		
 																	</c:when>
 																	<c:when	test="${SCS_PERMISOS_ACTUACIONES_VALIDADAS=='1'}">
 																		<c:choose>
@@ -2285,6 +2298,17 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																				</c:if>
 																			</td>
 																		</tr>
+																		<c:if test="${actuacion.documentoJustificacion}">
+																			<tr>
+																				<td style="border: none;">&nbsp;</td>
+																				<td style="border: none;vertical-align:middle; ">
+																					<img id="iconoboton_download1" hspace="0" src="/SIGA/html/imagenes/bdownload_off.gif" style="cursor: pointer;" alt="Descargar"
+																						name="iconoFila" title="Descargar" border="0"
+																						onClick="accionDescargaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})"
+																						onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																				</td>
+																			</tr>
+																		</c:if>
 																	</c:when>
 																	<c:when	test="${SCS_PERMISOS_ACTUACIONES_VALIDADAS=='1'}">
 																		<c:choose>
