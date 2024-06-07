@@ -1734,6 +1734,8 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 								" AND " + CajgRemesaBean.C_IDREMESA + " = " + getIdRemesa())) {
 							throw new Exception("No se ha podido actualizar el campo idIntercambio de la tabla " + CajgRemesaBean.T_NOMBRETABLA);
 						}
+						tx.commit();
+						tx.begin();
 					}
 					//Si esta activo el envio de documentos digitalizados tienen que estar los obligatorios
 					
