@@ -606,7 +606,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 					      "                    AND SCS_PARENTESCO.IDPARENTESCO = " +
 					      "                        FAMILIA.IDPARENTESCO)) || ')') AS DESCPRESENTADOR, " +
 					      
-						  "          SELECT F_SIGA_GETRECURSO(D.ABREVIATURA, " + (String)params.get("codIdioma") +") DOCUMENTOABREVIATURA" +
+						  "          F_SIGA_GETRECURSO(D.ABREVIATURA, " + (String)params.get("codIdioma") +") DOCUMENTOABREVIATURA" +
 					      "  	,DE.COMISIONAJG " ;
 					      
 				if(isColegioConfiguradoEnvioCAJG) {	      
