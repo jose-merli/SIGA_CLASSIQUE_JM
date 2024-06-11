@@ -16,9 +16,12 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.json.JSONObject;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.services.gen.FicherosService;
 import org.redabogacia.sigaservices.app.services.scs.DocumentacionDesignaService;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import org.redabogacia.sigaservices.app.vo.gen.FicheroVo;
 import org.redabogacia.sigaservices.app.vo.scs.DocumentacionDesignaVo;
 
@@ -310,7 +313,19 @@ public class DefinirDocumentacionDesignaAction extends MasterAction {
 			VoUiService<DefinirDocumentacionDesignaForm, DocumentacionDesignaVo> voService = new DocumentacionDesignaVoService();
 			DocumentacionDesignaVo objectVo = voService.getForm2Vo(definirDocumentacionDesignaForm);
 			objectVo.setUsumodificacion(Integer.parseInt(usr.getUserName()));			
+			
+			ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 
+			String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_MB.getValor());
+			
+			int maxSizebytes = Integer.parseInt(maxsize) * 1000 * 1024;
+			if (definirDocumentacionDesignaForm.getTheFile() != null && definirDocumentacionDesignaForm.getTheFile().getFileSize() > maxSizebytes) {
+				StringBuilder error = new StringBuilder();
+				error.append(UtilidadesString.getMensajeIdioma(usr,"messages.general.file.maxsize"));
+				error.replace(error.indexOf("{"), error.indexOf("}")+1, maxsize);
+				throw new SIGAException(error.toString());
+			}
+			
 			//Insertamos primero el fichero para quedarnos con su referencia
 			documentacionService.uploadFile(objectVo);
 
@@ -318,7 +333,10 @@ public class DefinirDocumentacionDesignaAction extends MasterAction {
 			documentacionService.insert(objectVo);
 			
 			
-		} catch (Exception e) {
+		} catch (SIGAException e) {
+			throw e;
+			
+		}catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
 		}
 
@@ -613,13 +631,29 @@ public class DefinirDocumentacionDesignaAction extends MasterAction {
 	    		}else{
 	    			composicionTablaFicheros +="<td>&nbsp;</td>";
 	    		}
-	    		String actuacionValidada = UtilidadesHash.getString(actuacion, "VALIDADA")!=null && UtilidadesHash.getString(actuacion, "VALIDADA").equalsIgnoreCase("1")?"1":"0";
-		 		if((UtilidadesHash.getString(actuacion, "IDFACTURACION").isEmpty() && actuacionValidada.equals("0") ) && (usr.getUserName().equalsIgnoreCase(String.valueOf(ficheroVo.getUsumodificacion())))){
-		 			composicionTablaFicheros +="<td ><img id='iconoboton_borrar1' src='/SIGA/html/imagenes/bborrar_off.gif' style='cursor:pointer;'  name='borrar_1' border='0' " +
-			 		"onClick='return borrarFicheroFichaColegial("+DocumentacionAuxiliar.getIdinstitucion()+","+DocumentacionAuxiliar.getIdfichero()+","+DocumentacionAuxiliar.getIddocumentaciondes()+");' onMouseOut='MM_swapImgRestore()' onMouseOver='MM_swapImage('borrar_1','','/SIGA/html/imagenes/bborrar_on.gif',1)'>";
-		 		}else{
-		 			composicionTablaFicheros +="<td ><img id='iconoboton_borrar2' src='/SIGA/html/imagenes/bborrar_disable.gif' style='cursor:pointer;' name='borrar_2' border='0'>";
-		 		}
+	    		
+	    		
+	    		
+	    		GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+				String permisosActicionesValidadas = paramAdm.getValor(usr.getLocation (), "SCS", "SCS_PERMISOS_ACTUACIONES_VALIDADAS", "0");
+				
+	    		if((permisosActicionesValidadas==null || permisosActicionesValidadas.equals(AppConstants.DB_FALSE))) {
+	    			if(UtilidadesHash.getString(actuacion, "IDFACTURACION").isEmpty() && (usr.getUserName().equalsIgnoreCase(String.valueOf(ficheroVo.getUsumodificacion())))) {
+	    				composicionTablaFicheros +="<td ><img id='iconoboton_borrar1' src='/SIGA/html/imagenes/bborrar_off.gif' style='cursor:pointer;'  name='borrar_1' border='0' " +
+	    			 		"onClick='return borrarFicheroFichaColegial("+DocumentacionAuxiliar.getIdinstitucion()+","+DocumentacionAuxiliar.getIdfichero()+","+DocumentacionAuxiliar.getIddocumentaciondes()+");' onMouseOut='MM_swapImgRestore()' onMouseOver='MM_swapImage('borrar_1','','/SIGA/html/imagenes/bborrar_on.gif',1)'>";
+	    			}else {
+	    				
+	    				composicionTablaFicheros +="<td ><img id='iconoboton_borrar2' src='/SIGA/html/imagenes/bborrar_disable.gif' style='cursor:pointer;' name='borrar_2' border='0'>";
+	    			}
+	    		}else {
+		    		String actuacionValidada = UtilidadesHash.getString(actuacion, "VALIDADA")!=null && UtilidadesHash.getString(actuacion, "VALIDADA").equalsIgnoreCase("1")?"1":"0";
+			 		if(actuacionValidada.equals("0") && (usr.getUserName().equalsIgnoreCase(String.valueOf(ficheroVo.getUsumodificacion())))){
+			 			composicionTablaFicheros +="<td ><img id='iconoboton_borrar1' src='/SIGA/html/imagenes/bborrar_off.gif' style='cursor:pointer;'  name='borrar_1' border='0' " +
+				 		"onClick='return borrarFicheroFichaColegial("+DocumentacionAuxiliar.getIdinstitucion()+","+DocumentacionAuxiliar.getIdfichero()+","+DocumentacionAuxiliar.getIddocumentaciondes()+");' onMouseOut='MM_swapImgRestore()' onMouseOver='MM_swapImage('borrar_1','','/SIGA/html/imagenes/bborrar_on.gif',1)'>";
+			 		}else{
+			 			composicionTablaFicheros +="<td ><img id='iconoboton_borrar2' src='/SIGA/html/imagenes/bborrar_disable.gif' style='cursor:pointer;' name='borrar_2' border='0'>";
+			 		}
+	    		}
 		 		composicionTablaFicheros +="<img id='iconoboton_download1' src='/SIGA/html/imagenes/bdownload_off.gif' style='cursor:pointer;' " +
 		 		"name='iconoFila' border='0' onClick='return downloadFichero("+DocumentacionAuxiliar.getIdinstitucion()+","+DocumentacionAuxiliar.getIdfichero()+");' " +
 		 		"onMouseOut='MM_swapImgRestore()' onMouseOver='MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)'>" +

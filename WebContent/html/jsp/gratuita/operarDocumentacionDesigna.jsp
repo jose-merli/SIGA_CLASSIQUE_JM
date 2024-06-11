@@ -82,8 +82,11 @@
 		<td >
 			<c:choose>
 				
-				<c:when test="${DefinirDocumentacionDesignaForm.modo=='insertar'}">
-					<siga:Select id="idActuacion" queryId="getActuacionesDesignaNoAnuladas" selectedIds="${idActuacionSelected}" required="true" width="300" firstLabel="Designacion"  />
+				<c:when test="${DefinirDocumentacionDesignaForm.modo=='insertar' && SCS_PERMISOS_ACTUACIONES_VALIDADAS=='1' }">
+					<siga:Select id="idActuacion" queryId="getActuacionesDesignaNoValidadas" selectedIds="${idActuacionSelected}" required="true" width="300" firstLabel="Designacion"  />
+				</c:when>
+				<c:when test="${DefinirDocumentacionDesignaForm.modo=='insertar' && SCS_PERMISOS_ACTUACIONES_VALIDADAS=='0' }">
+					<siga:Select id="idActuacion" queryId="getActuacionesDesignaNoFacturadas" selectedIds="${idActuacionSelected}" required="true" width="300" firstLabel="Designacion"  />
 				</c:when>
 				<c:when test="${DefinirDocumentacionDesignaForm.modo=='ver'}">
 					<siga:Select id="idActuacion" queryId="getActuacionesDesigna" params="${paramActuacionesJson}" selectedIds="${idActuacionSelected}" firstLabel="Designacion" required="true"  disabled="true"  width="300"   />
