@@ -28,6 +28,7 @@ import com.atos.utils.FileHelper;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesFicheros;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.EnvDestinatariosBean;
 import com.siga.beans.EnvDocumentosAdm;
 import com.siga.beans.EnvDocumentosBean;
@@ -488,7 +489,10 @@ public class DocumentosAction extends MasterAction
 			String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_MB.getValor());
 			int maxSizebytes = Integer.parseInt(maxsize) * 1000 * 1024;
 			if(theFile!=null && form.getTheFile().getFileSize() > maxSizebytes){				
-				throw new SIGAException("messages.general.file.maxsize",new String[] { (maxsize) });
+				StringBuilder error = new StringBuilder();
+				error.append(UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.general.file.maxsize"));
+				error.replace(error.indexOf("{"), error.indexOf("}")+1, maxsize);
+				throw new SIGAException(error.toString());
 			}
 			
 	        EnvDocumentosAdm docAdm = new EnvDocumentosAdm(this.getUserBean(request));

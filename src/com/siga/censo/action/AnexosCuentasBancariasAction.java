@@ -191,7 +191,10 @@ public class AnexosCuentasBancariasAction extends MasterAction{
 				String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_MB.getValor());
 				int maxSizebytes = Integer.parseInt(maxsize) * 1000 * 1024;
 				if (formAnexo.getTheFile().getFileSize() > maxSizebytes){				
-					throw new SIGAException("messages.general.file.maxsize",new String[] { (maxsize) });
+					StringBuilder error = new StringBuilder();
+					error.append(UtilidadesString.getMensajeIdioma(usuario,"messages.general.file.maxsize"));
+					error.replace(error.indexOf("{"), error.indexOf("}")+1, maxsize);
+					throw new SIGAException(error.toString());
 				}	
 				
 				this.uploadFile(formAnexo, usuario);
@@ -246,7 +249,10 @@ public class AnexosCuentasBancariasAction extends MasterAction{
 				String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_MB.getValor());
 				int maxSizebytes = Integer.parseInt(maxsize) * 1000 * 1024;
 				if (formAnexo.getTheFile().getFileSize() > maxSizebytes){				
-					throw new SIGAException("messages.general.file.maxsize",new String[] { (maxsize) });
+					StringBuilder error = new StringBuilder();
+					error.append(UtilidadesString.getMensajeIdioma(usuario,"messages.general.file.maxsize"));
+					error.replace(error.indexOf("{"), error.indexOf("}")+1, maxsize);
+					throw new SIGAException(error.toString());
 				}
 				
 				this.uploadFile(formAnexo, usuario);

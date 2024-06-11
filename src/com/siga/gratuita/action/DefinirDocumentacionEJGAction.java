@@ -27,7 +27,6 @@ import org.redabogacia.sigaservices.app.services.scs.EjgService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import org.redabogacia.sigaservices.app.vo.scs.DocumentacionEjgVo;
-import org.redabogacia.sigaservices.app.vo.scs.EstadoEjgVo;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -44,7 +43,6 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirDocumentacionEJGForm;
-import com.siga.gratuita.form.DefinirEstadosEJGForm;
 import com.siga.gratuita.form.service.DocumentacionEjgVoService;
 import com.siga.gratuita.service.SIGADocumentacionEjgService;
 import com.siga.gratuita.vos.SIGADocumentacionEjgVo;
@@ -279,8 +277,12 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 
 			String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_MB.getValor());
 			int maxSizebytes = Integer.parseInt(maxsize) * 1000 * 1024;
+			
 			if (definirDocumentacionEJGForm.getTheFile() != null && definirDocumentacionEJGForm.getTheFile().getFileSize() > maxSizebytes) {
-				throw new SIGAException("messages.general.file.maxsize", new String[] { (maxsize) });
+				StringBuilder error = new StringBuilder();
+				error.append(UtilidadesString.getMensajeIdioma(usr,"messages.general.file.maxsize"));
+				error.replace(error.indexOf("{"), error.indexOf("}")+1, maxsize);
+				throw new SIGAException(error.toString());
 			}
 
 			SIGADocumentacionEjgService documentacionEjgService = new SIGADocumentacionEjgService();
@@ -337,7 +339,10 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 				String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_MB.getValor());
 				int maxSizebytes = Integer.parseInt(maxsize) * 1000 * 1024;
 				if (definirDocumentacionEJGForm.getTheFile() != null && definirDocumentacionEJGForm.getTheFile().getFileSize() > maxSizebytes) {
-					throw new SIGAException("messages.general.file.maxsize", new String[] { (maxsize) });
+					StringBuilder error = new StringBuilder();
+					error.append(UtilidadesString.getMensajeIdioma(usr,"messages.general.file.maxsize"));
+					error.replace(error.indexOf("{"), error.indexOf("}")+1, maxsize);
+					throw new SIGAException(error.toString());
 				}
 
 				documentacionEjgService.uploadFile(documentacionEjgVo,usr);
