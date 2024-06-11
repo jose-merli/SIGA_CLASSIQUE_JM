@@ -312,7 +312,10 @@ public class SIGAPlantillasEnviosPlantillasAction extends MasterAction
 			String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_MB.getValor());
 			int maxSizebytes = Integer.parseInt(maxsize) * 1000 * 1024;
 			if (theFile != null && theFile.getFileSize() > maxSizebytes) {
-				throw new SIGAException("messages.general.file.maxsize", new String[] { (maxsize) });
+				StringBuilder error = new StringBuilder();
+				error.append(UtilidadesString.getMensajeIdioma(userBean,"messages.general.file.maxsize"));
+				error.replace(error.indexOf("{"), error.indexOf("}")+1, maxsize);
+				throw new SIGAException(error.toString());
 			}
 			
 			
