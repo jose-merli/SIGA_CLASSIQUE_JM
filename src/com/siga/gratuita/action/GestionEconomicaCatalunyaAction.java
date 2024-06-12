@@ -424,7 +424,7 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 				StringBuilder error = new StringBuilder();
 				error.append(UtilidadesString.getMensajeIdioma(usrBean,"messages.general.file.maxsize"));
 				error.replace(error.indexOf("{"), error.indexOf("}")+1, maxsize);
-				throw new SIGAException(error.toString());
+				return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
 			}
 			
 //			log.info("getPathFile"+gestionEconomicaForm.getPathFile());
