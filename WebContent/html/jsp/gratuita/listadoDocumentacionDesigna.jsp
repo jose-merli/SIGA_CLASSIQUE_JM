@@ -44,7 +44,7 @@
 	String modo = (String) ses.getAttribute("Modo");
 	
 	String	botones="V,N";
-	
+	String permisosActicionesValidadas = (String)request.getAttribute("SCS_PERMISOS_ACTUACIONES_VALIDADAS");
 
 %>
 
@@ -117,16 +117,14 @@
 	    	int recordNumber=1;
 	    	while (recordNumber-1 < obj.size())	{	
 	    		DocumentacionDesignaVo fila = (DocumentacionDesignaVo) obj.get(recordNumber-1);
-	    		
+	    		botonesFila = "C,E,B";
 	    		if (modo.equalsIgnoreCase("ver")){
 					botonesFila = "C";
-				}else  if(fila.getAnulada().equals("1")||fila.getValidada().equals("1")){
-					botonesFila = "C,E";
-				}else{
-					botonesFila = "C,E,B";
+				}else if(permisosActicionesValidadas!=null && permisosActicionesValidadas.equals("1")){
+					if(fila.getAnulada().equals("1")||fila.getValidada().equals("1")){
+						botonesFila = "C,E";
+					}
 				}
-	    		
-	    		
 %>				
 				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botonesFila%>" clase="listaNonEdit">
 					<td>

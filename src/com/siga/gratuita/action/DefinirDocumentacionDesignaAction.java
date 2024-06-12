@@ -490,6 +490,9 @@ public class DefinirDocumentacionDesignaAction extends MasterAction {
 
 			List<DocumentacionDesignaVo> lista = documentacioDesignaService.getList(map);
 			request.setAttribute("resultado", lista);
+			GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+			String permisosActicionesValidadas = paramAdm.getValor(usr.getLocation (), "SCS", "SCS_PERMISOS_ACTUACIONES_VALIDADAS", "0");
+			request.setAttribute("SCS_PERMISOS_ACTUACIONES_VALIDADAS", permisosActicionesValidadas);
 			/*String informeUnico = ClsConstants.DB_TRUE;
 			AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
 			Vector informeBeans=adm.obtenerInformesTipo(this.getUserBean(request).getLocation(),"DEJG",null, null);
@@ -524,6 +527,11 @@ public class DefinirDocumentacionDesignaAction extends MasterAction {
 
 			List<DocumentacionDesignaVo> lista = documentacioDesignaService.getList(map);
 			request.setAttribute("resultado", lista);
+			
+			GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+			String permisosActicionesValidadas = paramAdm.getValor(usr.getLocation (), "SCS", "SCS_PERMISOS_ACTUACIONES_VALIDADAS", "0");
+			request.setAttribute("SCS_PERMISOS_ACTUACIONES_VALIDADAS", permisosActicionesValidadas);
+			
 			/*String informeUnico = ClsConstants.DB_TRUE;
 			AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
 			Vector informeBeans=adm.obtenerInformesTipo(this.getUserBean(request).getLocation(),"DEJG",null, null);
