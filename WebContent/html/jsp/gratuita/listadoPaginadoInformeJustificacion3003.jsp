@@ -76,7 +76,7 @@ function informeGenerico(){
 		alert("Es obligatorio el colegiado para descargar el informe de justificación.");
 		return false;
 	}
-	if(fichaColegial=='true'){
+	if(activarRestriccionesFicha=='true'){
 		document.InformesGenericosForm.enviar.value ='0';
 		activarRestriccionesFicha = 'true';
 	}else{
@@ -147,11 +147,11 @@ function accionNuevaActuacion(anio,idTurno,numero,idInstitucion,validarActuacion
 			
 }
 
-function accionEditarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion,validarActuaciones,fichaColegial,isLetrado) 
+function accionEditarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion,validarActuaciones,activarRestriccionesFicha,isLetrado) 
 {	
 	
 	if(isLetrado && isLetrado=='true'){
-		if(document.InformeJustificacionMasivaForm.fichaColegial.value=='true'){
+		if(document.InformeJustificacionMasivaForm.activarRestriccionesFicha.value=='true'){
 			if(trim(document.InformeJustificacionMasivaForm.mensajeResponsabilidadJustificacionLetrado.value)!=''){
 				if (!confirm(document.InformeJustificacionMasivaForm.mensajeResponsabilidadJustificacionLetrado.value)){
 					fin();
@@ -164,14 +164,14 @@ function accionEditarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion
 	
 	
 	var accion = document.ActuacionesDesignasForm.action;
-	if(document.InformeJustificacionMasivaForm.fichaColegial.value=='true')
+	if(document.InformeJustificacionMasivaForm.activarRestriccionesFicha.value=='true')
 		document.ActuacionesDesignasForm.action = accion.replace('JGR_ActuacionesDesigna','JGR_ActuacionDesignaLetrado');
 	document.ActuacionesDesignasForm.anio.value = anio;
 	document.ActuacionesDesignasForm.idTurno.value = idTurno;
 	document.ActuacionesDesignasForm.numero.value = numero;
 	document.ActuacionesDesignasForm.nactuacion.value = numeroActuacion;
 	document.ActuacionesDesignasForm.actuacionValidada.value = validarActuaciones;
-	if(fichaColegial && fichaColegial=='true')
+	if(activarRestriccionesFicha && activarRestriccionesFicha=='true')
 		document.ActuacionesDesignasForm.modo.value = "editarJustificacionFicha";
 	else
 		document.ActuacionesDesignasForm.modo.value = "editarJustificacion";
@@ -181,12 +181,12 @@ function accionEditarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion
 		parent.buscar();
 			
 }
-function accionBorrarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion,validarActuaciones,fichaColegial) 
+function accionBorrarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion,validarActuaciones,activarRestriccionesFicha) 
 {	
 	
 	if (confirm('<siga:Idioma key="messages.deleteConfirmation"/>')){
 		var accion = document.ActuacionesDesignasForm.action;
-		if(document.InformeJustificacionMasivaForm.fichaColegial.value=='true')
+		if(document.InformeJustificacionMasivaForm.activarRestriccionesFicha.value=='true')
 			document.ActuacionesDesignasForm.action = accion.replace('JGR_ActuacionesDesigna','JGR_ActuacionDesignaLetrado');
 		document.ActuacionesDesignasForm.target = "submitArea";
 		document.ActuacionesDesignasForm.anio.value = anio;
@@ -203,7 +203,7 @@ function accionBorrarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion
 function accionConsultarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion) 
 {	
 	var accion = document.ActuacionesDesignasForm.action;
-	if(document.InformeJustificacionMasivaForm.fichaColegial.value=='true')
+	if(document.InformeJustificacionMasivaForm.activarRestriccionesFicha.value=='true')
 		document.ActuacionesDesignasForm.action = accion.replace('JGR_ActuacionesDesigna','JGR_ActuacionDesignaLetrado');
 	
 	document.ActuacionesDesignasForm.anio.value = anio;
@@ -397,7 +397,7 @@ function accionGuardar (isLetrado)
 	
 	if(datosBaja!=''||datosJustificacion!=''){
 		if(isLetrado && isLetrado==true){
-			if(document.InformeJustificacionMasivaForm.fichaColegial.value=='true'){
+			if(document.InformeJustificacionMasivaForm.activarRestriccionesFicha.value=='true'){
 				if(trim(document.InformeJustificacionMasivaForm.mensajeResponsabilidadJustificacionLetrado.value)!=''){
 					if (!confirm(document.InformeJustificacionMasivaForm.mensajeResponsabilidadJustificacionLetrado.value)){
 						fin();
@@ -537,7 +537,7 @@ function onCheckAcreditacion(elementoPulsado){
 	}else{
 		//Si se pulsa el check de acreditacion y ademas la designa tiene validar actuaciones a no, se pulsa tambien el check 
 		// de validacion(ya que al no ser necesario validar las actuaciones quedaran validadas en la insercion)
-		if(actuacionValidarJustificaciones=='N'||document.InformeJustificacionMasivaForm.fichaColegial.value=='false'){
+		if(actuacionValidarJustificaciones=='N'||document.InformeJustificacionMasivaForm.activarRestriccionesFicha.value=='false'){
 			document.getElementById(idValidacion).checked = 'checked';
 		}
 		
@@ -586,7 +586,7 @@ function onCheckAcreditacion(elementoPulsado){
 			}else{
 				if(idAcreditacion!=idAcreditacionProcedimiento){
 					jQuery("#"+elementoProcedimiento).removeAttr("disabled");
-					if(document.InformeJustificacionMasivaForm.fichaColegial.value=='false'&&actuacionValidarJustificaciones=='S'){
+					if(document.InformeJustificacionMasivaForm.activarRestriccionesFicha.value=='false'&&actuacionValidarJustificaciones=='S'){
 						jQuery("#"+elementoValidacion).removeAttr("disabled");
 					}
 					
@@ -726,14 +726,14 @@ function onCheckAcreditacion(elementoPulsado){
 					if(auxIdTipoAcreditacion=='1'||auxIdTipoAcreditacion=='2'){
 						if(idTipoAcreditacion=='3'){
 							jQuery("#"+idProcedimiento).removeAttr("disabled");
-							if(document.InformeJustificacionMasivaForm.fichaColegial.value=='false'&&actuacionValidarJustificaciones=='S'){
+							if(document.InformeJustificacionMasivaForm.activarRestriccionesFicha.value=='false'&&actuacionValidarJustificaciones=='S'){
 								jQuery("#"+elementoValidacion).removeAttr("disabled");
 							}
 						}
 					}else if(auxIdTipoAcreditacion=='3'){
 						if(((idTipoAcreditacion=='1'||idTipoAcreditacion=='2')||(idTipoAcreditacion=='3'&&idAcreditacion!=auxIdAcreditacion))&&!isCheckAlgunaInicioOFin){
 							jQuery("#"+idProcedimiento).removeAttr("disabled");
-							if(document.InformeJustificacionMasivaForm.fichaColegial.value=='false'&&actuacionValidarJustificaciones=='S'){
+							if(document.InformeJustificacionMasivaForm.activarRestriccionesFicha.value=='false'&&actuacionValidarJustificaciones=='S'){
 								jQuery("#"+elementoValidacion).removeAttr("disabled");
 							}
 						}
@@ -779,7 +779,7 @@ function ajustarAltoResultados(){
 function ajusteDivListado(){
 	var h= jQuery(window).height()
 	h=h-jQuery('#listadoInformeJustificacionCab').height();
-	if(document.InformeJustificacionMasivaForm.fichaColegial.value=='false'){
+	if(document.InformeJustificacionMasivaForm.activarRestriccionesFicha.value=='false'){
 		h=h-jQuery('#selectorFechaJustificacion').height();
 	}
 	h=h-60;
@@ -1067,7 +1067,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		<input type="hidden" id="ejisActivo" value="${EJIS_ACTIVO}"/>
 
 		<c:choose>
-			<c:when test="${InformeJustificacionMasivaForm.fichaColegial==true}">
+			<c:when test="${InformeJustificacionMasivaForm.activarRestriccionesFicha==true}">
 				<html:hidden property="fecha" />
 			</c:when>
 			<c:otherwise>
@@ -1172,7 +1172,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 						</c:if>
 						<c:set var="valiDisabled" value="" />
 						<c:if
-							test="${InformeJustificacionMasivaForm.fichaColegial==true || (designa.actuacionValidarJustificaciones!=null && designa.actuacionValidarJustificaciones=='N') || designa.cambioLetrado=='S' }">
+							test="${InformeJustificacionMasivaForm.activarRestriccionesFicha==true || (designa.actuacionValidarJustificaciones!=null && designa.actuacionValidarJustificaciones=='N') || designa.cambioLetrado=='S' }">
 							<c:set var="valiDisabled" value="disabled='disabled'" />
 						</c:if>
 
@@ -1328,11 +1328,11 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 							</c:when>
 
 
-							<c:when test="${InformeJustificacionMasivaForm.fichaColegial==false && designa.tipoResolucionDesigna=='SIN_EJG'}">
+							<c:when test="${InformeJustificacionMasivaForm.activarRestriccionesFicha==false && designa.tipoResolucionDesigna=='SIN_EJG'}">
 								<td rowspan="${designa.rowSpan}" style="${colorEJG}"><siga:Idioma key="gratuita.informeJustificacionMasiva.resolucionDesignaSinEjg.abreviado" /></td>
 
 							</c:when>
-							<c:when test="${InformeJustificacionMasivaForm.fichaColegial==true && designa.tipoResolucionDesigna=='SIN_EJG'}">
+							<c:when test="${InformeJustificacionMasivaForm.activarRestriccionesFicha==true && designa.tipoResolucionDesigna=='SIN_EJG'}">
 								<td rowspan="${designa.rowSpan}">&nbsp;</td>
 
 							</c:when>
@@ -1390,7 +1390,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 						<!-- Juzgado -->
 						<td rowspan="${designa.rowSpan}"><c:choose>
 								<c:when test="${designa.juzgado!=null && designa.juzgado!=''}">
-									<c:out value="${designa.juzgado}"></c:out>
+									<c:out value="${designa.juzgado}"/>&nbsp;
 								</c:when>
 								<c:otherwise>
 							&nbsp;
@@ -1401,7 +1401,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 						<!-- Asunto / Nº proc. -->
 						<td rowspan="${designa.rowSpan}"><c:choose>
 								<c:when test="${designa.asunto!=null && designa.asunto!=''}">
-									<c:out value="${designa.asunto}"></c:out>
+									<c:out value="${designa.asunto}"/>&nbsp;
 								</c:when>
 								<c:otherwise>
 					  		&nbsp;
@@ -1412,7 +1412,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 						<!-- Personas asociadas -->
 						<td rowspan="${designa.rowSpan}"><c:choose>
 								<c:when test="${designa.clientes!=null && designa.clientes!=''}">
-									<c:out value="${designa.clientes}"/>
+									<c:out value="${designa.clientes}"/>&nbsp;
 								</c:when>
 								<c:otherwise>
 					  		&nbsp;
@@ -1484,7 +1484,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 										<td rowspan="${designa.rowSpan}"><input type="checkbox" disabled="disabled" /></td>
 										<td rowspan="${designa.rowSpan}"><c:choose>
 												<c:when
-													test="${(designa.juzgado=='' || designa.idProcedimiento=='') &&   permitirBotones==true && designa.estado!=null && designa.estado=='V' &&(designa.cambioLetrado=='N'&&(InformeJustificacionMasivaForm.fichaColegial==false||editarDesignaLetrados=='1'))}">
+													test="${(designa.juzgado=='' || designa.idProcedimiento=='') &&   permitirBotones==true && designa.estado!=null && designa.estado=='V' &&(designa.cambioLetrado=='N'&&(InformeJustificacionMasivaForm.activarRestriccionesFicha==false||editarDesignaLetrados=='1'))}">
 													<img id="iconoboton_editar1" src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>" style="cursor: hand;" alt="Editar" name="editar_1"
 														border="0" onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${designa.fecha});"
 														onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
@@ -1498,7 +1498,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 												<c:when test="${designa.baja=='1'}">
 													<input type="checkbox" disabled="disabled" checked="checked" />
 												</c:when>
-												<c:when test="${InformeJustificacionMasivaForm.fichaColegial==true}">
+												<c:when test="${InformeJustificacionMasivaForm.activarRestriccionesFicha==true}">
 													<input type="checkbox" disabled="disabled" />
 												</c:when>
 												<c:otherwise>
@@ -1540,7 +1540,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 										<td><input type="checkbox" disabled="disabled" /></td>
 										<td><c:choose>
 												<c:when
-													test="${(designa.juzgado=='' || designa.idProcedimiento=='') &&   permitirBotones==true && designa.estado!=null && designa.estado=='V' &&(designa.cambioLetrado=='N'&&(InformeJustificacionMasivaForm.fichaColegial==false||editarDesignaLetrados=='1'))}">
+													test="${(designa.juzgado=='' || designa.idProcedimiento=='') &&   permitirBotones==true && designa.estado!=null && designa.estado=='V' &&(designa.cambioLetrado=='N'&&(InformeJustificacionMasivaForm.activarRestriccionesFicha==false||editarDesignaLetrados=='1'))}">
 													<img id="iconoboton_editar1" src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>" style="cursor: hand;" alt="Editar" name="editar_1"
 														border="0" onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${designa.fecha});"
 														onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
@@ -1554,7 +1554,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 												<c:when test="${designa.baja=='1'}">
 													<input type="checkbox" disabled="disabled" checked="checked" />
 												</c:when>
-												<c:when test="${InformeJustificacionMasivaForm.fichaColegial==true}">
+												<c:when test="${InformeJustificacionMasivaForm.activarRestriccionesFicha==true}">
 													<input type="checkbox" disabled="disabled" />
 												</c:when>
 												<c:otherwise>
@@ -1731,7 +1731,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 										<td rowspan="${designa.rowSpan}"><input type="checkbox" disabled="disabled" /></td>
 										<td rowspan="${designa.rowSpan}"><c:choose>
 												<c:when
-													test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V' &&(designa.cambioLetrado=='N'&&(InformeJustificacionMasivaForm.fichaColegial==false||editarDesignaLetrados=='1'))}">
+													test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V' &&(designa.cambioLetrado=='N'&&(InformeJustificacionMasivaForm.activarRestriccionesFicha==false||editarDesignaLetrados=='1'))}">
 													<img id="iconoboton_editar1" src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>" style="cursor: hand;" alt="Editar" name="editar_1"
 														border="0" onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${designa.fecha});"
 														onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
@@ -1745,7 +1745,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 												<c:when test="${designa.baja=='1'}">
 													<input type="checkbox" disabled="disabled" checked="checked" />
 												</c:when>
-												<c:when test="${InformeJustificacionMasivaForm.fichaColegial==true}">
+												<c:when test="${InformeJustificacionMasivaForm.activarRestriccionesFicha==true}">
 													<input type="checkbox" disabled="disabled" />
 												</c:when>
 
@@ -1777,7 +1777,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 												<td><input type="checkbox" disabled="disabled" /></td>
 												<td rowspan="${designa.rowSpan}"><c:choose>
 														<c:when
-															test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&&(designa.cambioLetrado=='N'&&(InformeJustificacionMasivaForm.fichaColegial==false||editarDesignaLetrados=='1'))}">
+															test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&&(designa.cambioLetrado=='N'&&(InformeJustificacionMasivaForm.activarRestriccionesFicha==false||editarDesignaLetrados=='1'))}">
 															<img id="iconoboton_editar1" src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>" style="cursor: hand;" alt="Editar" name="editar_1"
 																border="0" onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${designa.fecha});"
 																onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
@@ -1791,7 +1791,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 														<c:when test="${designa.baja=='1'}">
 															<input type="checkbox" disabled="disabled" checked="checked" />
 														</c:when>
-														<c:when test="${InformeJustificacionMasivaForm.fichaColegial==true}">
+														<c:when test="${InformeJustificacionMasivaForm.activarRestriccionesFicha==true}">
 															<input type="checkbox" disabled="disabled" />
 														</c:when>
 
@@ -1820,7 +1820,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 															<td><input type="checkbox" disabled="disabled" /></td>
 															<td rowspan="${designa.rowSpan}"><c:choose>
 																	<c:when
-																		test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&&(designa.cambioLetrado=='N'&&(InformeJustificacionMasivaForm.fichaColegial==false||editarDesignaLetrados=='1'))}">
+																		test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&&(designa.cambioLetrado=='N'&&(InformeJustificacionMasivaForm.activarRestriccionesFicha==false||editarDesignaLetrados=='1'))}">
 																		<img id="iconoboton_editar1" src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>" style="cursor: hand;" alt="Editar" name="editar_1"
 																			border="0" onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${designa.fecha});"
 																			onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
@@ -1834,7 +1834,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																	<c:when test="${designa.baja=='1'}">
 																		<input type="checkbox" disabled="disabled" checked="checked" />
 																	</c:when>
-																	<c:when test="${InformeJustificacionMasivaForm.fichaColegial==true}">
+																	<c:when test="${InformeJustificacionMasivaForm.activarRestriccionesFicha==true}">
 																		<input type="checkbox" disabled="disabled" />
 																	</c:when>
 
@@ -1864,7 +1864,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																			type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled} /></td>
 																		<td rowspan="${designa.rowSpan}"><c:choose>
 																				<c:when
-																					test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&&(designa.cambioLetrado=='N'&&(InformeJustificacionMasivaForm.fichaColegial==false||editarDesignaLetrados=='1'))}">
+																					test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&&(designa.cambioLetrado=='N'&&(InformeJustificacionMasivaForm.activarRestriccionesFicha==false||editarDesignaLetrados=='1'))}">
 																					<img id="iconoboton_editar1" src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>" style="cursor: hand;" alt="Editar" name="editar_1"
 																						border="0" onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${designa.fecha});"
 																						onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
@@ -1878,7 +1878,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																				<c:when test="${designa.baja=='1'}">
 																					<input type="checkbox" disabled="disabled" checked="checked" />
 																				</c:when>
-																				<c:when test="${InformeJustificacionMasivaForm.fichaColegial==true}">
+																				<c:when test="${InformeJustificacionMasivaForm.activarRestriccionesFicha==true}">
 																					<input type="checkbox" disabled="disabled" />
 																				</c:when>
 
@@ -2142,7 +2142,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																	<input type="hidden"
 																		id="nigactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																		value="${actuacion.nig}" />
-																	<c:if test="${InformeJustificacionMasivaForm.fichaColegial==false}">
+																	
 																	
 																		<input name="checkAcreditacion"
 																			id="acre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
@@ -2150,7 +2150,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																		<input name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion"
 																			id="checkacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																			type="hidden" />
-																	</c:if>
+																	
 																	<c:out value="${actuacion.descripcion}" />
 																	</td>
 																</c:when>
@@ -2206,7 +2206,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 														<td>
 															<c:choose>
 																<c:when
-																	test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V') && (designa.cambioLetrado=='S' || (actuacion.idFacturacion!=null&&actuacion.idFacturacion!='')||(actuacion.permitirEditActuacionLetrado=='0' && InformeJustificacionMasivaForm.fichaColegial==true ) )}">
+																	test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V') && (designa.cambioLetrado=='S' || (actuacion.idFacturacion!=null&&actuacion.idFacturacion!='')||(actuacion.permitirEditActuacionLetrado=='0' && InformeJustificacionMasivaForm.activarRestriccionesFicha==true ) )}">
 																	<img id="iconoboton_consultar1" src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>" style="cursor: hand;" alt="Consultar"
 																		name="consultar_1" border="0"
 																		onClick="accionConsultarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero});"
@@ -2216,11 +2216,11 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																<c:when test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V')}">
 																	<img id="iconoboton_editar1" src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>" style="cursor: hand;" alt="Editar" name="editar_1"
 																		border="0"
-																		onClick="accionEditarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero},'${designa.actuacionValidarJustificaciones}','${InformeJustificacionMasivaForm.fichaColegial }','${usrBean.letrado}');"
+																		onClick="accionEditarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero},'${designa.actuacionValidarJustificaciones}','${InformeJustificacionMasivaForm.activarRestriccionesFicha }','${usrBean.letrado}');"
 																		onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)" />
 																	<img id="iconoboton_borrar1" src="<html:rewrite page='/html/imagenes/bborrar_off.gif'/>" style="cursor: hand;" alt="Borrar" name="borrar_1"
 																		border="0"
-																		onClick="accionBorrarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero},'${designa.actuacionValidarJustificaciones}','${InformeJustificacionMasivaForm.fichaColegial }');"
+																		onClick="accionBorrarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero},'${designa.actuacionValidarJustificaciones}','${InformeJustificacionMasivaForm.activarRestriccionesFicha }');"
 																		onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('borrar_1','','<html:rewrite page='/html/imagenes/bborrar_on.gif'/>',1)" />
 																</c:when>
 																<c:otherwise>
@@ -2235,7 +2235,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																<c:when test="${designa.baja=='1'}">
 																	<input type="checkbox" disabled="disabled" checked="checked" />
 																</c:when>
-																<c:when test="${InformeJustificacionMasivaForm.fichaColegial==true}">
+																<c:when test="${InformeJustificacionMasivaForm.activarRestriccionesFicha==true}">
 																	<input type="checkbox" disabled="disabled" />
 																</c:when>
 
@@ -2472,7 +2472,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																	<input type="hidden"
 																		id="nigactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																		value="${actuacion.nig}" />
-																	<c:if test="${InformeJustificacionMasivaForm.fichaColegial==false}">
+																	
 
 																		<input name="checkAcreditacion"
 																			id="acre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
@@ -2480,7 +2480,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																		<input name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion"
 																			id="checkacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}_camposAdicionales_${actuacion.acreditacion.camposAdicionales}"
 																			type="hidden" />
-																	</c:if> 
+																	 
 																	<c:out value="${actuacion.descripcion}" />
 																	</td>
 																</c:when>
@@ -2538,7 +2538,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 															
 
 																<c:when
-																	test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V')&&(designa.cambioLetrado=='S' || (actuacion.idFacturacion!=null&&actuacion.idFacturacion!='') ||(actuacion.permitirEditActuacionLetrado=='0' && InformeJustificacionMasivaForm.fichaColegial==true ) )}">
+																	test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V')&&(designa.cambioLetrado=='S' || (actuacion.idFacturacion!=null&&actuacion.idFacturacion!='') ||(actuacion.permitirEditActuacionLetrado=='0' && InformeJustificacionMasivaForm.activarRestriccionesFicha==true ) )}">
 																	<img id="iconoboton_consultar1" src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>" style="cursor: hand;" alt="Consultar"
 																		name="consultar_1" border="0"
 																		onClick="accionConsultarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero});"
@@ -2548,11 +2548,11 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																<c:when test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V')}">
 																	<img id="iconoboton_editar1" src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>" style="cursor: hand;" alt="Editar" name="editar_1"
 																		border="0"
-																		onClick="accionEditarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero},'${designa.actuacionValidarJustificaciones}','${InformeJustificacionMasivaForm.fichaColegial }','${usrBean.letrado}');"
+																		onClick="accionEditarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero},'${designa.actuacionValidarJustificaciones}','${InformeJustificacionMasivaForm.activarRestriccionesFicha }','${usrBean.letrado}');"
 																		onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
 																	<img id="iconoboton_borrar1" src="<html:rewrite page='/html/imagenes/bborrar_off.gif'/>" style="cursor: hand;" alt="Borrar" name="borrar_1"
 																		border="0"
-																		onClick="accionBorrarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero},'${designa.actuacionValidarJustificaciones}','${InformeJustificacionMasivaForm.fichaColegial }');"
+																		onClick="accionBorrarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero},'${designa.actuacionValidarJustificaciones}','${InformeJustificacionMasivaForm.activarRestriccionesFicha }');"
 																		onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('borrar_1','','<html:rewrite page='/html/imagenes/bborrar_on.gif'/>',1)">
 																</c:when>
 																<c:otherwise>
@@ -2599,7 +2599,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 
 											</c:if>
 										</c:forEach>
-										<c:if test="${designa.estado!=null && designa.estado=='V'&& designa.cambioLetrado=='N' && ((designa.actuacionPermitidaLetrado=='1'&&InformeJustificacionMasivaForm.fichaColegial==true && designa.idProcedimiento!='')||(InformeJustificacionMasivaForm.fichaColegial==false)) }">
+										<c:if test="${designa.estado!=null && designa.estado=='V'&& designa.cambioLetrado=='N' && ((designa.actuacionPermitidaLetrado=='1'&&InformeJustificacionMasivaForm.activarRestriccionesFicha==true && designa.idProcedimiento!='')||(InformeJustificacionMasivaForm.activarRestriccionesFicha==false)) }">
 											<c:choose>
 												<c:when test="${status.count%2==0}">
 													<tr class="filaTablaPar">
