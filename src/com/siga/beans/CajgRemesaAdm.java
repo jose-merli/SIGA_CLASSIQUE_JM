@@ -39,7 +39,7 @@ public class CajgRemesaAdm extends MasterBeanAdministrador {
 							CajgRemesaBean.C_PREFIJO, 		CajgRemesaBean.C_NUMERO,
 							CajgRemesaBean.C_SUFIJO,		CajgRemesaBean.C_DESCRIPCION,
 							CajgRemesaBean.C_IDINTERCAMBIO, CajgRemesaBean.C_IDECOMCOLA,
-							CajgRemesaBean.C_IDTIPOREMESA, 
+							CajgRemesaBean.C_IDTIPOREMESA,CajgRemesaBean.C_IDGRUPOEXPEDIENTES,  
 							CajgRemesaBean.C_FECHAMODIFICACION,	CajgRemesaBean.C_USUMODIFICACION};
 		return campos;
 	}
@@ -71,6 +71,7 @@ public class CajgRemesaAdm extends MasterBeanAdministrador {
 			bean.setDescripcion(UtilidadesHash.getString(hash, CajgRemesaBean.C_DESCRIPCION));
 			bean.setIdIntercambio(UtilidadesHash.getInteger(hash,CajgRemesaBean.C_IDINTERCAMBIO));
 			bean.setIdTipoRemesa(UtilidadesHash.getShort(hash,CajgRemesaBean.C_IDTIPOREMESA));
+			bean.setIdGrupoExpedientes(UtilidadesHash.getShort(hash,CajgRemesaBean.C_IDGRUPOEXPEDIENTES));
 			bean.setIdecomcola(UtilidadesHash.getLong(hash,CajgRemesaBean.C_IDECOMCOLA));
 			
 			bean.setFechaMod(UtilidadesHash.getString (hash,CajgRemesaBean.C_FECHAMODIFICACION));
@@ -100,6 +101,7 @@ public class CajgRemesaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, CajgRemesaBean.C_DESCRIPCION, b.getDescripcion());
 			UtilidadesHash.set(hash, CajgRemesaBean.C_IDINTERCAMBIO, b.getIdIntercambio());
 			UtilidadesHash.set(hash, CajgRemesaBean.C_IDTIPOREMESA, b.getIdTipoRemesa());
+			UtilidadesHash.set(hash, CajgRemesaBean.C_IDGRUPOEXPEDIENTES, b.getIdGrupoExpedientes());
 			UtilidadesHash.set(hash, CajgRemesaBean.C_IDECOMCOLA, b.getIdecomcola());
 			
 			UtilidadesHash.set(hash, CajgRemesaBean.C_FECHAMODIFICACION, b.getFechaMod());	
@@ -147,7 +149,7 @@ public class CajgRemesaAdm extends MasterBeanAdministrador {
 				+ "r.descripcion AS DESCRIPCION_REMESA," + "" +
 				" e.idestado IDESTADO"
 				+ "," + "f_siga_getrecurso(t.descripcion, " + this.usrbean.getLanguage()
-				+ ") AS ESTADO"
+				+ ") AS ESTADO, r.IDGRUPOEXPEDIENTES "
 				+ " from cajg_remesa r, cajg_remesaestados e, cajg_tipoestadoremesa t" + " where r.idinstitucion = " + new Integer(this.usrbean.getLocation())
 				+ "" + " and r.idinstitucion = e.idinstitucion" + " and r.idremesa = e.idremesa" + " and e.idestado = t.idestado"
 				+ " and e.idestado = (select max(idestado)" + " from cajg_remesaestados" + " where idinstitucion = e.idinstitucion"
@@ -266,6 +268,8 @@ public class CajgRemesaAdm extends MasterBeanAdministrador {
 			stringBuilder.append("F_SIGA_GET_FECHAESTADOREMESA( REM.IDINSTITUCION, REM.IDREMESA, 1) AS FECHAGENERACION, ");
 			stringBuilder.append("F_SIGA_GET_FECHAESTADOREMESA( REM.IDINSTITUCION, REM.IDREMESA, 2) AS FECHAENVIO, ");
 			stringBuilder.append("F_SIGA_GET_FECHAESTADOREMESA( REM.IDINSTITUCION, REM.IDREMESA, 3) AS FECHARECEPCION ");
+			stringBuilder.append(", REM.IDGRUPOEXPEDIENTES ");
+			
 			stringBuilder.append("FROM CAJG_REMESA REM ");
 			stringBuilder.append("WHERE REM.IDINSTITUCION = ");
 			stringBuilder.append(idInstitucion);

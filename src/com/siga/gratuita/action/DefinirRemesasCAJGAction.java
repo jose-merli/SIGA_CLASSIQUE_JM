@@ -56,15 +56,13 @@ import org.redabogacia.sigaservices.app.services.caj.PCAJGInsertaColaService;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService.RESPUESTA_ENVIO_REMESA;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
+import org.redabogacia.sigaservices.app.services.gen.SelectDataService;
 import org.redabogacia.sigaservices.app.services.scs.EjgService;
-import org.redabogacia.sigaservices.app.services.scs.ScsEjgService;
+import org.redabogacia.sigaservices.app.util.KeyValue;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import org.redabogacia.sigaservices.app.vo.scs.CajgEjgRemesaVo;
 import org.redabogacia.sigaservices.app.vo.scs.CajgRemesaVo;
-import org.redabogacia.sigaservices.app.vo.scs.EejgXmlVo;
-
-import weblogic.management.timer.Timer;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -98,9 +96,6 @@ import com.siga.beans.ScsEJGAdm.TipoVentana;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsEstadoEJGAdm;
 import com.siga.beans.ScsEstadoEJGBean;
-import com.siga.beans.eejg.ScsEejgPeticionesAdm;
-import com.siga.beans.eejg.ScsEejgPeticionesBean;
-import com.siga.eejg.SolicitudesEEJGInformacionCompleta;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -112,6 +107,7 @@ import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.SIGAWSListener;
 
 import es.satec.businessManager.BusinessManager;
+import weblogic.management.timer.Timer;
 
 
 
@@ -427,7 +423,11 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			// Entramos al formulario en modo 'modificación'
 			session.setAttribute("accion", "editar");
 			request.setAttribute("REMESA", remesaBean.getOriginalHash());
-			
+			SelectDataService service = (SelectDataService) BusinessManager.getInstance().getService(SelectDataService.class);
+			HashMap<String, String> params = new HashMap<String, String>();
+			params.put("idinstitucion", idInstitucion);
+			List<KeyValue> idGruposExpedientesList = service.getGruposExpedientes(params);
+			request.setAttribute("mostrarListaGruposExpedientes", idGruposExpedientesList!=null && idGruposExpedientesList.size()>0?"1":"0");
 			
 			
 		} catch (Exception e) {
@@ -490,6 +490,11 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			session.setAttribute("accion", "consultar");
 
 			request.setAttribute("REMESA", h);
+			SelectDataService service = (SelectDataService) BusinessManager.getInstance().getService(SelectDataService.class);
+			HashMap<String, String> params = new HashMap<String, String>();
+			params.put("idinstitucion", this.getUserBean(request).getLocation());
+			List<KeyValue> idGruposExpedientesList = service.getGruposExpedientes(params);
+			request.setAttribute("mostrarListaGruposExpedientes", idGruposExpedientesList!=null && idGruposExpedientesList.size()>0?"1":"0");
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);
 		}
@@ -545,6 +550,12 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			miForm.setModoContador(modocontador);
 
 			request.setAttribute("modoContador", modocontador);
+			SelectDataService service = (SelectDataService) BusinessManager.getInstance().getService(SelectDataService.class);
+			HashMap<String, String> params = new HashMap<String, String>();
+			params.put("idinstitucion", usr.getLocation());
+			List<KeyValue> idGruposExpedientesList = service.getGruposExpedientes(params);
+			request.setAttribute("mostrarListaGruposExpedientes", idGruposExpedientesList!=null && idGruposExpedientesList.size()>0?"1":"0");
+			
 
 		} catch (SIGAException e) {
 			throw e;
@@ -617,6 +628,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 
 			miHash.put(CajgRemesaBean.C_IDINSTITUCION, this.getIDInstitucion(request));
 			miHash.put(CajgRemesaBean.C_DESCRIPCION, miForm.getDescripcion());
+			if(miForm.getIdGrupoExpedientes()!=null && !miForm.getIdGrupoExpedientes().equals(""))
+				miHash.put(CajgRemesaBean.C_IDGRUPOEXPEDIENTES, miForm.getIdGrupoExpedientes());
 			miHash.put(CajgRemesaEstadosBean.C_FECHAREMESA, GstDate.getApplicationFormatDate("", miForm.getFechaGeneracion()));
 			miHash.put(CajgRemesaEstadosBean.C_IDESTADO, "0");
 			miHash.put(CajgRemesaBean.C_IDREMESA, remesaAdm.SeleccionarMaximo(this.getIDInstitucion(request).toString()));
@@ -679,6 +692,9 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				CajgRemesaBean cajgRemesaBean = (CajgRemesaBean)v.get(0);
 				
 				cajgRemesaBean.setDescripcion(miForm.getDescripcion());
+				if(miForm.getIdGrupoExpedientes()!=null && !miForm.getIdGrupoExpedientes().equals(""))
+					cajgRemesaBean.setIdGrupoExpedientes(Short.valueOf(miForm.getIdGrupoExpedientes()));
+				
 				
 				FormFile formFile = miForm.getFile();
 				if (formFile != null && formFile.getFileSize() > 0) {					 
@@ -842,9 +858,11 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				hashRemesa.put("IDREMESA", miForm.getIdRemesa());				
 				CajgRemesaAdm admRemesa = new CajgRemesaAdm(this.getUserBean(request));
 				CajgRespuestaEJGRemesaAdm respuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(this.getUserBean(request));
-				respuestaEJGRemesaAdm.eliminaAnterioresErrores(Integer.parseInt(idInstitucion), Integer.parseInt(miForm.getIdRemesa()));				
+				respuestaEJGRemesaAdm.eliminaAnterioresErrores(Integer.parseInt(idInstitucion), Integer.parseInt(miForm.getIdRemesa()));	
+				admBean.deleteDirect(hashRemesa,new String[] {"IDINSTITUCION","IDREMESA"} );
+				
 				admRemesa.delete(hashRemesa);
-
+				
 				eliminaFicheroTXTGenerado(idInstitucion, miForm.getIdRemesa(),idInstitucion.equals("2003"),usr);
 
 				tx.commit();
@@ -1193,11 +1211,16 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				UtilidadesHash.set(miHash, "NUMERO", String.valueOf(b.getNumero()));
 				UtilidadesHash.set(miHash, "PREFIJO", b.getPrefijo());
 				UtilidadesHash.set(miHash, "DESCRIPCION", b.getDescripcion());
+				UtilidadesHash.set(miHash, "IDGRUPOEXPEDIENTES", b.getIdGrupoExpedientes());
 
 				request.getSession().removeAttribute("DATAPAGINADOR");
 
 				request.setAttribute("REMESA", miHash);
-				
+				SelectDataService service = (SelectDataService) BusinessManager.getInstance().getService(SelectDataService.class);
+				HashMap<String, String> params = new HashMap<String, String>();
+				params.put("idinstitucion", this.getUserBean(request).getLocation());
+				List<KeyValue> idGruposExpedientesList = service.getGruposExpedientes(params);
+				request.setAttribute("mostrarListaGruposExpedientes", idGruposExpedientesList!=null && idGruposExpedientesList.size()>0?"1":"0");
 
 				return "editar";
 			} catch (SIGAException e) {
@@ -1795,6 +1818,18 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			CajgRespuestaEJGRemesaAdm respuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(this.getUserBean(request));
 			respuestaEJGRemesaAdm.eliminaAnterioresErrores(Integer.parseInt(idInstitucion), Integer.parseInt(form.getIdRemesa()));
 			
+			if(form.getIdGrupoExpedientes()!=null && !form.getIdGrupoExpedientes().equalsIgnoreCase("")) {
+				CajgRemesaAdm remesaAdm = new CajgRemesaAdm(this.getUserBean(request));
+				Hashtable miHash = new Hashtable();
+				miHash.put(CajgRemesaBean.C_IDINSTITUCION, idInstitucion);
+				miHash.put(CajgRemesaBean.C_IDREMESA, form.getIdRemesa());
+				Vector v = remesaAdm.selectByPK(miHash);
+				CajgRemesaBean cajgRemesaBean = (CajgRemesaBean)v.get(0);
+				if(form.getIdGrupoExpedientes()!=null && !form.getIdGrupoExpedientes().equals(""))
+					cajgRemesaBean.setIdGrupoExpedientes(Short.valueOf(form.getIdGrupoExpedientes()));
+				remesaAdm.updateDirect(cajgRemesaBean);
+			}
+			
 			File fileZIP = generaFicherosTXT(idInstitucion, form.getIdRemesa(), nombreFicheroPorDefecto, mensaje, null,false,usr);
 				
 			if (fileZIP != null) {
@@ -1944,7 +1979,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		
 		ASIGNA_VERSION versionAsignaVereda = null;
 		
-		if (CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA == tipoCAJG || CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == tipoCAJG) {
+		if (CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA == tipoCAJG) {
 			//si es asigna comprueba la version Si es la versión 2 va por ecom pq es la versión de vereda y si es 1 se deja lo antiguo como estaba en SIGA
 			versionAsignaVereda = AsignaVeredaHelper.getAsignaVersion(Short.valueOf(idInstitucion.toString()));
 		}
@@ -2010,54 +2045,54 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 					// Otenemos los informes economicos que se solicitaron y recibieron correctamente
 					
 					
-					Map<String, String> mapa = new HashMap<String, String>();
-					SolicitudesEEJGInformacionCompleta solicitudesEEJGInformacionCompleta = new SolicitudesEEJGInformacionCompleta();
-					ScsEjgService scsEjgService = (ScsEjgService) getBusinessManager().getService(ScsEjgService.class);
-					ScsEejgPeticionesAdm scsPeticionesAdm = new ScsEejgPeticionesAdm(this.getUserBean(request));
-					for (CajgEjgremesa cajgEjgremesa : cajgEjgremesas) {
-						mapa.put(CajgEjgremesa.C_IDINSTITUCION, idInstitucion.toString());
-						mapa.put(CajgEjgremesa.C_ANIO, cajgEjgremesa.getAnio().toString());
-						mapa.put( CajgEjgremesa.C_IDTIPOEJG, cajgEjgremesa.getIdtipoejg().toString());
-						mapa.put(CajgEjgremesa.C_NUMERO, cajgEjgremesa.getNumero().toString());
-						//Vamos a recuperar los expedientes economicos devueltos por EEJG para trasformarlos en como quiere la CAM
-						
-						List<EejgXmlVo> scsEejgXmls = scsEjgService.getInformesEconomicoEjg(mapa);
-						
-						for (EejgXmlVo eejgXmlVo : scsEejgXmls) {
-							if(eejgXmlVo.getXml()==null && eejgXmlVo.getEejgPeticiones()!=null && eejgXmlVo.getEejgPeticiones().getCsv()!=null){
-								ScsEejgPeticionesBean scsEejgPeticionesBean = new ScsEejgPeticionesBean();
-								scsEejgPeticionesBean.setIdInstitucion(eejgXmlVo.getEejgPeticiones().getIdinstitucion().intValue());
-								scsEejgPeticionesBean.setIdSolicitud(eejgXmlVo.getEejgPeticiones().getIdsolicitud());
-								scsEejgPeticionesBean.setIdPeticion(eejgXmlVo.getEejgPeticiones().getIdpeticion().longValue());
-								scsEejgPeticionesBean.setIdioma(eejgXmlVo.getEejgPeticiones().getIdioma());
-								try {
-									int idXML = solicitudesEEJGInformacionCompleta.consultaInformacionCompletaAAPP( scsEejgPeticionesBean);
-									if (idXML > -1) {	
-										scsEejgPeticionesBean.setIdXml(idXML);						
-										scsEejgPeticionesBean.setFechaMod("SYSDATE");
-										String[] claves = {ScsEejgPeticionesBean.C_IDPETICION};
-										String[] campos = {ScsEejgPeticionesBean.C_IDXML,										
-												ScsEejgPeticionesBean.C_USUMODIFICACION,
-												ScsEejgPeticionesBean.C_FECHAMODIFICACION};
-										scsPeticionesAdm.updateDirect(scsEejgPeticionesBean,claves,campos);
-									}	
-								} catch (Exception e) {
-									log.debug("El expediente "+cajgEjgremesa.getNumero().toString()+" no tiene cargado el informe economico. Debera solicitarlo de nuevo");
-									//lO PONEMOS EN ESTADO CADUCADO PARA QUWE PUEDA VOLVER A SOLICITARLO
-	//								scsEejgPeticionesBean.setEstado(EEJG_ESTADO.CADUCADO);						
-									scsEejgPeticionesBean.setEstado(40);
-									scsEejgPeticionesBean.setFechaMod("SYSDATE");
-									String[] claves = {ScsEejgPeticionesBean.C_IDPETICION};
-									String[] campos = {ScsEejgPeticionesBean.C_ESTADO,										
-											ScsEejgPeticionesBean.C_USUMODIFICACION,
-											ScsEejgPeticionesBean.C_FECHAMODIFICACION};
-									scsPeticionesAdm.updateDirect(scsEejgPeticionesBean,claves,campos);
-								}
-								
-							}
-							
-						}
-					}
+//					Map<String, String> mapa = new HashMap<String, String>();
+//					SolicitudesEEJGInformacionCompleta solicitudesEEJGInformacionCompleta = new SolicitudesEEJGInformacionCompleta();
+//					ScsEjgService scsEjgService = (ScsEjgService) getBusinessManager().getService(ScsEjgService.class);
+//					ScsEejgPeticionesAdm scsPeticionesAdm = new ScsEejgPeticionesAdm(this.getUserBean(request));
+//					for (CajgEjgremesa cajgEjgremesa : cajgEjgremesas) {
+//						mapa.put(CajgEjgremesa.C_IDINSTITUCION, idInstitucion.toString());
+//						mapa.put(CajgEjgremesa.C_ANIO, cajgEjgremesa.getAnio().toString());
+//						mapa.put( CajgEjgremesa.C_IDTIPOEJG, cajgEjgremesa.getIdtipoejg().toString());
+//						mapa.put(CajgEjgremesa.C_NUMERO, cajgEjgremesa.getNumero().toString());
+//						//Vamos a recuperar los expedientes economicos devueltos por EEJG para trasformarlos en como quiere la CAM
+//						
+//						List<EejgXmlVo> scsEejgXmls = scsEjgService.getInformesEconomicoEjg(mapa);
+//						
+//						for (EejgXmlVo eejgXmlVo : scsEejgXmls) {
+//							if(eejgXmlVo.getXml()==null && eejgXmlVo.getEejgPeticiones()!=null && eejgXmlVo.getEejgPeticiones().getCsv()!=null){
+//								ScsEejgPeticionesBean scsEejgPeticionesBean = new ScsEejgPeticionesBean();
+//								scsEejgPeticionesBean.setIdInstitucion(eejgXmlVo.getEejgPeticiones().getIdinstitucion().intValue());
+//								scsEejgPeticionesBean.setIdSolicitud(eejgXmlVo.getEejgPeticiones().getIdsolicitud());
+//								scsEejgPeticionesBean.setIdPeticion(eejgXmlVo.getEejgPeticiones().getIdpeticion().longValue());
+//								scsEejgPeticionesBean.setIdioma(eejgXmlVo.getEejgPeticiones().getIdioma());
+//								try {
+//									int idXML = solicitudesEEJGInformacionCompleta.consultaInformacionCompletaAAPP( scsEejgPeticionesBean);
+//									if (idXML > -1) {	
+//										scsEejgPeticionesBean.setIdXml(idXML);						
+//										scsEejgPeticionesBean.setFechaMod("SYSDATE");
+//										String[] claves = {ScsEejgPeticionesBean.C_IDPETICION};
+//										String[] campos = {ScsEejgPeticionesBean.C_IDXML,										
+//												ScsEejgPeticionesBean.C_USUMODIFICACION,
+//												ScsEejgPeticionesBean.C_FECHAMODIFICACION};
+//										scsPeticionesAdm.updateDirect(scsEejgPeticionesBean,claves,campos);
+//									}	
+//								} catch (Exception e) {
+//									log.debug("El expediente "+cajgEjgremesa.getNumero().toString()+" no tiene cargado el informe economico. Debera solicitarlo de nuevo");
+//									//lO PONEMOS EN ESTADO CADUCADO PARA QUWE PUEDA VOLVER A SOLICITARLO
+//	//								scsEejgPeticionesBean.setEstado(EEJG_ESTADO.CADUCADO);						
+//									scsEejgPeticionesBean.setEstado(40);
+//									scsEejgPeticionesBean.setFechaMod("SYSDATE");
+//									String[] claves = {ScsEejgPeticionesBean.C_IDPETICION};
+//									String[] campos = {ScsEejgPeticionesBean.C_ESTADO,										
+//											ScsEejgPeticionesBean.C_USUMODIFICACION,
+//											ScsEejgPeticionesBean.C_FECHAMODIFICACION};
+//									scsPeticionesAdm.updateDirect(scsEejgPeticionesBean,claves,campos);
+//								}
+//								
+//							}
+//							
+//						}
+//					}
 					if (simular) {
 						respuesta = pcajgInsertaColaService.validaExpedientesEconomicosAlcala(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
 								, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
@@ -2104,7 +2139,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				}
 				
 				mensaje = getMensajeRespuesta(respuesta, request, simular);
-			} else if (CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == tipoCAJG && versionAsignaVereda!=null && ASIGNA_VERSION.VERSION_2.equals(versionAsignaVereda)) {
+			} else if (CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == tipoCAJG ) {
 				PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
 				RESPUESTA_ENVIO_REMESA respuesta = null;
 				if (simular) {
@@ -2113,18 +2148,6 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				} else {
 					respuesta = pcajgInsertaColaService.cargaExpedientesXunta(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
 							, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()),OPERACION.XUNTA_CARGA_EXPEDIENTES);
-				}
-				
-				mensaje = getMensajeRespuesta(respuesta, request, simular);		
-			}else if (CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == tipoCAJG && versionAsignaVereda!=null && ASIGNA_VERSION.VERSION_1.equals(versionAsignaVereda)) {
-				PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
-				RESPUESTA_ENVIO_REMESA respuesta = null;
-				if (simular) {
-					respuesta = pcajgInsertaColaService.validaExpedientesXunta(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
-							, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()),OPERACION.XUNTA_VALIDA_PRESENTACION,OPERACION.XUNTA_ENVIA_PRESENTACION);	
-				} else {
-					respuesta = pcajgInsertaColaService.cargaExpedientesXunta(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
-							, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()),OPERACION.XUNTA_ENVIA_PRESENTACION);
 				}
 				
 				mensaje = getMensajeRespuesta(respuesta, request, simular);		
@@ -2260,6 +2283,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 	 */
 	private File generaFichero(RowsContainer rowsContainer, String nombreFichero, String rutaFichero, String[] cabeceras, String extension, Boolean imprimirCabecera, String delimitador, String saltoLinea, String subCabecera, String numeroEJGs, StringBuffer mensaje)
 			throws IOException {
+		
+		
 		
 		if (imprimirCabecera == null) {
 			imprimirCabecera = Boolean.FALSE;

@@ -27,6 +27,8 @@ public class CajgRemesaBean extends MasterBean{
 	private Integer idIntercambio;
 	private Long idecomcola;
 	private Short idTipoRemesa;  
+	private Short idGrupoExpedientes;
+
 	
 	
 	
@@ -43,6 +45,7 @@ public class CajgRemesaBean extends MasterBean{
 	static public final String	C_IDINTERCAMBIO	=				"IDINTERCAMBIO";
 	static public final String	C_IDECOMCOLA	=				"IDECOMCOLA";
 	static public final String	C_IDTIPOREMESA	=				"IDTIPOREMESA";
+	static public final String	C_IDGRUPOEXPEDIENTES	=				"IDGRUPOEXPEDIENTES";
 	
 	
 	public Integer getIdInstitucion() {
@@ -139,6 +142,13 @@ public class CajgRemesaBean extends MasterBean{
 		
 		
 
+	}
+
+	public Short getIdGrupoExpedientes() {
+		return idGrupoExpedientes;
+	}
+	public void setIdGrupoExpedientes(Short idGrupoExpedientes) {
+		this.idGrupoExpedientes = idGrupoExpedientes;
 	}
 	
 	

@@ -55,6 +55,8 @@
 	String numero="";
 	String sufijo="";
 	String descripcion="";
+	String idGrupoExpedientes="";
+	
 	Hashtable r=(Hashtable) request.getAttribute("REMESA");
 	if (r.get("IDREMESA")!=null){
 		idremesa=(String)r.get("IDREMESA");
@@ -70,6 +72,9 @@
 	}
 	if (r.get("DESCRIPCION")!=null){
 		descripcion=(String)r.get("DESCRIPCION");
+	}
+	if (r.get("IDGRUPOEXPEDIENTES")!=null){
+		idGrupoExpedientes=(String)r.get("IDGRUPOEXPEDIENTES");
 	}
 	
 	CajgRemesaEstadosAdm admBean =  new CajgRemesaEstadosAdm(usr);	
@@ -151,7 +156,8 @@
 			document.DefinicionRemesas_CAJG_Form.submit();	
 		}
 		
-		function buscarGrupos() {		
+		function buscarGrupos() {	
+			
 			document.EstadosRemesaForm.modo.value="buscar";
 			document.EstadosRemesaForm.modoAnterior.value="<%=modo%>";				
 			document.EstadosRemesaForm.idRemesa.value=document.forms[0].idRemesa.value;	
@@ -179,6 +185,9 @@
 		}
 		
 		function generarFichero(){
+			if(document.getElementById("idGrupoExpedientes"))
+ 				jQuery('#idGrupoExpedientes').prop('disabled', true);
+				
 			document.DefinicionRemesas_CAJG_Form.modo.value="generarFichero";
 			document.DefinicionRemesas_CAJG_Form.idRemesa.value=document.forms[0].idRemesa.value;	
 			document.DefinicionRemesas_CAJG_Form.idInstitucion.value=document.forms[0].idInstitucion.value;	
@@ -302,6 +311,7 @@
 
 <body onload="buscarGrupos();cargadatosRemesa();ajusteAlto('resultado1');">
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
+	<bean:define id="mostrarListaGruposExpedientes" name="mostrarListaGruposExpedientes" scope="request" />
 	<html:form action="${path}?noReset=true" method="POST" target="resultado" enctype="multipart/form-data">
 		<html:hidden property = "modo" value = "inicio"/>
 		<html:hidden property = "idInstitucion" value = "<%=usr.getLocation()%>"/>
@@ -348,6 +358,18 @@
 							<html:text name="DefinicionRemesas_CAJG_Form" property="descripcion"  size="60" maxlength="200" styleClass="<%=estilocaja%>" value="<%=descripcion%>" readonly="<%=breadonly%>" ></html:text>
 						</td>
 					</tr>
+					<c:if test="${mostrarListaGruposExpedientes=='1' }">
+						<tr>
+							<td class="labelText" >
+								<siga:Idioma key="gratuita.turnos.literal.grupo"/>&nbsp;(*)
+							</td>
+							<td class="labelText">
+								<siga:Select id="idGrupoExpedientes" queryId="getGruposExpedientes" selectedIds="<%=idGrupoExpedientes%>"  required="true" disabled="<%=String.valueOf(idEstado!=0)%>" width="300"  />					
+							</td>
+					
+						</tr>
+					</c:if>
+					
 										  
 					<tr id="idTrFiltradoIncidencias" style='display:<%=(idEstado>-1?"":"none")%>;'>
 						<td class="labelText">

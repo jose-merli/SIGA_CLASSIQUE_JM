@@ -357,13 +357,19 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 			PaginadorBind paginador = null;
 		
 			Hashtable htConsultaBind  = admBean.getBindBusquedaMantenimientoEJG(miHash,  miForm, ScsEJGAdm.TipoVentana.BUSQUEDA_PREPARACION_CAJG, idInstitucion,longitudNumEjg);
-			Vector v = admBean.getBusquedaMantenimientoEJG(htConsultaBind);
-			claves = sacarClavesEJG(v, getIDInstitucion(request));
+			Vector v = null;
+			if(htConsultaBind!=null) {
+				v = admBean.getBusquedaMantenimientoEJG(htConsultaBind);
+				claves = sacarClavesEJG(v, getIDInstitucion(request));
 
-			//	PaginadorBind paginador = new PaginadorBind(consulta);				
-			paginador = admBean.getPaginadorBusquedaMantenimientoEJG(htConsultaBind);
-			
-			int totalRegistros = paginador.getNumeroTotalRegistros();
+				//	PaginadorBind paginador = new PaginadorBind(consulta);				
+				paginador = admBean.getPaginadorBusquedaMantenimientoEJG(htConsultaBind);
+				
+
+			}
+			else 
+				v = new Vector();
+				int totalRegistros = paginador==null?0:paginador.getNumeroTotalRegistros();
 			
 			if (totalRegistros==0){					
 				paginador =null;

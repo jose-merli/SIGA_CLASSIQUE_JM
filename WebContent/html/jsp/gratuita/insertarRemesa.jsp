@@ -13,6 +13,7 @@
 <%@ taglib uri = "struts-bean.tld"   prefix="bean"%>
 <%@ taglib uri = "struts-html.tld"   prefix="html"%>
 <%@ taglib uri = "struts-logic.tld"  prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.beans.ScsEJGBean"%>
@@ -91,6 +92,7 @@
 
 <body>
 <bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
+<bean:define id="mostrarListaGruposExpedientes" name="mostrarListaGruposExpedientes" scope="request" />
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
 	<table class="tablaTitulo" align="center" cellspacing="0">
 		<tr>
@@ -161,6 +163,21 @@
 				</td>
 		
 			</tr>
+			
+			<c:if test="${mostrarListaGruposExpedientes=='1' }">
+				<tr>
+					<td class="labelText" >
+						<siga:Idioma key="gratuita.turnos.literal.grupo"/>&nbsp;(*)
+					</td>
+					<td class="labelText">
+						<siga:Select id="idGrupoExpedientes" queryId="getGruposExpedientes" required="true" width="300"  />					
+					</td>
+			
+				</tr>
+			</c:if>
+			
+			
+			
 		</table>
 	</siga:ConjCampos>	
 	
@@ -189,7 +206,18 @@
 		function accionGuardarCerrar() {
 			var f = document.getElementById("DefinicionRemesas_CAJG_Form");
 			sub();
-  			if (f && validateDefinicionRemesas_CAJG_Form(f)) {			
+  			if (f && validateDefinicionRemesas_CAJG_Form(f)) {
+  				error ='';
+  				if(document.getElementById("idGrupoExpedientes") && document.getElementById("idGrupoExpedientes").value==''){
+  					error = "<siga:Idioma key='errors.required' arg0='gratuita.turnos.literal.grupo'/>";
+  					
+  				}
+  				if(error!=''){
+  					alert(error);
+  					fin();
+  					return false;
+  				}
+  				
 				document.forms[0].modo.value="Insertar";				
 				document.forms[0].submit();		
 				window.top.returnValue="MODIFICADO";

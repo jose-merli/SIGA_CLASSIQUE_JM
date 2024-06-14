@@ -21,7 +21,7 @@ import com.siga.beans.ScsPersonaJGBean;
 
  public class DefinicionRemesas_CAJG_Form extends DefinirEJGForm{
 	 
-	 
+	 String idGrupoExpedientes;
 	 String idTipoRemesa; 
 	 
 	String datosSolicInformeEconomico;
@@ -1001,5 +1001,15 @@ import com.siga.beans.ScsPersonaJGBean;
 
 			public void setIdTipoRemesa(String idTipoRemesa) {
 				this.idTipoRemesa = idTipoRemesa;
+			}
+
+		
+
+			public String getIdGrupoExpedientes() {
+				return idGrupoExpedientes;
+			}
+
+			public void setIdGrupoExpedientes(String idGrupoExpedientes) {
+				this.idGrupoExpedientes = idGrupoExpedientes;
 			}
 }
