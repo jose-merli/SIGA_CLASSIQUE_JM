@@ -655,7 +655,9 @@ public class DefinirDocumentacionDesignaAction extends MasterAction {
 	    			}
 	    		}else {
 		    		String actuacionValidada = UtilidadesHash.getString(actuacion, "VALIDADA")!=null && UtilidadesHash.getString(actuacion, "VALIDADA").equalsIgnoreCase("1")?"1":"0";
-			 		if(actuacionValidada.equals("0") && (usr.getUserName().equalsIgnoreCase(String.valueOf(ficheroVo.getUsumodificacion())))){
+		    		String actuacionAnulada = UtilidadesHash.getString(actuacion, "ANULACION")!=null && UtilidadesHash.getString(actuacion, "ANULACION").equalsIgnoreCase("1")?"1":"0";
+		    		
+			 		if(actuacionAnulada.equals("0") && actuacionValidada.equals("0") && (usr.getUserName().equalsIgnoreCase(String.valueOf(ficheroVo.getUsumodificacion())))){
 			 			composicionTablaFicheros +="<td ><img id='iconoboton_borrar1' src='/SIGA/html/imagenes/bborrar_off.gif' style='cursor:pointer;'  name='borrar_1' border='0' " +
 				 		"onClick='return borrarFicheroFichaColegial("+DocumentacionAuxiliar.getIdinstitucion()+","+DocumentacionAuxiliar.getIdfichero()+","+DocumentacionAuxiliar.getIddocumentaciondes()+");' onMouseOut='MM_swapImgRestore()' onMouseOver='MM_swapImage('borrar_1','','/SIGA/html/imagenes/bborrar_on.gif',1)'>";
 			 		}else{
