@@ -427,7 +427,10 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			HashMap<String, String> params = new HashMap<String, String>();
 			params.put("idinstitucion", idInstitucion);
 			List<KeyValue> idGruposExpedientesList = service.getGruposExpedientes(params);
-			request.setAttribute("mostrarListaGruposExpedientes", idGruposExpedientesList!=null && idGruposExpedientesList.size()>0?"1":"0");
+			if(mapping.getPath().equals("/JGR_E-Comunicaciones_InfEconomico"))
+				request.setAttribute("mostrarListaGruposExpedientes","0");
+			else
+				request.setAttribute("mostrarListaGruposExpedientes", idGruposExpedientesList!=null && idGruposExpedientesList.size()>0?"1":"0");
 			
 			
 		} catch (Exception e) {
@@ -493,8 +496,13 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			SelectDataService service = (SelectDataService) BusinessManager.getInstance().getService(SelectDataService.class);
 			HashMap<String, String> params = new HashMap<String, String>();
 			params.put("idinstitucion", this.getUserBean(request).getLocation());
-			List<KeyValue> idGruposExpedientesList = service.getGruposExpedientes(params);
-			request.setAttribute("mostrarListaGruposExpedientes", idGruposExpedientesList!=null && idGruposExpedientesList.size()>0?"1":"0");
+			if(miForm.getIdTipoRemesa()!=null && !miForm.getIdTipoRemesa().equalsIgnoreCase(CajgRemesaBean.TIPOREMESA.REMESA_EJGS.getIdTipo()))
+				request.setAttribute("mostrarListaGruposExpedientes", "0");
+			else {
+			
+				List<KeyValue> idGruposExpedientesList = service.getGruposExpedientes(params);
+				request.setAttribute("mostrarListaGruposExpedientes", idGruposExpedientesList!=null && idGruposExpedientesList.size()>0?"1":"0");
+			}
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);
 		}
@@ -553,8 +561,12 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			SelectDataService service = (SelectDataService) BusinessManager.getInstance().getService(SelectDataService.class);
 			HashMap<String, String> params = new HashMap<String, String>();
 			params.put("idinstitucion", usr.getLocation());
-			List<KeyValue> idGruposExpedientesList = service.getGruposExpedientes(params);
-			request.setAttribute("mostrarListaGruposExpedientes", idGruposExpedientesList!=null && idGruposExpedientesList.size()>0?"1":"0");
+			if(!tipoRemesa.getIdTipo().equals(CajgRemesaBean.TIPOREMESA.REMESA_EJGS.getIdTipo()))
+				request.setAttribute("mostrarListaGruposExpedientes", "0");
+			else {
+				List<KeyValue> idGruposExpedientesList = service.getGruposExpedientes(params);
+				request.setAttribute("mostrarListaGruposExpedientes", idGruposExpedientesList!=null && idGruposExpedientesList.size()>0?"1":"0");
+			}
 			
 
 		} catch (SIGAException e) {
@@ -1219,9 +1231,12 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				SelectDataService service = (SelectDataService) BusinessManager.getInstance().getService(SelectDataService.class);
 				HashMap<String, String> params = new HashMap<String, String>();
 				params.put("idinstitucion", this.getUserBean(request).getLocation());
-				List<KeyValue> idGruposExpedientesList = service.getGruposExpedientes(params);
-				request.setAttribute("mostrarListaGruposExpedientes", idGruposExpedientesList!=null && idGruposExpedientesList.size()>0?"1":"0");
-
+				if(mapping.getPath()!=null && mapping.getPath().equals("/JGR_E-Comunicaciones_InfEconomico"))
+					request.setAttribute("mostrarListaGruposExpedientes", "0");
+				else {
+					List<KeyValue> idGruposExpedientesList = service.getGruposExpedientes(params);
+					request.setAttribute("mostrarListaGruposExpedientes", idGruposExpedientesList!=null && idGruposExpedientesList.size()>0?"1":"0");
+				}
 				return "editar";
 			} catch (SIGAException e) {
 				throw e;
