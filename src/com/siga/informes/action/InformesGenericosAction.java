@@ -379,6 +379,8 @@ public class InformesGenericosAction extends MasterAction {
 			String idTipoEJG="";
 			String anio="";
 			String numero="";
+			String numejg = null;
+			String anioejg = null;
 			////////////////////////////////////////////////
 			// MODELO DE TIPO WORD: LLAMADA A ASPOSE.WORDS
 			for (int i=0;i<plantillas.size();i++) {
@@ -407,6 +409,9 @@ public class InformesGenericosAction extends MasterAction {
 							
 							/**Aniadimos el solicitante del ejg**/
 							idPersonaJG = (String)registro.get("IDPERSONAJG");
+							
+							anioejg = (String)registro.get("ANIO_EJG");
+							numejg = (String)registro.get("NUMERO_EJG");
 							infosolicitante=ejgAdm.getSolicitanteCalificacionEjgSalida(idintitucionactual,anio,idTipoEJG,numero,idPersonaJG,idioma);
 							Hashtable datoscalificacion = (Hashtable) infosolicitante.get(0);
 							/**Lenguaje del Solcitante**/
@@ -447,7 +452,10 @@ public class InformesGenericosAction extends MasterAction {
 						doc=words.sustituyeRegionDocumento(doc,"Region",datosconsulta);
 						doc = words.sustituyeDocumento(doc,datoscomunes);
 					}
+					
 					String identificador=idintitucionactual+"_"+idTipoEJG+"_"+numero;
+					if(anioejg!=null && numejg!=null)
+						identificador=idintitucionactual+"_"+anioejg+"_"+numejg;
 					if(b.getTipoformato()!=null && b.getTipoformato().equals("P"))
 						identificador= identificador + ".pdf";
 					else
