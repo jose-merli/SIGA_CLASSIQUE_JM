@@ -26,3 +26,4 @@ tmp/
 local.properties
 .loadpath
 .factorypath
+WebContent/WEB-INF/classes/
