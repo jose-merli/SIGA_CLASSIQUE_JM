@@ -26,7 +26,7 @@ public class GeneraConstantesXSD {
 //		String url = "jdbc:oracle:thin:pcajg/pcajg@192.168.11.55:1521:SIGADES";
 		
 		
-		Class.forName(oracle.jdbc.driver.OracleDriver.class.getName());
+//		Class.forName(oracle.jdbc.driver.OracleDriver.class.getName());
 		Connection conn = DriverManager.getConnection(url);
 
 		//PCAJG 

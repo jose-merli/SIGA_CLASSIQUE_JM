@@ -132,7 +132,7 @@ public class InsertaRecursos {
 		String clave = "desarrollo";
 
 		con = null;
-		Class.forName(oracle.jdbc.driver.OracleDriver.class.getName());
+//		Class.forName(oracle.jdbc.driver.OracleDriver.class.getName());
 		con = DriverManager.getConnection(cadenaConexion, usuario, clave);
 	}
 
